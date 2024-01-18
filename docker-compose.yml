@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: miniland-postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: k_app
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: miniland
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+  keycloak:
+    image: jboss/keycloak
+    #    image: sleighzy/keycloak
+    container_name: miniland-keycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: miniland
+      DB_USER: k_app
+      DB_PASSWORD: 123
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin_password
+    ports:
+      - "8484:8080"
+    depends_on:
+      - postgres
+    links:
+      - "postgres:postgres"

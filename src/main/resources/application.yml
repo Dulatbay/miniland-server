@@ -1,0 +1,10 @@
+application:
+  title: MiniLand
+  version: 1.0.0
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_DOMAIN:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:miniland}
+    username: ${DATABASE_USERNAME:k_app}
+    password: ${DATABASE_PASSWORD:123}
+    driver-class-name: ${DRIVER_CLASS_NAME:org.postgresql.Driver}

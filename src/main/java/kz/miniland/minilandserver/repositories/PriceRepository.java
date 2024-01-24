@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface PriceRepository extends JpaRepository<Price, Long> {
-    List<Price> findAllByIdIn(List<Long> priceIds);
+    List<Price> findAllByOrderByFullPriceDesc();
 }

@@ -8,9 +8,12 @@ services:
       POSTGRES_USER: k_app
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: miniland
+    volumes:
+      - ./dataset:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     restart: unless-stopped
+    network_mode: bridge
   keycloak:
     image: jboss/keycloak
     #    image: sleighzy/keycloak
@@ -29,3 +32,4 @@ services:
       - postgres
     links:
       - "postgres:postgres"
+    network_mode: bridge

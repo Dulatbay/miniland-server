@@ -39,6 +39,11 @@ public class Order {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "finished_at")
+    private LocalDateTime finishedAt;
+
+
     @Column(name = "full_time", nullable = false)
     private Long fullTime;
 
@@ -53,6 +58,8 @@ public class Order {
 
     @Column(name = "author_id", nullable = false)
     private String authorId;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "integer",name = "sale_id")

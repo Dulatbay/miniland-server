@@ -12,7 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +41,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseDetailOrderDto getDetailOrderById(Long id) {
-        var orderEntity = orderRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Order doesn't exist"));
+        var orderEntity = orderRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
         return orderCustomMapper.toDetailDto(orderEntity);
+    }
+
+    @Override
+    public void finishOrderById(Long id, Boolean isPaid) {
+        var orderEntity = orderRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+        if(!isPaid) throw new IllegalArgumentException("Order must be paid before finishing!");
+        orderEntity.setIsPaid(true);
+        orderEntity.setIsFinished(true);
+        orderEntity.setFinishedAt(LocalDateTime.now(ZONE_ID));
+        orderRepository.save(orderEntity);
     }
 }

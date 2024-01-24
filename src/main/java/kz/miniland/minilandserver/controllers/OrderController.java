@@ -1,6 +1,7 @@
 package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
@@ -40,4 +41,11 @@ public class OrderController {
     public ResponseEntity<ResponseDetailOrderDto> getOrderByOd(@PathVariable("id") Long id) {
         return ResponseEntity.ok(orderService.getDetailOrderById(id));
     }
+
+    @PatchMapping("/finish/{id}")
+    public ResponseEntity<Void> finishOrderById(@PathVariable("id") Long id, @RequestParam(value = "is_paid", required = false, defaultValue = "false") Boolean isPaid){
+        orderService.finishOrderById(id, isPaid);
+        return ResponseEntity.ok().build();
+    }
+
 }

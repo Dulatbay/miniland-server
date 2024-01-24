@@ -3,6 +3,8 @@ package kz.miniland.minilandserver.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class ResponseDetailOrderDto {
     @JsonProperty("id")
@@ -31,6 +33,8 @@ public class ResponseDetailOrderDto {
     private Boolean isPaid;
     @JsonProperty("is_finished")
     private Boolean isFinished;
+    @JsonProperty("finished_at")
+    private LocalDateTime finishedAt;
     @JsonProperty("author_name")
     private String authorName;
 }

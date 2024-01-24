@@ -12,4 +12,6 @@ public interface OrderService {
     List<ResponseCardOrderDto> getOrderCards();
 
     ResponseDetailOrderDto getDetailOrderById(Long id);
+
+    void finishOrderById(Long id, Boolean isPaid);
 }

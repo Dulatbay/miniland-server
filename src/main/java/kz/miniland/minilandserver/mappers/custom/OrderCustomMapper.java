@@ -6,6 +6,7 @@ import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Sale;
+import kz.miniland.minilandserver.mappers.SaleMapper;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
 import kz.miniland.minilandserver.services.KeycloakService;
@@ -24,6 +25,7 @@ public class OrderCustomMapper {
     private final SaleRepository saleRepository;
     private final PriceRepository priceRepository;
     private final KeycloakService keycloakService;
+    private final SaleMapper saleMapper;
 
     public Order toEntity(RequestCreateOrderDto requestCreateOrderDto) {
         Order order = new Order();
@@ -89,7 +91,7 @@ public class OrderCustomMapper {
             responseCardOrderDto.setAge(orderEntity.getChildAge());
             responseCardOrderDto.setParentName(orderEntity.getParentName());
             responseCardOrderDto.setEnteredTime(orderEntity.getCreatedAt().format(enteredTimeFormat));
-            Duration duration = Duration.between(orderEntity.getCreatedAt(), now);
+            Duration duration = Duration.between(orderEntity.getCreatedAt(), orderEntity.getFinishedAt() == null ? now : orderEntity.getFinishedAt());
             responseCardOrderDto.setRemainTime(orderEntity.getFullTime() - duration.getSeconds());
             responseCardOrderDto.setFullPrice(orderEntity.getFullPrice());
             responseCardOrderDto.setFullTime(orderEntity.getFullTime());
@@ -114,11 +116,15 @@ public class OrderCustomMapper {
         Duration duration = Duration.between(orderEntity.getCreatedAt(), now);
         responseDetailOrderDto.setRemainTime(orderEntity.getFullTime() - duration.getSeconds());
 
+        responseDetailOrderDto.setSale(saleMapper.toDto(orderEntity.getSale()));
+        responseDetailOrderDto.setExtraTime(orderEntity.getExtraTime());
         responseDetailOrderDto.setFullPrice(orderEntity.getFullPrice());
         responseDetailOrderDto.setFullTime(orderEntity.getFullTime());
         responseDetailOrderDto.setIsPaid(orderEntity.getIsPaid());
         responseDetailOrderDto.setIsFinished(orderEntity.getIsFinished());
         responseDetailOrderDto.setParentPhoneNumber(orderEntity.getPhoneNumber());
+        responseDetailOrderDto.setFinishedAt(orderEntity.getFinishedAt());
+
         responseDetailOrderDto.setAuthorName(keycloakService.getUserById(orderEntity.getAuthorId()).getUsername());
         return responseDetailOrderDto;
     }

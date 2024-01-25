@@ -22,8 +22,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${OAUTH2_ISSUER:http://localhost:8484/auth/realms/miniland}
-          jwk-set-uri: ${OAUTH2_JWK:http://localhost:8484/auth/realms/miniland/protocol/openid-connect/certs}
+          issuer-uri: ${OAUTH2_ISSUER:http://172.20.10.2:8484/auth/realms/miniland}
+          jwk-set-uri: ${OAUTH2_JWK:http://172.20.10.2:8484/auth/realms/miniland/protocol/openid-connect/certs}
+
+jwt:
+  auth:
+    converter:
+      resource-id: miniland
+      principle-attribute: preferred_username
 
 server:
   servlet:

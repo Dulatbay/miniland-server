@@ -31,18 +31,28 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .csrf()
-                    .disable()
-                .authorizeHttpRequests()
-                        .anyRequest()
-                                .authenticated();
+                .disable()
+                .cors()
+                .disable()
+                .authorizeHttpRequests((auth) -> {
+                    auth
+                            .requestMatchers("api/prices/director/*", "/api/orders/director/*", "/api/sales/director/*")
+                                .hasRole("ADMIN")
+                    ;
+
+                    auth
+                            .anyRequest()
+                            .authenticated();
+                })
+        ;
 
         http.oauth2ResourceServer()
-                        .jwt()
+                .jwt()
                 .jwtAuthenticationConverter(keycloakJwtConverter);
 
         http
                 .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler());
 

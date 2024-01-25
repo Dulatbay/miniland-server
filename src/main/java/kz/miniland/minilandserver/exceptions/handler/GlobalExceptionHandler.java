@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.ws.rs.NotFoundException;
+
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -23,5 +25,12 @@ public class GlobalExceptionHandler {
         log.error("Argument exception: ", e);
         var errorResponse = new ResponseErrorDto(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ResponseErrorDto> notFoundException(NotFoundException ex){
+        log.error("NotFoundException exception: ", ex);
+        ResponseErrorDto errorResponse = new ResponseErrorDto(ex.getMessage(), ex.toString(), null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }

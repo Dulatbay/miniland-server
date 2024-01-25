@@ -15,7 +15,7 @@ public class Beans {
     @Bean
     Keycloak keycloak() {
         return KeycloakBuilder.builder()
-                .serverUrl("http://localhost:8484/auth")
+                .serverUrl("http://192.168.0.242:8484/auth")
                 .realm("miniland")
                 .clientId("miniland")
                 .grantType(OAuth2Constants.PASSWORD)

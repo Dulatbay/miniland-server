@@ -5,6 +5,7 @@ import jakarta.websocket.server.PathParam;
 import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.ResponseDirectorMainReport;
 import kz.miniland.minilandserver.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,11 @@ public class OrderController {
     public ResponseEntity<Void> finishOrderById(@PathVariable("id") Long id, @RequestParam(value = "is_paid", required = false, defaultValue = "false") Boolean isPaid){
         orderService.finishOrderById(id, isPaid);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/director/get-main-report")
+    public ResponseEntity<ResponseDirectorMainReport> getMainDirectorReport(){
+        return ResponseEntity.ok(orderService.getMainDirectorReport());
     }
 
 }

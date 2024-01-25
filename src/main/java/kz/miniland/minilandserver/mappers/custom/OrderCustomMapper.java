@@ -29,7 +29,7 @@ public class OrderCustomMapper {
 
     public Order toEntity(RequestCreateOrderDto requestCreateOrderDto) {
         Order order = new Order();
-        order.setAuthorId(requestCreateOrderDto.getAuthorId());
+        order.setAuthorName(requestCreateOrderDto.getAuthorId());
         order.setParentName(requestCreateOrderDto.getParentName());
         order.setPhoneNumber(requestCreateOrderDto.getParentPhoneNumber());
         order.setChildName(requestCreateOrderDto.getChildName());
@@ -124,8 +124,8 @@ public class OrderCustomMapper {
         responseDetailOrderDto.setIsFinished(orderEntity.getIsFinished());
         responseDetailOrderDto.setParentPhoneNumber(orderEntity.getPhoneNumber());
         responseDetailOrderDto.setFinishedAt(orderEntity.getFinishedAt());
+        responseDetailOrderDto.setAuthorName(orderEntity.getAuthorName());
 
-        responseDetailOrderDto.setAuthorName(keycloakService.getUserById(orderEntity.getAuthorId()).getUsername());
         return responseDetailOrderDto;
     }
 }

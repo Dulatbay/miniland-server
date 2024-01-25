@@ -1,12 +1,8 @@
 package kz.miniland.minilandserver.entities;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
 
 import jakarta.persistence.*;
-import kz.miniland.minilandserver.constants.ValueConstants;
 import lombok.*;
 
 
@@ -56,8 +52,8 @@ public class Order {
     @Column(name = "is_finished", nullable = false)
     private Boolean isFinished;
 
-    @Column(name = "author_id", nullable = false)
-    private String authorId;
+    @Column(name = "author_name", nullable = false)
+    private String authorName;
 
 
 

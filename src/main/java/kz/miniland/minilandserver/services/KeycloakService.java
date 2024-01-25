@@ -2,6 +2,8 @@ package kz.miniland.minilandserver.services;
 
 import org.keycloak.representations.idm.UserRepresentation;
 
+import java.util.Optional;
+
 public interface KeycloakService {
-    UserRepresentation getUserById(String username);
+    Optional<UserRepresentation> getUserByUsername(String username);
 }

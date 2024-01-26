@@ -36,7 +36,8 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests((auth) -> {
                     auth
-                            .requestMatchers("api/prices/director/*", "/api/orders/director/*", "/api/sales/director/*")
+                            .requestMatchers("/api/report/*", "/api/sales/director/*", "/api/prices/director/*")
+
                                 .hasRole("ADMIN")
                     ;
 

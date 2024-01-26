@@ -24,7 +24,6 @@ import java.util.List;
 public class OrderCustomMapper {
     private final SaleRepository saleRepository;
     private final PriceRepository priceRepository;
-    private final KeycloakService keycloakService;
     private final SaleMapper saleMapper;
 
     public Order toEntity(RequestCreateOrderDto requestCreateOrderDto) {

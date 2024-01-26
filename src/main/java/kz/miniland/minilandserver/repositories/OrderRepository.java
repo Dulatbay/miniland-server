@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    List<Order> findByAuthorNameAndCreatedAtBetween(String authorName, LocalDateTime start, LocalDateTime end);
 }

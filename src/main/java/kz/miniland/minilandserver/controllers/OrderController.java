@@ -1,11 +1,9 @@
 package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseDirectorMainReport;
 import kz.miniland.minilandserver.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,9 +46,6 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/director/get-main-report")
-    public ResponseEntity<ResponseDirectorMainReport> getMainDirectorReport(){
-        return ResponseEntity.ok(orderService.getMainDirectorReport());
-    }
+
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/prices")
 @RequiredArgsConstructor
-public class PriceController {
+public class    PriceController {
     private final PriceService priceService;
     @GetMapping("/get-all")
     public ResponseEntity<List<ResponsePriceDto>> getAllPrices(){

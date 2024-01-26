@@ -3,7 +3,6 @@ package kz.miniland.minilandserver.services;
 import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseDirectorMainReport;
 
 import java.util.List;
 
@@ -16,5 +15,4 @@ public interface OrderService {
 
     void finishOrderById(Long id, Boolean isPaid);
 
-    ResponseDirectorMainReport getMainDirectorReport();
 }

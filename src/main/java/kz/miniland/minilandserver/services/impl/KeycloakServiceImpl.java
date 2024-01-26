@@ -7,7 +7,9 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.KEYCLOAK_REALM;
 
@@ -23,5 +25,10 @@ public class KeycloakServiceImpl implements KeycloakService {
         if(listOfUsers.isEmpty())
             return Optional.empty();
         return Optional.of(listOfUsers.getFirst());
+    }
+
+    @Override
+    public List<String> getUsernames() {
+        return keycloak.realm(KEYCLOAK_REALM).users().list().stream().map(UserRepresentation::getUsername).collect(Collectors.toList());
     }
 }

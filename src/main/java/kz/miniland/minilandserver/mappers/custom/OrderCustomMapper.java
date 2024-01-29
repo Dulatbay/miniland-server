@@ -15,9 +15,12 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
 @Component
 @RequiredArgsConstructor
@@ -74,7 +77,7 @@ public class OrderCustomMapper {
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
         order.setFullPrice(resultPrice + sale.getFullPrice());
         order.setIsPaid(requestCreateOrderDto.getIsPaid());
-        order.setCreatedAt(LocalDateTime.now(ValueConstants.ZONE_ID));
+        order.setCreatedAt(LocalDateTime.now(ZONE_ID));
         order.setIsFinished(false);
         return order;
     }
@@ -82,7 +85,7 @@ public class OrderCustomMapper {
     public List<ResponseCardOrderDto> toCardDto(List<Order> orderEntities) {
         var enteredTimeFormat = DateTimeFormatter.ofPattern("hh:mm");
         var responseCardOrderDtos = new ArrayList<ResponseCardOrderDto>();
-        var now = LocalDateTime.now(ValueConstants.ZONE_ID);
+        var now = LocalDateTime.now(ZONE_ID);
         for (var orderEntity : orderEntities) {
             ResponseCardOrderDto responseCardOrderDto = new ResponseCardOrderDto();
             responseCardOrderDto.setId(orderEntity.getId());
@@ -111,7 +114,7 @@ public class OrderCustomMapper {
         responseDetailOrderDto.setParentName(orderEntity.getParentName());
         responseDetailOrderDto.setEnteredTime(orderEntity.getCreatedAt().format(enteredTimeFormat));
 
-        var now = LocalDateTime.now(ValueConstants.ZONE_ID);
+        var now = orderEntity.getFinishedAt() == null ? LocalDateTime.now(ZONE_ID) : orderEntity.getFinishedAt();
         Duration duration = Duration.between(orderEntity.getCreatedAt(), now);
         responseDetailOrderDto.setRemainTime(orderEntity.getFullTime() - duration.getSeconds());
 

@@ -10,4 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface SaleRepository extends JpaRepository<Sale, Long> {
+    List<Sale> findSalesByEnabled(Boolean isEnabled);
 }

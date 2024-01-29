@@ -20,7 +20,7 @@ public class SaleServiceImpl implements SaleService {
     private final SaleMapper saleMapper;
     @Override
     public List<ResponseSaleDto> getAll() {
-        return saleMapper.toDTO(saleRepository.findAll());
+        return saleMapper.toDTO(saleRepository.findSalesByEnabled(true));
     }
 
     @Override
@@ -36,6 +36,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public void deleteSale(Long id) {
         var sale = saleRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Sale doesn't exist"));
-        saleRepository.delete(sale);
+        sale.setEnabled(false);
+        saleRepository.save(sale);
     }
 }

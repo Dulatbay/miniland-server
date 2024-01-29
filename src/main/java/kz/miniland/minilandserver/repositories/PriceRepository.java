@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface PriceRepository extends JpaRepository<Price, Long> {
     List<Price> findAllByOrderByFullPriceDesc();
+    List<Price> findAllByEnabledOrderByFullPriceDesc(Boolean isEnabled);
 }

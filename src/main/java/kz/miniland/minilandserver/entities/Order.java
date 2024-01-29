@@ -57,7 +57,7 @@ public class Order {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(columnDefinition = "integer",name = "sale_id")
     private Sale sale;
 }

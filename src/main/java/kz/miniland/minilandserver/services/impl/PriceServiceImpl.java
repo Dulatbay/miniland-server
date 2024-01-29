@@ -21,7 +21,7 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public List<ResponsePriceDto> getAllPrices() {
-        return priceMapper.toDTO(priceRepository.findAllByOrderByFullPriceDesc());
+        return priceMapper.toDTO(priceRepository.findAllByEnabledOrderByFullPriceDesc(true));
     }
 
     @Override
@@ -36,6 +36,7 @@ public class PriceServiceImpl implements PriceService {
     @Override
     public void deletePriceById(Long id) {
         var price = priceRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_GATEWAY.getReasonPhrase(), "Price doesn't exist"));
-        priceRepository.delete(price);
+        price.setEnabled(false);
+        priceRepository.save(price);
     }
 }

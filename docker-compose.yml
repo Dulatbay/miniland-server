@@ -16,7 +16,7 @@ services:
     network_mode: bridge
   keycloak:
     image: jboss/keycloak
-    #    image: sleighzy/keycloak
+#    image: sleighzy/keycloak
     container_name: miniland-keycloak
     environment:
       DB_VENDOR: POSTGRES

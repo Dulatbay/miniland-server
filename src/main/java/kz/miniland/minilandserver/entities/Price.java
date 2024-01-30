@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -23,8 +25,7 @@ public class Price {
     @Column(name = "full_price", nullable = false)
     private Double fullPrice;
 
-    @Column(name = "days", nullable = false)
+    @Column(name = "days", nullable = false, columnDefinition = "json")
     @Enumerated(EnumType.STRING)
-    @ElementCollection
-    private List<WeekDays> days;
+    private Set<WeekDays> days;
 }

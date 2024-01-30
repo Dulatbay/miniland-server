@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class PriceServiceImpl implements PriceService {
         Price price = new Price();
         price.setFullPrice(requestCreatePriceDto.getFullPrice());
         price.setFullTime(requestCreatePriceDto.getFullTime());
-        price.setDays(requestCreatePriceDto.getDays().stream().map(WeekDays::getByInteger).toList());
+        price.setDays(requestCreatePriceDto.getDays().stream().map(WeekDays::getByInteger).collect(Collectors.toSet()));
         priceRepository.save(price);
     }
 

@@ -16,14 +16,14 @@ public class Price {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "full_time", nullable = false)
     private Long fullTime;
+
     @Column(name = "full_price", nullable = false)
     private Double fullPrice;
-    @Column(name = "enabled", nullable = false)
-    private Boolean enabled;
-    @Column(name = "days", nullable = false)
 
+    @Column(name = "days", nullable = false)
     @Enumerated(EnumType.STRING)
     @ElementCollection
     private List<WeekDays> days;

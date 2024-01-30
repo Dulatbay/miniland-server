@@ -22,7 +22,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Void> createOrder(@RequestBody @Valid RequestCreateOrderDto requestCreateOrderDto) {
         var token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         requestCreateOrderDto.setAuthorId(token.getName());
@@ -30,7 +30,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/all-cards")
+    @GetMapping("/")
     public ResponseEntity<List<ResponseCardOrderDto>> getAllCards() {
         return ResponseEntity.ok(orderService.getOrderCards());
     }

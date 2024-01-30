@@ -18,12 +18,12 @@ import java.util.List;
 class SaleController {
     private final SaleService saleService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/")
     public ResponseEntity<List<ResponseSaleDto>> getAll(@PathParam("enabled") Boolean enabled){
         return ResponseEntity.ok(saleService.getAll());
     }
 
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Void> createSale(@RequestBody @Valid RequestCreateSaleDto requestCreateSaleDto){
         saleService.createSale(requestCreateSaleDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();

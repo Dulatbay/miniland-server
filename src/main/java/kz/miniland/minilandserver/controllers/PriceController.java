@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class    PriceController {
     private final PriceService priceService;
-    @GetMapping("/get-all")
+    @GetMapping("/")
     public ResponseEntity<List<ResponsePriceDto>> getAllPrices(){
         return ResponseEntity.ok(priceService.getAllPrices());
     }

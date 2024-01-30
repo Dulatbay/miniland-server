@@ -27,12 +27,12 @@ import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 public class ReportController   {
     private final ReportService reportService;
     private final KeycloakService keycloakService;
-    @GetMapping("/get-table-report")
+    @GetMapping("/table-report")
     public ResponseEntity<ResponseTableReportDto> getMainDirectorReport(){
         return ResponseEntity.ok(reportService.getTableReport());
     }
 
-    @GetMapping("/get-report")
+    @GetMapping("/report")
     public ResponseEntity<ResponseReportByParamsDto> getReportByParams(@RequestParam("start_date") LocalDate startDate,
                                                                        @RequestParam("end_date") LocalDate endDate,
                                                                        @RequestParam(value = "username", required = false) String username
@@ -46,18 +46,17 @@ public class ReportController   {
         return ResponseEntity.ok(keycloakService.getUsernames());
     }
 
-    @GetMapping("/profits/get-by-params")
+    @GetMapping("/profits")
     public ResponseEntity<ResponseReportProfitDto> getReportProfit(@RequestParam("start_date") LocalDate startDate,
                                                                    @RequestParam("end_date") LocalDate endDate){
         return ResponseEntity.ok(reportService.getReportProfitInRange(startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
     }
 
-    @PostMapping("/profits/create")
+    @PostMapping("/profits")
     public ResponseEntity<Void> createProfit(@RequestBody @Valid RequestCreateProfitDto requestCreateProfitDto){
         reportService.createProfit(requestCreateProfitDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
 }
 
 

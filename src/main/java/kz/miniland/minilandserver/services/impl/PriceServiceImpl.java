@@ -3,6 +3,7 @@ package kz.miniland.minilandserver.services.impl;
 import kz.miniland.minilandserver.dtos.RequestCreatePriceDto;
 import kz.miniland.minilandserver.dtos.ResponsePriceDto;
 import kz.miniland.minilandserver.entities.Price;
+import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.PriceMapper;
 import kz.miniland.minilandserver.repositories.PriceRepository;
@@ -30,6 +31,7 @@ public class PriceServiceImpl implements PriceService {
         price.setFullPrice(requestCreatePriceDto.getFullPrice());
         price.setFullTime(requestCreatePriceDto.getFullTime());
         price.setEnabled(true);
+        price.setDays(requestCreatePriceDto.getDays().stream().map(WeekDays::getByInteger).toList());
         priceRepository.save(price);
     }
 

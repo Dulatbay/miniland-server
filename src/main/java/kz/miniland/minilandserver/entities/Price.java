@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "price", schema = "schema_miniland")
@@ -19,6 +21,9 @@ public class Price {
     @Column(name = "full_price", nullable = false)
     private Double fullPrice;
     @Column(name = "enabled", nullable = false)
-    private boolean enabled;
-
+    private Boolean enabled;
+    @Column(name = "days", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @ElementCollection
+    private List<WeekDays> days;
 }

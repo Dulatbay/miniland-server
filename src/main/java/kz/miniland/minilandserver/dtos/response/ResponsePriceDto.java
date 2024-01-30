@@ -3,6 +3,8 @@ package kz.miniland.minilandserver.dtos.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ResponsePriceDto {
     @JsonProperty("id")
@@ -16,4 +18,7 @@ public class ResponsePriceDto {
 
     @JsonProperty("enabled")
     private Boolean enabled;
+
+    @JsonProperty("days")
+    private List<Integer> days;
 }

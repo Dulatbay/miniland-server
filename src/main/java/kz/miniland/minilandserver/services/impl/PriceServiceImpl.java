@@ -22,7 +22,7 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public List<ResponsePriceDto> getAllPrices() {
-        return priceMapper.toDTO(priceRepository.findAllByEnabledOrderByFullPriceDesc(true));
+        return priceMapper.toDTO(priceRepository.findAllByOrderByFullPriceDesc());
     }
 
     @Override
@@ -30,15 +30,13 @@ public class PriceServiceImpl implements PriceService {
         Price price = new Price();
         price.setFullPrice(requestCreatePriceDto.getFullPrice());
         price.setFullTime(requestCreatePriceDto.getFullTime());
-        price.setEnabled(true);
         price.setDays(requestCreatePriceDto.getDays().stream().map(WeekDays::getByInteger).toList());
         priceRepository.save(price);
     }
 
     @Override
     public void deletePriceById(Long id) {
-        var price = priceRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_GATEWAY.getReasonPhrase(), "Price doesn't exist"));
-        price.setEnabled(false);
-        priceRepository.save(price);
+        var price = priceRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Price doesn't exist"));
+        priceRepository.delete(price);
     }
 }

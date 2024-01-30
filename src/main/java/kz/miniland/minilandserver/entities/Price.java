@@ -25,7 +25,7 @@ public class Price {
     @Column(name = "full_price", nullable = false)
     private Double fullPrice;
 
-    @Column(name = "days", nullable = false, columnDefinition = "json")
+    @Column(name = "days", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<WeekDays> days;
 }

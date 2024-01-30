@@ -13,7 +13,7 @@ public enum WeekDays {
             case 5 -> THU;
             case 6 -> FRI;
             case 7 -> SAT;
-            default -> throw new IllegalArgumentException("Invalid argument");
+            default -> throw new IllegalArgumentException("Days must be in range 1-7");
         };
     }
     public Integer getInteger() {

@@ -28,6 +28,8 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public void createPrice(RequestCreatePriceDto requestCreatePriceDto) {
+        if(requestCreatePriceDto.getDays().isEmpty())
+            throw new IllegalArgumentException("Available days is empty");
         Price price = new Price();
         price.setFullPrice(requestCreatePriceDto.getFullPrice());
         price.setFullTime(requestCreatePriceDto.getFullTime());

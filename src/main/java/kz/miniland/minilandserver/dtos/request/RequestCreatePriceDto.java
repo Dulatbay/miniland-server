@@ -17,5 +17,6 @@ public class RequestCreatePriceDto {
     private Double fullPrice;
 
     @JsonProperty("days")
+    @NotNull
     private List<Integer> days; // 1 - sun, 2 - mon, 3 - tue ...
 }

@@ -20,7 +20,7 @@ class SaleController {
 
     @GetMapping("/")
     public ResponseEntity<List<ResponseSaleDto>> getAll(@PathParam("enabled") Boolean enabled){
-        return ResponseEntity.ok(saleService.getAll());
+        return ResponseEntity.ok(saleService.getAll(enabled));
     }
 
     @PostMapping("/")

@@ -19,8 +19,8 @@ public class SaleServiceImpl implements SaleService {
     private final SaleRepository saleRepository;
     private final SaleMapper saleMapper;
     @Override
-    public List<ResponseSaleDto> getAll() {
-        return saleMapper.toDTO(saleRepository.findSalesByEnabled(true));
+    public List<ResponseSaleDto> getAll(Boolean enabled) {
+        return saleMapper.toDTO(saleRepository.findSalesByEnabled(enabled));
     }
 
     @Override

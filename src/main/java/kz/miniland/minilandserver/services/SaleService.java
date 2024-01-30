@@ -6,7 +6,7 @@ import kz.miniland.minilandserver.dtos.response.ResponseSaleDto;
 import java.util.List;
 
 public interface SaleService {
-    List<ResponseSaleDto> getAll();
+    List<ResponseSaleDto> getAll(Boolean enabled);
 
     void createSale(RequestCreateSaleDto requestCreateSaleDto);
 

@@ -1,24 +1,24 @@
 package kz.miniland.minilandserver.mappers.custom;
 
-import kz.miniland.minilandserver.constants.ValueConstants;
-import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Sale;
+import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.mappers.SaleMapper;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
-import kz.miniland.minilandserver.services.KeycloakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
@@ -30,6 +30,7 @@ public class OrderCustomMapper {
     private final SaleMapper saleMapper;
 
     public Order toEntity(RequestCreateOrderDto requestCreateOrderDto) {
+        var now = LocalDateTime.now(ZONE_ID);
         Order order = new Order();
         order.setAuthorName(requestCreateOrderDto.getAuthorId());
         order.setParentName(requestCreateOrderDto.getParentName());
@@ -50,7 +51,16 @@ public class OrderCustomMapper {
 
         double resultPrice = 0;
         if (requestCreateOrderDto.getExtraTime() != 0) {
-            var prices = priceRepository.findAllByOrderByFullPriceDesc();
+            DayOfWeek dayOfWeek = now.getDayOfWeek();
+            var prices = priceRepository.findAllByOrderByFullPriceDesc()
+                    .stream()
+                    .filter(i -> i
+                            .getDays()
+                            .stream()
+                            .map(WeekDays::getInteger)
+                            .anyMatch(integer -> dayOfWeek.getValue() == integer)
+                    ).toList();
+
             if (prices.isEmpty())
                 throw new IllegalArgumentException("Price list is empty");
             if (prices.getLast().getFullTime() > requestCreateOrderDto.getExtraTime())
@@ -77,7 +87,7 @@ public class OrderCustomMapper {
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
         order.setFullPrice(resultPrice + sale.getFullPrice());
         order.setIsPaid(requestCreateOrderDto.getIsPaid());
-        order.setCreatedAt(LocalDateTime.now(ZONE_ID));
+        order.setCreatedAt(now);
         order.setIsFinished(false);
         return order;
     }

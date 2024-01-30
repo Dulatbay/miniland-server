@@ -1,7 +1,7 @@
 package kz.miniland.minilandserver.services.impl;
 
-import kz.miniland.minilandserver.dtos.RequestCreateSaleDto;
-import kz.miniland.minilandserver.dtos.ResponseSaleDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateSaleDto;
+import kz.miniland.minilandserver.dtos.response.ResponseSaleDto;
 import kz.miniland.minilandserver.entities.Sale;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.SaleMapper;

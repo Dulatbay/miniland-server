@@ -6,14 +6,25 @@ public enum WeekDays {
 
     public static WeekDays getByInteger(Integer number) {
         return switch (number) {
-            case 0 -> SUN;
-            case 1 -> MON;
-            case 2 -> TUE;
-            case 3 -> WED;
-            case 4 -> THU;
-            case 5 -> FRI;
-            case 6 -> SAT;
+            case 1 -> SUN;
+            case 2 -> MON;
+            case 3 -> TUE;
+            case 4 -> WED;
+            case 5 -> THU;
+            case 6 -> FRI;
+            case 7 -> SAT;
             default -> throw new IllegalArgumentException("Invalid argument");
+        };
+    }
+    public Integer getInteger() {
+        return switch (this) {
+            case SUN -> 1;
+            case MON -> 2;
+            case TUE -> 3;
+            case WED -> 4;
+            case THU -> 5;
+            case FRI -> 6;
+            case SAT -> 7;
         };
     }
 }

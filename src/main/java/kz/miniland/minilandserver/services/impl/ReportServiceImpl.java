@@ -1,9 +1,9 @@
 package kz.miniland.minilandserver.services.impl;
 
-import kz.miniland.minilandserver.dtos.RequestCreateProfitDto;
-import kz.miniland.minilandserver.dtos.ResponseReportByParamsDto;
-import kz.miniland.minilandserver.dtos.ResponseReportProfitDto;
-import kz.miniland.minilandserver.dtos.ResponseTableReportDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateProfitDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
+import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
 import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Profit;
 import kz.miniland.minilandserver.entities.ProfitTypes;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

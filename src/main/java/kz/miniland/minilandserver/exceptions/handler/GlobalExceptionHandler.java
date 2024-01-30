@@ -1,6 +1,6 @@
 package kz.miniland.minilandserver.exceptions.handler;
 
-import kz.miniland.minilandserver.dtos.ResponseErrorDto;
+import kz.miniland.minilandserver.dtos.response.ResponseErrorDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

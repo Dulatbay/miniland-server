@@ -2,9 +2,8 @@ package kz.miniland.minilandserver.controllers;
 
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
-import kz.miniland.minilandserver.dtos.RequestCreatePriceDto;
-import kz.miniland.minilandserver.dtos.ResponsePriceDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreatePriceDto;
+import kz.miniland.minilandserver.dtos.response.ResponsePriceDto;
 import kz.miniland.minilandserver.services.PriceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

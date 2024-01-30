@@ -1,15 +1,13 @@
-package kz.miniland.minilandserver.dtos;
+package kz.miniland.minilandserver.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Data
-public class RequestCreateSaleDto {
-    @JsonProperty("title")
-    @NotNull
-    private String title;
+import java.util.List;
 
+@Data
+public class RequestCreatePriceDto {
     @JsonProperty("full_time")
     @NotNull
     private Long fullTime;
@@ -18,4 +16,6 @@ public class RequestCreateSaleDto {
     @NotNull
     private Double fullPrice;
 
+    @JsonProperty("days")
+    private List<Integer> days; // 1 - sun, 2 - mon, 3 - tue ...
 }

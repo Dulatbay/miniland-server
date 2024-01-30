@@ -1,8 +1,8 @@
 package kz.miniland.minilandserver.services;
 
-import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 
 import java.util.List;
 

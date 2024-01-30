@@ -1,4 +1,4 @@
-package kz.miniland.minilandserver.dtos;
+package kz.miniland.minilandserver.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

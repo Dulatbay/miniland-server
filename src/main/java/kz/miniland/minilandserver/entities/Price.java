@@ -23,6 +23,7 @@ public class Price {
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
     @Column(name = "days", nullable = false)
+
     @Enumerated(EnumType.STRING)
     @ElementCollection
     private List<WeekDays> days;

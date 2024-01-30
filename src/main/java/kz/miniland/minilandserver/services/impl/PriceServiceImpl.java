@@ -1,7 +1,7 @@
 package kz.miniland.minilandserver.services.impl;
 
-import kz.miniland.minilandserver.dtos.RequestCreatePriceDto;
-import kz.miniland.minilandserver.dtos.ResponsePriceDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreatePriceDto;
+import kz.miniland.minilandserver.dtos.response.ResponsePriceDto;
 import kz.miniland.minilandserver.entities.Price;
 import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;

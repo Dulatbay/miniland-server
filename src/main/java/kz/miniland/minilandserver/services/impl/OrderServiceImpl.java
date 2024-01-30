@@ -1,8 +1,8 @@
 package kz.miniland.minilandserver.services.impl;
 
-import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.custom.OrderCustomMapper;
 import kz.miniland.minilandserver.repositories.OrderRepository;

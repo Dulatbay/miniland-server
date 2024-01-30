@@ -1,9 +1,9 @@
 package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
-import kz.miniland.minilandserver.dtos.RequestCreateOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseCardOrderDto;
-import kz.miniland.minilandserver.dtos.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

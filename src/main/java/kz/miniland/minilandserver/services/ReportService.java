@@ -1,12 +1,11 @@
 package kz.miniland.minilandserver.services;
 
-import kz.miniland.minilandserver.dtos.RequestCreateProfitDto;
-import kz.miniland.minilandserver.dtos.ResponseReportByParamsDto;
-import kz.miniland.minilandserver.dtos.ResponseReportProfitDto;
-import kz.miniland.minilandserver.dtos.ResponseTableReportDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateProfitDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
+import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public interface ReportService {
     ResponseTableReportDto getTableReport();

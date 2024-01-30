@@ -2,8 +2,8 @@ package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
-import kz.miniland.minilandserver.dtos.RequestCreateSaleDto;
-import kz.miniland.minilandserver.dtos.ResponseSaleDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateSaleDto;
+import kz.miniland.minilandserver.dtos.response.ResponseSaleDto;
 import kz.miniland.minilandserver.services.SaleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

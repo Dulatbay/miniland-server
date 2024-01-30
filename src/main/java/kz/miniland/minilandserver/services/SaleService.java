@@ -1,8 +1,7 @@
 package kz.miniland.minilandserver.services;
 
-import kz.miniland.minilandserver.dtos.RequestCreateSaleDto;
-import kz.miniland.minilandserver.dtos.ResponseSaleDto;
-import org.springframework.http.ResponseEntity;
+import kz.miniland.minilandserver.dtos.request.RequestCreateSaleDto;
+import kz.miniland.minilandserver.dtos.response.ResponseSaleDto;
 
 import java.util.List;
 

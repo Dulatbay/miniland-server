@@ -2,11 +2,10 @@ package kz.miniland.minilandserver.controllers;
 
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
-import kz.miniland.minilandserver.dtos.RequestCreateProfitDto;
-import kz.miniland.minilandserver.dtos.ResponseReportByParamsDto;
-import kz.miniland.minilandserver.dtos.ResponseReportProfitDto;
-import kz.miniland.minilandserver.dtos.ResponseTableReportDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateProfitDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
+import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
 import kz.miniland.minilandserver.services.KeycloakService;
 import kz.miniland.minilandserver.services.ReportService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;

@@ -15,11 +15,11 @@ public class Room {
     @Column(name = "id")
     private Long id;
 
-    @Column(name="startedAt", nullable = false)
+    @Column(name="started_at", nullable = false)
     @Temporal(TemporalType.TIME)
     private LocalTime startedAt;
 
-    @Column(name="finishedAt", nullable = false)
+    @Column(name="finished_at", nullable = false)
     @Temporal(TemporalType.TIME)
     private LocalTime finishedAt;
 
@@ -32,4 +32,7 @@ public class Room {
 
     @Column(name="penalty_per_half_hour", nullable = false)
     private Double penaltyPerHalfHour;
+
+    @Column(name = "max_child", nullable = false)
+    private Integer maxChild;
 }

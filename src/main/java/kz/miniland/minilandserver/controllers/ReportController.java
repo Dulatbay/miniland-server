@@ -23,7 +23,7 @@ import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/reports/")
+@RequestMapping("/reports")
 public class ReportController   {
     private final ReportService reportService;
     private final KeycloakService keycloakService;

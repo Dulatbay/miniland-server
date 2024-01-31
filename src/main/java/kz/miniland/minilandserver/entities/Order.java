@@ -55,8 +55,6 @@ public class Order {
     @Column(name = "author_name", nullable = false)
     private String authorName;
 
-
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(columnDefinition = "integer",name = "sale_id")
     private Sale sale;

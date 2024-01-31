@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
@@ -40,7 +39,8 @@ public class OrderCustomMapper {
 
         Sale sale = new Sale();
         if (requestCreateOrderDto.getSaleId() != null) {
-            sale = saleRepository.findById(requestCreateOrderDto.getSaleId()).orElseThrow(() -> new IllegalArgumentException("Sale doesn't exist"));
+            sale = saleRepository.findById(requestCreateOrderDto.getSaleId())
+                    .orElseThrow(() -> new IllegalArgumentException("Sale doesn't exist"));
             order.setSale(sale);
         } else {
             sale.setFullTime(0L);
@@ -62,7 +62,7 @@ public class OrderCustomMapper {
                     ).toList();
 
             if (prices.isEmpty())
-                throw new IllegalArgumentException("Price list is empty");
+                throw new IllegalArgumentException("Price list today is empty");
             if (prices.getLast().getFullTime() > requestCreateOrderDto.getExtraTime())
                 throw new IllegalArgumentException("Extra time is too short");
 

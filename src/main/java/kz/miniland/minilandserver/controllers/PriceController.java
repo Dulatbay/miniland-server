@@ -17,11 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class    PriceController {
     private final PriceService priceService;
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<ResponsePriceDto>> getAllPrices(){
         return ResponseEntity.ok(priceService.getAllPrices());
     }
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<Void> createPrice(@RequestBody @Valid RequestCreatePriceDto requestCreatePriceDto){
         priceService.createPrice(requestCreatePriceDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();

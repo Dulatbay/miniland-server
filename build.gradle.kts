@@ -4,13 +4,15 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.1"
 	id("io.spring.dependency-management") version "1.1.4"
-    kotlin("jvm")
+	kotlin("jvm")
 }
 
 group = "kz.miniland"
 version = "0.0.1-SNAPSHOT"
 
 java {
+	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -36,7 +38,7 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
-    implementation(kotlin("stdlib-jdk8"))
+	implementation(kotlin("stdlib-jdk8"))
 
 	implementation("org.keycloak:keycloak-admin-client:21.0.1")
 }
@@ -52,5 +54,5 @@ configure<DependencyManagementExtension> {
 	}
 }
 kotlin {
-    jvmToolchain(21)
+	jvmToolchain(21)
 }

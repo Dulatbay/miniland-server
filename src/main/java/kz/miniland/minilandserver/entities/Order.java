@@ -25,7 +25,7 @@ public class Order {
     @Column(name = "parent_name", nullable = false)
     private String parentName;
 
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "is_paid", nullable = false)

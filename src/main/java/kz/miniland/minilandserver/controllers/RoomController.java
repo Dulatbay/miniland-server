@@ -36,6 +36,11 @@ public class RoomController {
         return null;
     }
 
+    @GetMapping("/tariffs/booked-days")
+    public ResponseEntity<List<String>> getAllBookedDays() {
+        return null;
+    }
+
     @PostMapping("/tariffs")
     public ResponseEntity<Void> createRoom(@Valid @RequestBody RequestCreateRoomDto requestCreateRoomDto) {
         return ResponseEntity.status(HttpStatus.CREATED).build();

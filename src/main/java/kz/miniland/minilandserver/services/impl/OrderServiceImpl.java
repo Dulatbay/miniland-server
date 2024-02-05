@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
@@ -24,18 +26,21 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderCustomMapper orderCustomMapper;
-    private int reqCount = 0;
     @Override
     public void createOrder(RequestCreateOrderDto requestCreateOrderDto) {
         var orderEntity = orderCustomMapper.toEntity(requestCreateOrderDto);
         var entity = orderRepository.save(orderEntity);
-        log.info("{}", entity);
+        log.info("saved entity: {}", entity);
     }
 
     @Override
-    public List<ResponseCardOrderDto> getOrderCards() {
-        var orderEntities = orderRepository.findAll();
-        log.info("{}", reqCount++);
+    public List<ResponseCardOrderDto> getTodaysOrderCards() {
+        var now = LocalDate.now(ZONE_ID);
+
+        var startOfDay = LocalDateTime.of(now, LocalTime.MIN);
+        var endOfDay = LocalDateTime.of(now, LocalTime.MAX);
+
+        var orderEntities = orderRepository.findByCreatedAtBetween(startOfDay, endOfDay);
         return orderCustomMapper.toCardDto(orderEntities);
     }
 

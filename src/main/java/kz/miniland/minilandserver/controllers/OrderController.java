@@ -31,8 +31,8 @@ public class OrderController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ResponseCardOrderDto>> getAllCards() {
-        return ResponseEntity.ok(orderService.getOrderCards());
+    public ResponseEntity<List<ResponseCardOrderDto>> getTodaysOrderCards() {
+        return ResponseEntity.ok(orderService.getTodaysOrderCards());
     }
 
     @GetMapping("/detail/{id}")

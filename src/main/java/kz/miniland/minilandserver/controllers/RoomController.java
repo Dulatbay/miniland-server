@@ -2,8 +2,8 @@ package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomDto;
-import kz.miniland.minilandserver.dtos.response.ResponseCardRoomDto;
-import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
 import kz.miniland.minilandserver.services.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.PathParam;
 import java.util.List;
 
 @RestController
@@ -20,22 +21,22 @@ import java.util.List;
 public class RoomController {
     private final RoomService roomService;
 
-    @GetMapping()
-    public List<ResponseCardRoomDto> getAllRooms() {
+    @GetMapping("/orders/today")
+    public ResponseEntity<ResponseCardRoomOrderDto> getTodayActiveRooms() {
         return null;
     }
 
-    @GetMapping("/today")
-    public ResponseEntity<ResponseCardRoomDto> getTodayActiveRoom() {
+    @GetMapping("/tariffs/{id}")
+    public ResponseEntity<ResponseCardRoomTariffDto> getRoomTariffById(@PathVariable("id") Long id) {
         return null;
     }
 
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<ResponseDetailRoomDto> getDetailById(@PathVariable("id") Integer id) {
+    @GetMapping("/tariffs")
+    public ResponseEntity<List<ResponseCardRoomTariffDto>> getAllRoomTariffs(@PathParam("enabled") Boolean enabled) {
         return null;
     }
 
-    @PostMapping()
+    @PostMapping("/tariffs")
     public ResponseEntity<Void> createRoom(@Valid @RequestBody RequestCreateRoomDto requestCreateRoomDto) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

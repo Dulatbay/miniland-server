@@ -6,10 +6,10 @@ import lombok.Data;
 import java.time.LocalTime;
 import java.util.Set;
 
-@Table(name = "room", schema = "schema_miniland")
+@Table(name = "room_tariff", schema = "schema_miniland")
 @Data
 @Entity
-public class Room {
+public class RoomTariff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -26,6 +26,9 @@ public class Room {
     @Column(name="days", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<WeekDays> days;
+
+    @Column(name="first_price", nullable = false)
+    private Double firstPrice;
 
     @Column(name="penalty_per_hour")
     private Double penaltyPerHour;

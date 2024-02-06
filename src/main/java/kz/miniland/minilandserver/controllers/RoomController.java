@@ -2,6 +2,7 @@ package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomDto;
+import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
 import kz.miniland.minilandserver.services.RoomService;
@@ -22,23 +23,27 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/orders/today")
-    public ResponseEntity<ResponseCardRoomOrderDto> getTodayActiveRooms() {
-        return null;
+    public ResponseEntity<List<ResponseCardRoomOrderDto>> getTodayActiveRooms() {
+        List<ResponseCardRoomOrderDto> allActiveRooms = roomService.getAllCurrentActiveRooms();
+        return ResponseEntity.ok(allActiveRooms);
     }
 
     @GetMapping("/tariffs/{id}")
     public ResponseEntity<ResponseCardRoomTariffDto> getRoomTariffById(@PathVariable("id") Long id) {
-        return null;
+        ResponseCardRoomTariffDto tariff = roomService.getTariffById(id);
+        return ResponseEntity.ok(tariff);
     }
 
     @GetMapping("/tariffs")
     public ResponseEntity<List<ResponseCardRoomTariffDto>> getAllRoomTariffs(@PathParam("enabled") Boolean enabled) {
-        return null;
+        List<ResponseCardRoomTariffDto> allTariffs = roomService.getAllTariffsByEnabled(enabled);
+        return ResponseEntity.ok(allTariffs);
     }
 
     @GetMapping("/tariffs/booked-days")
-    public ResponseEntity<List<String>> getAllBookedDays() {
-        return null;
+    public ResponseEntity<List<ResponseBookedDayDto>> getAllBookedDays() {
+        List<ResponseBookedDayDto> bookedDays = roomService.getBookedDaysAfterDay();
+        return ResponseEntity.ok(bookedDays);
     }
 
     @PostMapping("/tariffs")

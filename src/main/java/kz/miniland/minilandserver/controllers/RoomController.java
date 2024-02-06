@@ -2,9 +2,7 @@ package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomDto;
-import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
-import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
-import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
+import kz.miniland.minilandserver.dtos.response.*;
 import kz.miniland.minilandserver.services.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +19,12 @@ import java.util.List;
 @RequestMapping("/rooms")
 public class RoomController {
     private final RoomService roomService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDetailOrderDto> getOrderDetailById(@PathVariable("id") Long id){
+        ResponseDetailOrderDto order = roomService.getOrderDetailById(id);
+        return ResponseEntity.ok(order);
+    }
 
     @GetMapping("/orders/today")
     public ResponseEntity<List<ResponseCardRoomOrderDto>> getTodayActiveRooms() {

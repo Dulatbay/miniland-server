@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
-public class RequestCreateRoomDto {
+public class RequestCreateRoomOrderDto {
     @JsonProperty("tariff_id")
     @NotNull
     private Long tariffId;
@@ -22,7 +22,7 @@ public class RequestCreateRoomDto {
 
     @JsonProperty("selected_booked_day")
     @NotNull
-    private LocalDate selectedBookedDay;
+    private LocalDateTime selectedBookedDay;
 
     @JsonProperty("extra_time")
     @NotNull

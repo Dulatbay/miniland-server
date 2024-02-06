@@ -37,4 +37,7 @@ public class RoomOrder {
 
     @Column(name = "author_name", nullable = false)
     private String authorName;
+
+    @Column(name = "client_name", nullable = false)
+    private String clientName;
 }

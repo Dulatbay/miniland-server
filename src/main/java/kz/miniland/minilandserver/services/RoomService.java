@@ -1,9 +1,7 @@
 package kz.miniland.minilandserver.services;
 
-import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
-import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
-import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
-import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
+import kz.miniland.minilandserver.dtos.response.*;
 
 import java.util.List;
 
@@ -15,7 +13,9 @@ public interface RoomService {
 
     List<ResponseCardRoomTariffDto> getAllTariffsByEnabled(Boolean enabled);
 
-    List<ResponseBookedDayDto> getBookedDaysAfterDay();
+    List<ResponseBookedDayDto> getBookedDaysAfterToday();
 
-    ResponseDetailOrderDto getOrderDetailById(Long id);
+    ResponseDetailRoomOrderDto getOrderDetailById(Long id);
+
+    void createRoomOrder(RequestCreateRoomOrderDto requestCreateRoomOrderDto);
 }

@@ -1,7 +1,7 @@
 package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
-import kz.miniland.minilandserver.dtos.request.RequestCreateRoomDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.*;
 import kz.miniland.minilandserver.services.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDetailOrderDto> getOrderDetailById(@PathVariable("id") Long id){
-        ResponseDetailOrderDto order = roomService.getOrderDetailById(id);
+    public ResponseEntity<ResponseDetailRoomOrderDto> getOrderDetailById(@PathVariable("id") Long id){
+        ResponseDetailRoomOrderDto order = roomService.getOrderDetailById(id);
         return ResponseEntity.ok(order);
     }
 
@@ -46,12 +46,13 @@ public class RoomController {
 
     @GetMapping("/tariffs/booked-days")
     public ResponseEntity<List<ResponseBookedDayDto>> getAllBookedDays() {
-        List<ResponseBookedDayDto> bookedDays = roomService.getBookedDaysAfterDay();
+        List<ResponseBookedDayDto> bookedDays = roomService.getBookedDaysAfterToday();
         return ResponseEntity.ok(bookedDays);
     }
 
     @PostMapping("/tariffs")
-    public ResponseEntity<Void> createRoom(@Valid @RequestBody RequestCreateRoomDto requestCreateRoomDto) {
+    public ResponseEntity<Void> createRoom(@Valid @RequestBody RequestCreateRoomOrderDto requestCreateRoomOrderDto) {
+        roomService.createRoomOrder(requestCreateRoomOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

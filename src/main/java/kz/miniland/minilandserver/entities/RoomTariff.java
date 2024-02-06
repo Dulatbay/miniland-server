@@ -38,4 +38,7 @@ public class RoomTariff {
 
     @Column(name = "max_child", nullable = false)
     private Integer maxChild;
+
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
 }

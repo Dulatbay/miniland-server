@@ -3,19 +3,13 @@ package kz.miniland.minilandserver.exceptions.handler;
 import kz.miniland.minilandserver.dtos.response.ResponseErrorDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.ws.rs.NotFoundException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j

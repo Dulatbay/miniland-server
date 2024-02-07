@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import java.util.List;
 
@@ -23,14 +24,15 @@ public class RoomTariffController {
         ResponseCardRoomTariffDto tariff = roomTariffService.getTariffById(id);
         return ResponseEntity.ok(tariff);
     }
+
     @GetMapping()
-    public ResponseEntity<List<ResponseCardRoomTariffDto>> getAllRoomTariffs(@PathParam("enabled") Boolean enabled) {
+    public ResponseEntity<List<ResponseCardRoomTariffDto>> getAllRoomTariffs(@RequestParam(value = "enabled") Boolean enabled) {
         List<ResponseCardRoomTariffDto> allTariffs = roomTariffService.getAllTariffsByEnabled(enabled);
         return ResponseEntity.ok(allTariffs);
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createTariff(@RequestBody @Valid RequestCreateTariffDto requestCreateTariffDto){
+    public ResponseEntity<Void> createTariff(@RequestBody @Valid RequestCreateTariffDto requestCreateTariffDto) {
         roomTariffService.create(requestCreateTariffDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

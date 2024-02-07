@@ -13,6 +13,7 @@ public class RoomTariffCustomMapper {
     public ResponseCardRoomTariffDto toDto(RoomTariff roomTariff){
         return ResponseCardRoomTariffDto
                 .builder()
+                .id(roomTariff.getId())
                 .firstPrice(roomTariff.getFirstPrice())
                 .startedTime(roomTariff.getStartedAt())
                 .endedTime(roomTariff.getFinishedAt())

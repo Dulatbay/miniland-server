@@ -14,6 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseCardRoomTariffDto {
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty("started_time")
     private LocalTime startedTime;
 

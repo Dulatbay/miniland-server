@@ -1,10 +1,8 @@
 package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
-import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
-import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateTariffDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
-import kz.miniland.minilandserver.services.RoomOrderService;
 import kz.miniland.minilandserver.services.RoomTariffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,5 +27,11 @@ public class RoomTariffController {
     public ResponseEntity<List<ResponseCardRoomTariffDto>> getAllRoomTariffs(@PathParam("enabled") Boolean enabled) {
         List<ResponseCardRoomTariffDto> allTariffs = roomTariffService.getAllTariffsByEnabled(enabled);
         return ResponseEntity.ok(allTariffs);
+    }
+
+    @PostMapping()
+    public ResponseEntity<Void> createTariff(@RequestBody @Valid RequestCreateTariffDto requestCreateTariffDto){
+        roomTariffService.create(requestCreateTariffDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

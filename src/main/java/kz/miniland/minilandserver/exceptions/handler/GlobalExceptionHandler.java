@@ -3,12 +3,19 @@ package kz.miniland.minilandserver.exceptions.handler;
 import kz.miniland.minilandserver.dtos.response.ResponseErrorDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.ws.rs.NotFoundException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j
@@ -28,9 +35,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseErrorDto> notFoundException(NotFoundException ex){
+    public ResponseEntity<ResponseErrorDto> notFoundException(NotFoundException ex) {
         log.error("NotFoundException exception: ", ex);
         ResponseErrorDto errorResponse = new ResponseErrorDto(ex.getMessage(), ex.toString(), null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseErrorDto> handleValidationErrors(MethodArgumentNotValidException ex) {
+        String error = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+        ResponseErrorDto errorResponse = new ResponseErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(), error, null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
 }

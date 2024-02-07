@@ -11,4 +11,6 @@ public interface RoomTariffService {
     List<ResponseCardRoomTariffDto> getAllTariffsByEnabled(Boolean enabled);
 
     void create(RequestCreateTariffDto requestCreateTariffDto);
+
+    void disableRoomTariffById(Long id);
 }

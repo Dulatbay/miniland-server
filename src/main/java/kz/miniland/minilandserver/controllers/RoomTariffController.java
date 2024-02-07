@@ -34,4 +34,10 @@ public class RoomTariffController {
         roomTariffService.create(requestCreateTariffDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> disableRoomTariff(@PathVariable("id") Long id){
+        roomTariffService.disableRoomTariffById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

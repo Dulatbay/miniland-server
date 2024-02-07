@@ -37,9 +37,17 @@ public class RoomTariffServiceImpl implements RoomTariffService {
 
     @Override
     public void create(RequestCreateTariffDto requestCreateTariffDto) {
-        if(requestCreateTariffDto.getStartedAt().isAfter(requestCreateTariffDto.getFinishedAt())) {
+        if (requestCreateTariffDto.getStartedAt().isAfter(requestCreateTariffDto.getFinishedAt())) {
             throw new IllegalArgumentException("Started at time must be before finished at time.");
         }
         roomTariffRepository.save(roomTariffCustomMapper.toEntity(requestCreateTariffDto));
+    }
+
+    @Override
+    public void disableRoomTariffById(Long id) {
+        var roomTariff = roomTariffRepository.findById(id)
+                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist"));
+
+        roomTariffRepository.delete(roomTariff);
     }
 }

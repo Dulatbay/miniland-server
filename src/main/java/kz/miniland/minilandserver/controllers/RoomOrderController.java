@@ -2,7 +2,9 @@ package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
-import kz.miniland.minilandserver.dtos.response.*;
+import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomOrderDto;
 import kz.miniland.minilandserver.services.RoomOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.PathParam;
 import java.util.List;
 
 @RestController

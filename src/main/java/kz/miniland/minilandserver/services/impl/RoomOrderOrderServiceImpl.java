@@ -1,8 +1,9 @@
 package kz.miniland.minilandserver.services.impl;
 
-import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
-import kz.miniland.minilandserver.dtos.response.*;
+import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomOrderDto;
 import kz.miniland.minilandserver.entities.RoomOrder;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.custom.RoomOrderCustomMapper;
@@ -13,11 +14,7 @@ import kz.miniland.minilandserver.services.RoomOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,7 +56,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         return bookedRoomOrders
                 .stream()
                 .map(roomOrderCustomMapper::toBookedDayDto)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

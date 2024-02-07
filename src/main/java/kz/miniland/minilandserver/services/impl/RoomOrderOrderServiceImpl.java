@@ -85,14 +85,18 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
 
         var tariffTime = roomTariff.getStartedAt().until(roomTariff.getFinishedAt(), ChronoUnit.SECONDS);
         roomOrder.setFullTime(requestCreateRoomOrderDto.getExtraTime() + tariffTime);
-        roomOrder.setFullPrice(roomTariff.getFirstPrice() + getFullPriceByExtraTime(requestCreateRoomOrderDto.getExtraTime(),
+
+        var extraTimeChildPrice = ((requestCreateRoomOrderDto.getChildCount() - roomTariff.getMaxChild()) * roomTariff.getChildPrice());
+        var fullPriceByExtraTime = getFullPriceByExtraTime(
+                requestCreateRoomOrderDto.getExtraTime(),
                 roomTariff.getPenaltyPerHalfHour(),
                 roomTariff.getPenaltyPerHour()
-        ));
+        );
+
+        roomOrder.setFullPrice(roomTariff.getFirstPrice() + extraTimeChildPrice + (fullPriceByExtraTime * requestCreateRoomOrderDto.getChildCount()));
 
         roomOrderRepository.save(roomOrder);
     }
-
 
 
     private Double getFullPriceByExtraTime(Long extraTime, Double penaltyPerHalfHour, Double penaltyPerHour) {

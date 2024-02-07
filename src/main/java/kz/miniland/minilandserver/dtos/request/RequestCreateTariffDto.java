@@ -2,6 +2,7 @@ package kz.miniland.minilandserver.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -27,4 +28,7 @@ public class RequestCreateTariffDto {
     @JsonProperty("max_child")
     @Min(value = 0, message = "The number of children must be more than 3")
     private Integer maxChild;
+    @JsonProperty("child_price")
+    @Positive(message = "Child price must be greater than 0")
+    private Double childPrice;
 }

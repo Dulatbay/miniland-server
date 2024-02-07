@@ -39,6 +39,9 @@ public class RoomTariff {
     @Column(name = "max_child", nullable = false)
     private Integer maxChild;
 
+    @Column(name="child_price", nullable = false)
+    private Double childPrice;
+
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
 }

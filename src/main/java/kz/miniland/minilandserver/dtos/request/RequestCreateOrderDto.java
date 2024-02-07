@@ -20,7 +20,7 @@ public class RequestCreateOrderDto {
     private String parentPhoneNumber;
 
     @JsonProperty("child_name")
-    @Size(min = 3, max = 150, message = "Child Name must be between 10 and 150 characters")
+    @Size(min = 3, max = 150, message = "Child Name must be between 3 and 150 characters")
     @NotNull(message = "The child's name must not be null")
     private String childName;
 

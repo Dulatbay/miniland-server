@@ -15,20 +15,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/prices")
 @RequiredArgsConstructor
-public class    PriceController {
+public class PriceController {
     private final PriceService priceService;
+
     @GetMapping()
-    public ResponseEntity<List<ResponsePriceDto>> getAllPrices(){
+    public ResponseEntity<List<ResponsePriceDto>> getAllPrices() {
         return ResponseEntity.ok(priceService.getAllPrices());
     }
+
     @PostMapping()
-    public ResponseEntity<Void> createPrice(@RequestBody @Valid RequestCreatePriceDto requestCreatePriceDto){
+    public ResponseEntity<Void> createPrice(@RequestBody @Valid RequestCreatePriceDto requestCreatePriceDto) {
         priceService.createPrice(requestCreatePriceDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePriceById(@PathVariable(value = "id") Long id){
+    public ResponseEntity<Void> deletePriceById(@PathVariable(value = "id") Long id) {
         priceService.deletePriceById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

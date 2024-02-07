@@ -1,5 +1,6 @@
 package kz.miniland.minilandserver.services.impl;
 
+import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.*;
 import kz.miniland.minilandserver.entities.RoomOrder;
@@ -8,11 +9,15 @@ import kz.miniland.minilandserver.mappers.custom.RoomOrderCustomMapper;
 import kz.miniland.minilandserver.mappers.custom.RoomTariffCustomMapper;
 import kz.miniland.minilandserver.repositories.RoomOrderRepository;
 import kz.miniland.minilandserver.repositories.RoomTariffRepository;
-import kz.miniland.minilandserver.services.RoomService;
+import kz.miniland.minilandserver.services.RoomOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +31,7 @@ import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RoomServiceImpl implements RoomService {
+public class RoomOrderOrderServiceImpl implements RoomOrderService {
     private final RoomTariffRepository roomTariffRepository;
     private final RoomOrderRepository roomOrderRepository;
     private final RoomOrderCustomMapper roomOrderCustomMapper;
@@ -46,21 +51,6 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public ResponseCardRoomTariffDto getTariffById(Long id) {
-        var roomOrderEntity = roomTariffRepository.findById(id)
-                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room order doesn't exist"));
-        return roomTariffCustomMapper.toDto(roomOrderEntity);
-    }
-
-    @Override
-    public List<ResponseCardRoomTariffDto> getAllTariffsByEnabled(Boolean enabled) {
-        var roomTariff = roomTariffRepository.getAllByEnabled(enabled);
-        return roomTariff
-                .stream()
-                .map(roomTariffCustomMapper::toDto)
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<ResponseBookedDayDto> getBookedDaysAfterToday() {
@@ -105,6 +95,8 @@ public class RoomServiceImpl implements RoomService {
 
         roomOrderRepository.save(roomOrder);
     }
+
+
 
     private Double getFullPriceByExtraTime(Long extraTime, Double penaltyPerHalfHour, Double penaltyPerHour) {
         var extraTimePrice = 0.0;

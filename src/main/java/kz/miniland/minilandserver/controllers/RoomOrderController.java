@@ -3,7 +3,7 @@ package kz.miniland.minilandserver.controllers;
 import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.*;
-import kz.miniland.minilandserver.services.RoomService;
+import kz.miniland.minilandserver.services.RoomOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,43 +16,31 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/rooms")
-public class RoomController {
-    private final RoomService roomService;
+@RequestMapping("/room-orders")
+public class RoomOrderController {
+    private final RoomOrderService roomOrderService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDetailRoomOrderDto> getOrderDetailById(@PathVariable("id") Long id){
-        ResponseDetailRoomOrderDto order = roomService.getOrderDetailById(id);
+        ResponseDetailRoomOrderDto order = roomOrderService.getOrderDetailById(id);
         return ResponseEntity.ok(order);
     }
 
-    @GetMapping("/orders/today")
+    @GetMapping("/today")
     public ResponseEntity<List<ResponseCardRoomOrderDto>> getTodayActiveRooms() {
-        List<ResponseCardRoomOrderDto> allActiveRooms = roomService.getAllCurrentActiveRooms();
+        List<ResponseCardRoomOrderDto> allActiveRooms = roomOrderService.getAllCurrentActiveRooms();
         return ResponseEntity.ok(allActiveRooms);
     }
 
-    @GetMapping("/tariffs/{id}")
-    public ResponseEntity<ResponseCardRoomTariffDto> getRoomTariffById(@PathVariable("id") Long id) {
-        ResponseCardRoomTariffDto tariff = roomService.getTariffById(id);
-        return ResponseEntity.ok(tariff);
-    }
-
-    @GetMapping("/tariffs")
-    public ResponseEntity<List<ResponseCardRoomTariffDto>> getAllRoomTariffs(@PathParam("enabled") Boolean enabled) {
-        List<ResponseCardRoomTariffDto> allTariffs = roomService.getAllTariffsByEnabled(enabled);
-        return ResponseEntity.ok(allTariffs);
-    }
-
-    @GetMapping("/tariffs/booked-days")
+    @GetMapping("/booked-days")
     public ResponseEntity<List<ResponseBookedDayDto>> getAllBookedDays() {
-        List<ResponseBookedDayDto> bookedDays = roomService.getBookedDaysAfterToday();
+        List<ResponseBookedDayDto> bookedDays = roomOrderService.getBookedDaysAfterToday();
         return ResponseEntity.ok(bookedDays);
     }
 
-    @PostMapping("/tariffs")
+    @PostMapping()
     public ResponseEntity<Void> createRoom(@Valid @RequestBody RequestCreateRoomOrderDto requestCreateRoomOrderDto) {
-        roomService.createRoomOrder(requestCreateRoomOrderDto);
+        roomOrderService.createRoomOrder(requestCreateRoomOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

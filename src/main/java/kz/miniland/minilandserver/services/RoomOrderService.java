@@ -5,13 +5,9 @@ import kz.miniland.minilandserver.dtos.response.*;
 
 import java.util.List;
 
-public interface RoomService {
+public interface RoomOrderService {
 
     List<ResponseCardRoomOrderDto> getAllCurrentActiveRooms();
-
-    ResponseCardRoomTariffDto getTariffById(Long id);
-
-    List<ResponseCardRoomTariffDto> getAllTariffsByEnabled(Boolean enabled);
 
     List<ResponseBookedDayDto> getBookedDaysAfterToday();
 

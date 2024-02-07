@@ -1,6 +1,5 @@
 package kz.miniland.minilandserver.repositories;
 
-import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Price;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

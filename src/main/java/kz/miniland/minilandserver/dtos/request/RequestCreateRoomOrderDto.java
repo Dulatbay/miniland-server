@@ -1,5 +1,6 @@
 package kz.miniland.minilandserver.dtos.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -31,4 +32,7 @@ public class RequestCreateRoomOrderDto {
     @JsonProperty("child_count")
     @NotNull
     private Integer childCount;
+
+    @JsonIgnore
+    private String authorName;
 }

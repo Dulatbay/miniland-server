@@ -1,5 +1,6 @@
 package kz.miniland.minilandserver.mappers.custom;
 
+import kz.miniland.minilandserver.dtos.request.RequestCreateTariffDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
 import kz.miniland.minilandserver.entities.RoomTariff;
 import kz.miniland.minilandserver.entities.WeekDays;
@@ -22,5 +23,20 @@ public class RoomTariffCustomMapper {
                         .collect(Collectors.toList()))
 
                 .build();
+    }
+
+    public RoomTariff toEntity(RequestCreateTariffDto requestCreateTariffDto){
+        RoomTariff roomTariff =  new RoomTariff();
+
+        roomTariff.setStartedAt(requestCreateTariffDto.getStartedAt());
+        roomTariff.setFinishedAt(requestCreateTariffDto.getFinishedAt());
+        roomTariff.setFirstPrice(requestCreateTariffDto.getFirstPrice());
+        roomTariff.setMaxChild(requestCreateTariffDto.getMaxChild());
+        roomTariff.setPenaltyPerHalfHour(requestCreateTariffDto.getPenaltyPerHalfHour());
+        roomTariff.setPenaltyPerHour(requestCreateTariffDto.getPenaltyPerHour());
+        roomTariff.setDays(requestCreateTariffDto.getDays().stream().map(WeekDays::getByInteger).collect(Collectors.toSet()));
+        roomTariff.setEnabled(true);
+
+        return roomTariff;
     }
 }

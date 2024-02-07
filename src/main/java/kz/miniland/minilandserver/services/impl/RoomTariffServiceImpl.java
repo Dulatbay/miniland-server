@@ -1,5 +1,6 @@
 package kz.miniland.minilandserver.services.impl;
 
+import kz.miniland.minilandserver.dtos.request.RequestCreateTariffDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.custom.RoomTariffCustomMapper;
@@ -34,4 +35,11 @@ public class RoomTariffServiceImpl implements RoomTariffService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void create(RequestCreateTariffDto requestCreateTariffDto) {
+        if(requestCreateTariffDto.getStartedAt().isAfter(requestCreateTariffDto.getFinishedAt())) {
+            throw new IllegalArgumentException("Started at time must be before finished at time.");
+        }
+        roomTariffRepository.save(roomTariffCustomMapper.toEntity(requestCreateTariffDto));
+    }
 }

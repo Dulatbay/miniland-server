@@ -90,16 +90,17 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         var fullPriceByExtraTime = getFullPriceByExtraTime(
                 requestCreateRoomOrderDto.getExtraTime(),
                 roomTariff.getPenaltyPerHalfHour(),
-                roomTariff.getPenaltyPerHour()
+                roomTariff.getPenaltyPerHour(),
+                requestCreateRoomOrderDto.getChildCount()
         );
 
-        roomOrder.setFullPrice(roomTariff.getFirstPrice() + extraTimeChildPrice + (fullPriceByExtraTime * requestCreateRoomOrderDto.getChildCount()));
+        roomOrder.setFullPrice(roomTariff.getFirstPrice() + extraTimeChildPrice + fullPriceByExtraTime);
 
         roomOrderRepository.save(roomOrder);
     }
 
 
-    private Double getFullPriceByExtraTime(Long extraTime, Double penaltyPerHalfHour, Double penaltyPerHour) {
+    private Double getFullPriceByExtraTime(Long extraTime, Double penaltyPerHalfHour, Double penaltyPerHour, Integer childCount) {
         var extraTimePrice = 0.0;
         var hour = 60 * 60;
 
@@ -115,7 +116,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
             }
         }
 
-        return extraTimePrice;
+        return extraTimePrice * childCount;
     }
 
 }

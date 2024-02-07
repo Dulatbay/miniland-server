@@ -10,21 +10,21 @@ import java.time.LocalDateTime;
 @Data
 public class RequestCreateRoomOrderDto {
     @JsonProperty("tariff_id")
-    @NotNull
+    @NotNull(message = "You need to choose one of the tariffs")
     private Long tariffId;
 
     @JsonProperty("client_name")
-    @NotNull
+    @NotNull(message = "Client's name must not be null")
     @Size(min = 3, max = 150, message = "Client name must be between 10 and 150 characters")
     private String clientName;
 
     @JsonProperty("client_phone_number")
-    @NotNull
+    @NotNull(message = "The client phone number must not be null")
     @Size(min = 3, max = 150, message = "Client phone number must be between 10 and 150 characters")
     private String clientPhoneNumber;
 
     @JsonProperty("selected_booked_day")
-    @NotNull
+    @NotNull(message = "The selected booked day must not be null")
     @FutureOrPresent(message = "The selected booked day must be in the future.")
     private LocalDateTime selectedBookedDay;
 
@@ -34,7 +34,7 @@ public class RequestCreateRoomOrderDto {
     private Long extraTime;
 
     @JsonProperty("child_count")
-    @NotNull
+    @NotNull(message = "The number of child must not be null")
     @Positive(message = "The number of children must be greater than 0")
     private Integer childCount;
 

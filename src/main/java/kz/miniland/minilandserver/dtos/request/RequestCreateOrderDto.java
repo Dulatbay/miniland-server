@@ -11,7 +11,7 @@ import net.minidev.json.annotate.JsonIgnore;
 @Data
 public class RequestCreateOrderDto {
     @JsonProperty("parent_name")
-    @NotNull
+    @NotNull(message = "The parent's name must not be null")
     @Size(min = 3, max = 150, message = "Parent name must be between 10 and 150 characters")
     private String parentName;
 
@@ -21,11 +21,11 @@ public class RequestCreateOrderDto {
 
     @JsonProperty("child_name")
     @Size(min = 3, max = 150, message = "Child Name must be between 10 and 150 characters")
-    @NotNull
+    @NotNull(message = "The child's name must not be null")
     private String childName;
 
     @JsonProperty("child_age")
-    @NotNull
+    @NotNull(message = "The child's age must not be null")
     @Min(value = 0, message = "Age should not be less than 0")
     @Max(value = 15, message = "Age should not be greater than 15")
     private Integer childAge;

@@ -124,7 +124,7 @@ public class ReportServiceImpl implements ReportService {
         var profit = new Profit();
         profit.setProfit(requestCreateProfitDto.getProfit());
         profit.setReason(requestCreateProfitDto.getReason());
-        profit.setType(requestCreateProfitDto.getIsExpence() ? ProfitTypes.EXPENSE : ProfitTypes.INCOME);
+        profit.setType(requestCreateProfitDto.getIsExpense() ? ProfitTypes.EXPENSE : ProfitTypes.INCOME);
         profitRepository.save(profit);
     }
 }

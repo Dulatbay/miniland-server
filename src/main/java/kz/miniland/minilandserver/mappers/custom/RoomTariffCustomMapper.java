@@ -35,6 +35,7 @@ public class RoomTariffCustomMapper {
         roomTariff.setPenaltyPerHalfHour(requestCreateTariffDto.getPenaltyPerHalfHour());
         roomTariff.setPenaltyPerHour(requestCreateTariffDto.getPenaltyPerHour());
         roomTariff.setDays(requestCreateTariffDto.getDays().stream().map(WeekDays::getByInteger).collect(Collectors.toSet()));
+        roomTariff.setChildPrice(requestCreateTariffDto.getChildPrice());    ;
         roomTariff.setEnabled(true);
 
         return roomTariff;

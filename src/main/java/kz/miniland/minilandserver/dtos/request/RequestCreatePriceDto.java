@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class RequestCreatePriceDto {
@@ -25,5 +26,6 @@ public class RequestCreatePriceDto {
     @JsonProperty("days")
     @NotNull
     @Size(min = 1, max = 7, message = "Number of days should be between 1 and 7")
-    private List<@Min(value = 1, message = "Week day must be in range 1-7") @Max(value = 7, message = "Week day must be in range 1-7") Integer> days; // 1 - sun, 2 - mon, 3 - tue ...
+    private Set<@Min(value = 1, message = "Week day must be in range 1-7") @Max(value = 7, message = "Week day must be in range 1-7") Integer> days;
+    // 1 - sun, 2 - mon, 3 - tue ...
 }

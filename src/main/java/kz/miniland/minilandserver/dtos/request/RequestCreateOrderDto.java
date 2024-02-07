@@ -1,7 +1,10 @@
 package kz.miniland.minilandserver.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import net.minidev.json.annotate.JsonIgnore;
 
@@ -9,24 +12,30 @@ import net.minidev.json.annotate.JsonIgnore;
 public class RequestCreateOrderDto {
     @JsonProperty("parent_name")
     @NotNull
+    @Size(min = 3, max = 150, message = "Parent name must be between 10 and 150 characters")
     private String parentName;
 
+
     @JsonProperty("parent_phone_number")
-    @NotNull
     private String parentPhoneNumber;
 
     @JsonProperty("child_name")
+    @Size(min = 3, max = 150, message = "Child Name must be between 10 and 150 characters")
     @NotNull
     private String childName;
 
     @JsonProperty("child_age")
     @NotNull
+    @Min(value = 0, message = "Age should not be less than 0")
+    @Max(value = 15, message = "Age should not be greater than 15")
     private Integer childAge;
 
     @JsonProperty("sale_id")
     private Long saleId;
 
     @JsonProperty("extra_time")
+    @Min(value = 0, message = "Extra time should not be less than 0")
+    @Max(value = 36000, message = "Extra time should not be greater than 10 hours")
     private Long extraTime;
 
     @JsonProperty("is_paid")

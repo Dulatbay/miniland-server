@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
@@ -59,7 +60,7 @@ public class OrderCustomMapper {
                             .stream()
                             .map(WeekDays::getInteger)
                             .anyMatch(integer -> dayOfWeek.getValue() == integer)
-                    ).toList();
+                    ).collect(Collectors.toList());
 
             if (prices.isEmpty())
                 throw new IllegalArgumentException("Price list today is empty");

@@ -9,6 +9,11 @@
       "name": "application.version",
       "type": "java.lang.String",
       "description": "Description for application.version."
+    },
+    {
+      "name": "application.delete-all-files",
+      "type": "java.lang.String",
+      "description": "Description for application.delete-all-files."
     }
   ]
 }

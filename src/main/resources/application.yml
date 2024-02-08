@@ -1,6 +1,7 @@
 application:
   title: MiniLand
   version: 1.0.0
+  delete-all-files: false
 spring:
   datasource:
     url: jdbc:postgresql://${DATABASE_DOMAIN:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:miniland}
@@ -26,7 +27,10 @@ spring:
           issuer-uri: ${OAUTH2_ISSUER:http://localhost:8484/auth/realms/miniland}
 #          jwk-set-uri: ${OAUTH2_JWK:http://192.168.0.242:8484/auth/realms/miniland/protocol/openid-connect/certs}
           jwk-set-uri: ${OAUTH2_JWK:http://localhost:8484/auth/realms/miniland/protocol/openid-connect/certs}
-
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
 jwt:
   auth:
     converter:

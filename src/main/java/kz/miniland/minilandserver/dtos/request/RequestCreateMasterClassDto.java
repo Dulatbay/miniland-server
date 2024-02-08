@@ -1,23 +1,25 @@
 package kz.miniland.minilandserver.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import kz.miniland.minilandserver.validators.ValidFile;
 import lombok.Data;
-import lombok.NonNull;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class RequestCreateMasterClassDto {
-    @NonNull
+    @NotNull(message = "Title must not be null")
     @JsonProperty("title")
     private String title;
 
-    @NonNull
+    @NotNull(message = "Description must not be null")
     @JsonProperty("title")
     private String description;
 
-    @NonNull
+    @NotNull(message = "Price must not be null")
     @JsonProperty("title")
+    @PositiveOrZero(message = "Price must be positive or zero")
     private Double price;
 
     @ValidFile

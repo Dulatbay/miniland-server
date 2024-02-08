@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity
@@ -37,12 +40,24 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
+
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(Customizer.withDefaults())
                 )
-                .authorizeHttpRequests((auth) -> auth
-                        .anyRequest()
-                        .authenticated())
+                .authorizeHttpRequests((auth) -> {
+                    auth
+                            .requestMatchers(HttpMethod.POST, "/prices", "/sales", "/master-classes", "/room-tariffs")
+                            .hasAuthority("admin")
+                            .requestMatchers(HttpMethod.DELETE, "/prices", "/sales", "/master-classes", "/room-tariffs")
+                            .hasAuthority("admin")
+                            .requestMatchers("/reports/**", "/reports")
+                            .hasAuthority("admin");
+
+                    auth
+                            .anyRequest()
+                            .permitAll();
+
+                })
         ;
 
         http

@@ -24,4 +24,7 @@ public class MasterClass {
 
     @Column(name = "price", nullable = false)
     private Double price;
+
+    @Column(name="enabled", nullable = false)
+    private Boolean enabled;
 }

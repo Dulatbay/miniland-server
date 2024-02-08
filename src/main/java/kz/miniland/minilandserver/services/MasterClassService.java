@@ -9,7 +9,7 @@ import java.util.List;
 public interface MasterClassService {
     void addMasterClassToOrder(String token, Long orderId, Long masterClassId);
 
-    void createMasterClass(RequestCreateMasterClassDto requestCreateMasterClassDto) throws IOException;
+    void createMasterClass(RequestCreateMasterClassDto requestCreateMasterClassDto);
 
     void disableMasterClass(Long id);
 

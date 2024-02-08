@@ -13,6 +13,8 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
+        if(multipartFile == null)
+            return false;
 
         boolean result = true;
 

@@ -19,7 +19,7 @@ public class MasterClass {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "price", nullable = false)

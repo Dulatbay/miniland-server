@@ -14,14 +14,13 @@ public class RequestCreateMasterClassDto {
     private String title;
 
     @NotNull(message = "Description must not be null")
-    @JsonProperty("title")
+    @JsonProperty("description")
     private String description;
 
     @NotNull(message = "Price must not be null")
-    @JsonProperty("title")
+    @JsonProperty("price")
     @PositiveOrZero(message = "Price must be positive or zero")
     private Double price;
 
-    @ValidFile
     private MultipartFile image;
 }

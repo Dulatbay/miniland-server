@@ -26,13 +26,13 @@ public class RoomOrder {
     @Column(name = "booked_day", nullable = false)
     private LocalDateTime bookedDay;
 
-    @Column(name="child_quentity", nullable = false)
+    @Column(name = "child_quentity", nullable = false)
     private Integer childQuentity;
 
-    @Column(name="full_price", nullable = false)
+    @Column(name = "full_price", nullable = false)
     private Double fullPrice;
 
-    @Column(name="full_time", nullable = false)
+    @Column(name = "full_time", nullable = false)
     private Long fullTime;
 
     @Column(name = "author_name", nullable = false)

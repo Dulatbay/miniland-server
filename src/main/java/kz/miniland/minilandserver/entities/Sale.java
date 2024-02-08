@@ -3,9 +3,6 @@ package kz.miniland.minilandserver.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.aspectj.weaver.ast.Or;
-
-import java.util.List;
 
 @Entity
 @Table(name = "sale", schema = "schema_miniland")

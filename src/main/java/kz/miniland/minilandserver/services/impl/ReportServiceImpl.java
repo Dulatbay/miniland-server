@@ -48,7 +48,6 @@ public class ReportServiceImpl implements ReportService {
         Map<String, ResponseTableReportDto.Employee> employeeMap = new HashMap<>();
 
 
-
         entities.forEach((entity) -> {
             var employee = employeeMap.get(entity.getAuthorName());
             if (employee == null) {

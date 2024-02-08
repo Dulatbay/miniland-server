@@ -26,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderCustomMapper orderCustomMapper;
+
     @Override
     public void createOrder(RequestCreateOrderDto requestCreateOrderDto) {
         var orderEntity = orderCustomMapper.toEntity(requestCreateOrderDto);
@@ -53,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void finishOrderById(Long id, Boolean isPaid) {
         var orderEntity = orderRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
-        if(!isPaid) throw new IllegalArgumentException("Order must be paid before finishing!");
+        if (!isPaid) throw new IllegalArgumentException("Order must be paid before finishing!");
         orderEntity.setIsPaid(true);
         orderEntity.setIsFinished(true);
         orderEntity.setFinishedAt(LocalDateTime.now(ZONE_ID));

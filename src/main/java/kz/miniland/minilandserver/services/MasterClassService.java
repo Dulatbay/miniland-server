@@ -3,7 +3,6 @@ package kz.miniland.minilandserver.services;
 import kz.miniland.minilandserver.dtos.request.RequestCreateMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface MasterClassService {

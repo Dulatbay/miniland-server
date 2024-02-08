@@ -16,6 +16,7 @@ public enum WeekDays {
             default -> throw new IllegalArgumentException("Days must be in range 1-7");
         };
     }
+
     public Integer getInteger() {
         return switch (this) {
             case SUN -> 1;

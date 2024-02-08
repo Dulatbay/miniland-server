@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class StorageException extends RuntimeException{
+public class StorageException extends RuntimeException {
     private final String error;
     private final String message;
 }

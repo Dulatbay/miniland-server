@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class DbObjectNotFoundException extends RuntimeException{
+public class DbObjectNotFoundException extends RuntimeException {
     private final String error;
     private final String message;
 }

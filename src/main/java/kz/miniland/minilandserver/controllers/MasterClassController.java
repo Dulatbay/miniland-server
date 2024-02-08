@@ -37,13 +37,13 @@ public class MasterClassController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMasterClass(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteMasterClass(@PathVariable("id") Long id) {
         masterClassService.disableMasterClass(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping()
-    public ResponseEntity<List<ResponseCardMasterClassDto>> getAllMasterClassCards(@RequestParam("enabled") boolean enabled){
+    public ResponseEntity<List<ResponseCardMasterClassDto>> getAllMasterClassCards(@RequestParam("enabled") boolean enabled) {
         var result = masterClassService.getAllMasterClasses(enabled);
         return ResponseEntity.ok(result);
     }

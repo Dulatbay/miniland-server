@@ -22,7 +22,7 @@ public class RoomOrderController {
     private final RoomOrderService roomOrderService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDetailRoomOrderDto> getOrderDetailById(@PathVariable("id") Long id){
+    public ResponseEntity<ResponseDetailRoomOrderDto> getOrderDetailById(@PathVariable("id") Long id) {
         ResponseDetailRoomOrderDto order = roomOrderService.getOrderDetailById(id);
         return ResponseEntity.ok(order);
     }

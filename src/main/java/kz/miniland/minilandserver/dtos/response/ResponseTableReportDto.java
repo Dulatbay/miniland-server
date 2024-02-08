@@ -12,6 +12,7 @@ public class ResponseTableReportDto {
 
     @JsonProperty("employee")
     private List<Employee> employees;
+
     @Data
     public static class Employee {
         @JsonProperty("username")

@@ -24,11 +24,12 @@ import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/reports")
-public class ReportController   {
+public class ReportController {
     private final ReportService reportService;
     private final KeycloakService keycloakService;
+
     @GetMapping("/table-report")
-    public ResponseEntity<ResponseTableReportDto> getMainDirectorReport(){
+    public ResponseEntity<ResponseTableReportDto> getMainDirectorReport() {
         return ResponseEntity.ok(reportService.getTableReport());
     }
 
@@ -36,24 +37,24 @@ public class ReportController   {
     public ResponseEntity<ResponseReportByParamsDto> getReportByParams(@RequestParam("start_date") LocalDate startDate,
                                                                        @RequestParam("end_date") LocalDate endDate,
                                                                        @RequestParam(value = "username", required = false) String username
-                                                                       ){
+    ) {
         log.info("{}", LocalDateTime.now(ZONE_ID));
         return ResponseEntity.ok(reportService.getReportByParams(username, startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
     }
 
     @GetMapping("/usernames")
-    public ResponseEntity<List<String>> getUsernames(){
+    public ResponseEntity<List<String>> getUsernames() {
         return ResponseEntity.ok(keycloakService.getUsernames());
     }
 
     @GetMapping("/profits")
     public ResponseEntity<ResponseReportProfitDto> getReportProfit(@RequestParam("start_date") LocalDate startDate,
-                                                                   @RequestParam("end_date") LocalDate endDate){
+                                                                   @RequestParam("end_date") LocalDate endDate) {
         return ResponseEntity.ok(reportService.getReportProfitInRange(startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
     }
 
     @PostMapping("/profits")
-    public ResponseEntity<Void> createProfit(@RequestBody @Valid RequestCreateProfitDto requestCreateProfitDto){
+    public ResponseEntity<Void> createProfit(@RequestBody @Valid RequestCreateProfitDto requestCreateProfitDto) {
         reportService.createProfit(requestCreateProfitDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

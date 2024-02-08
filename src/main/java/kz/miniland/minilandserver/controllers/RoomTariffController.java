@@ -36,7 +36,7 @@ public class RoomTariffController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> disableRoomTariff(@PathVariable("id") Long id){
+    public ResponseEntity<Void> disableRoomTariff(@PathVariable("id") Long id) {
         roomTariffService.disableRoomTariffById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

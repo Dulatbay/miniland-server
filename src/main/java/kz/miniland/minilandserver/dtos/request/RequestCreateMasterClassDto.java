@@ -3,7 +3,6 @@ package kz.miniland.minilandserver.dtos.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import kz.miniland.minilandserver.validators.ValidFile;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,9 +1,10 @@
 package kz.miniland.minilandserver.entities;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -56,6 +57,6 @@ public class Order {
     private String authorName;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(columnDefinition = "integer",name = "sale_id")
+    @JoinColumn(columnDefinition = "integer", name = "sale_id")
     private Sale sale;
 }

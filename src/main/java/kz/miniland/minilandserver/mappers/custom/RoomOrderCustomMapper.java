@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 
 @Component
 public class RoomOrderCustomMapper {
-    public ResponseCardRoomOrderDto toCardDto(RoomOrder roomOrder){
+    public ResponseCardRoomOrderDto toCardDto(RoomOrder roomOrder) {
         return ResponseCardRoomOrderDto.builder()
                 .clientName(roomOrder.getClientName())
                 .startedTime(roomOrder.getRoomTariff().getStartedAt())
@@ -18,7 +18,7 @@ public class RoomOrderCustomMapper {
                 .build();
     }
 
-    public ResponseBookedDayDto toBookedDayDto(RoomOrder roomOrder){
+    public ResponseBookedDayDto toBookedDayDto(RoomOrder roomOrder) {
         return ResponseBookedDayDto.builder()
                 .date(roomOrder.getBookedDay().toLocalDate())
                 .startedTime(roomOrder.getRoomTariff().getStartedAt())
@@ -26,7 +26,7 @@ public class RoomOrderCustomMapper {
                 .build();
     }
 
-    public ResponseDetailRoomOrderDto toDetailDto(RoomOrder roomOrder){
+    public ResponseDetailRoomOrderDto toDetailDto(RoomOrder roomOrder) {
         var tariffTime = roomOrder.getRoomTariff().getStartedAt().until(roomOrder.getBookedDay(), ChronoUnit.SECONDS);
         return ResponseDetailRoomOrderDto
                 .builder()

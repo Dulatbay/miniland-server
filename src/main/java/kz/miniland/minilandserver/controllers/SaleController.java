@@ -19,18 +19,18 @@ class SaleController {
     private final SaleService saleService;
 
     @GetMapping()
-    public ResponseEntity<List<ResponseSaleDto>> getAll(@PathParam("enabled") Boolean enabled){
+    public ResponseEntity<List<ResponseSaleDto>> getAll(@PathParam("enabled") Boolean enabled) {
         return ResponseEntity.ok(saleService.getAll(enabled));
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createSale(@RequestBody @Valid RequestCreateSaleDto requestCreateSaleDto){
+    public ResponseEntity<Void> createSale(@RequestBody @Valid RequestCreateSaleDto requestCreateSaleDto) {
         saleService.createSale(requestCreateSaleDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSale(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteSale(@PathVariable("id") Long id) {
         saleService.deleteSale(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class RoomTariffCustomMapper {
-    public ResponseCardRoomTariffDto toDto(RoomTariff roomTariff){
+    public ResponseCardRoomTariffDto toDto(RoomTariff roomTariff) {
         return ResponseCardRoomTariffDto
                 .builder()
                 .id(roomTariff.getId())
@@ -26,8 +26,8 @@ public class RoomTariffCustomMapper {
                 .build();
     }
 
-    public RoomTariff toEntity(RequestCreateTariffDto requestCreateTariffDto){
-        RoomTariff roomTariff =  new RoomTariff();
+    public RoomTariff toEntity(RequestCreateTariffDto requestCreateTariffDto) {
+        RoomTariff roomTariff = new RoomTariff();
 
         roomTariff.setStartedAt(requestCreateTariffDto.getStartedAt());
         roomTariff.setFinishedAt(requestCreateTariffDto.getFinishedAt());

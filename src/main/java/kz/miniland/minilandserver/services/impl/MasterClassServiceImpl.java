@@ -11,13 +11,11 @@ import kz.miniland.minilandserver.repositories.OrderMasterClassRepository;
 import kz.miniland.minilandserver.repositories.OrderRepository;
 import kz.miniland.minilandserver.services.FileService;
 import kz.miniland.minilandserver.services.MasterClassService;
-import kz.miniland.minilandserver.validators.ValidFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -58,7 +56,7 @@ public class MasterClassServiceImpl implements MasterClassService {
         masterClass.setPrice(requestCreateMasterClassDto.getPrice());
         masterClass.setEnabled(true);
 
-        if(requestCreateMasterClassDto.getImage() != null){
+        if (requestCreateMasterClassDto.getImage() != null) {
             var image = requestCreateMasterClassDto.getImage();
             String filename = fileService.save(image);
             masterClass.setImageUrl(filename);

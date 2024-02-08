@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface KeycloakService {
     Optional<UserRepresentation> getUserByUsername(String username);
+
     List<String> getUsernames();
 }

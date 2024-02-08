@@ -22,7 +22,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     @Override
     public Optional<UserRepresentation> getUserByUsername(String username) {
         var listOfUsers = keycloak.realm(KEYCLOAK_REALM).users().search(username);
-        if(listOfUsers.isEmpty())
+        if (listOfUsers.isEmpty())
             return Optional.empty();
         return Optional.of(listOfUsers.getFirst());
     }

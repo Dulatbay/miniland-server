@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface RoomOrderRepository extends JpaRepository<RoomOrder, Long> {
     List<RoomOrder> getAllByBookedDayBetween(LocalDateTime start, LocalDateTime end);
+
     List<RoomOrder> getAllByBookedDayAfter(LocalDateTime localDateTime);
 }

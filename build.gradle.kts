@@ -47,7 +47,6 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-
 configure<DependencyManagementExtension> {
 	imports {
 		mavenBom("io.micrometer:micrometer-tracing-bom:1.1.3")
@@ -56,3 +55,5 @@ configure<DependencyManagementExtension> {
 kotlin {
 	jvmToolchain(21)
 }
+
+rootProject.extra["spring-boot.build-image.imageName"] = "kz.miniland"

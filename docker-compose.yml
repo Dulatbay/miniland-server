@@ -4,6 +4,8 @@ services:
   postgres:
     container_name: miniland-postgres
     image: postgres
+    expose:
+      - "5432"
     environment:
       POSTGRES_USER: k_app
       POSTGRES_PASSWORD: 123
@@ -13,7 +15,6 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
-    network_mode: bridge
   keycloak:
     image: jboss/keycloak
 #    image: sleighzy/keycloak
@@ -32,4 +33,18 @@ services:
       - postgres
     links:
       - "postgres:postgres"
-    network_mode: bridge
+  miniland-server:
+    image: miniland-server
+    container_name: "miniland-server"
+    environment:
+      JAR_FILE: build/libs/*.jar
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/miniland
+      SPRING_DATASOURCE_USERNAME: k_app
+      SPRING_DATASOURCE_PASSWORD: 123
+    depends_on:
+      - postgres
+    ports:
+      - "8181:8181"
+    links:
+      - "keycloak:keycloak"
+

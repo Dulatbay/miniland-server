@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class ResponseCardMasterClassDto {
+    @JsonProperty("id")
+    private Long id;
     @JsonProperty("title")
     private String title;
     @JsonProperty("description")

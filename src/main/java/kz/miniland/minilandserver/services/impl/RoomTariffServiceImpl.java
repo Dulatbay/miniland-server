@@ -48,6 +48,9 @@ public class RoomTariffServiceImpl implements RoomTariffService {
         var roomTariff = roomTariffRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist"));
 
+        if (!roomTariff.getEnabled())
+            throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist or already deleted");
+
         roomTariffRepository.delete(roomTariff);
     }
 }

@@ -16,8 +16,8 @@ services:
       - "5432:5432"
     restart: unless-stopped
   keycloak:
-    image: jboss/keycloak
-#    image: sleighzy/keycloak
+#    image: jboss/keycloak
+    image: sleighzy/keycloak
     container_name: miniland-keycloak
     environment:
       DB_VENDOR: POSTGRES
@@ -33,18 +33,18 @@ services:
       - postgres
     links:
       - "postgres:postgres"
-  miniland-server:
-    image: miniland-server
-    container_name: "miniland-server"
-    environment:
-      JAR_FILE: build/libs/*.jar
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/miniland
-      SPRING_DATASOURCE_USERNAME: k_app
-      SPRING_DATASOURCE_PASSWORD: 123
-    depends_on:
-      - postgres
-    ports:
-      - "8181:8181"
-    links:
-      - "keycloak:keycloak"
-
+#  miniland-server:
+#    image: miniland-server
+#    container_name: "miniland-server"
+#    environment:
+#      JAR_FILE: build/libs/*.jar
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/miniland
+#      SPRING_DATASOURCE_USERNAME: k_app
+#      SPRING_DATASOURCE_PASSWORD: 123
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "8181:8181"
+#    links:
+#      - "keycloak:keycloak"
+#

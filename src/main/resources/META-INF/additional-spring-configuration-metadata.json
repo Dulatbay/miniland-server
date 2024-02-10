@@ -14,6 +14,11 @@
       "name": "application.delete-all-files",
       "type": "java.lang.String",
       "description": "Description for application.delete-all-files."
+    },
+    {
+      "name": "application.keycloak-url",
+      "type": "java.lang.String",
+      "description": "Description for application.keycloak-url."
     }
   ]
 }

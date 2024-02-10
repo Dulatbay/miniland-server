@@ -2,6 +2,7 @@ application:
   title: MiniLand
   version: 1.0.0
   delete-all-files: false
+  keycloak-url: ${KEYCLOAK_URL:http://192.168.0.101:8484/auth}
 spring:
   datasource:
     url: jdbc:postgresql://${DATABASE_DOMAIN:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:miniland}
@@ -25,10 +26,10 @@ spring:
         jwt:
 #          issuer-uri: ${OAUTH2_ISSUER:http://192.168.0.242:8484/auth/realms/miniland}
 #          issuer-uri: ${OAUTH2_ISSUER:http://localhost:8484/auth/realms/miniland}
-          issuer-uri: ${OAUTH2_ISSUER:http://keycloak:8484/auth/realms/miniland}
+          issuer-uri: ${OAUTH2_ISSUER:http://192.168.0.101:8484/auth/realms/miniland}
 #          jwk-set-uri: ${OAUTH2_JWK:http://192.168.0.242:8484/auth/realms/miniland/protocol/openid-connect/certs}
 #          jwk-set-uri: ${OAUTH2_JWK:http://localhost:8484/auth/realms/miniland/protocol/openid-connect/certs}
-          jwk-set-uri: ${OAUTH2_JWK:http://keycloal:8484/auth/realms/miniland/protocol/openid-connect/certs}
+          jwk-set-uri: ${OAUTH2_JWK:http://192.168.0.101:8484/auth/realms/miniland/protocol/openid-connect/certs}
   servlet:
     multipart:
       max-file-size: 100MB

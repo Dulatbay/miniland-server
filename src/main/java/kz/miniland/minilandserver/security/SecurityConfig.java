@@ -45,11 +45,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> {
                     auth
                             .requestMatchers(HttpMethod.POST, "/prices", "/sales", "/master-classes", "/room-tariffs")
-                            .hasAuthority("admin")
+                            .hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/prices", "/sales", "/master-classes", "/room-tariffs")
-                            .hasAuthority("admin")
+                            .hasAuthority("ADMIN")
                             .requestMatchers("/reports/**", "/reports")
-                            .hasAuthority("admin");
+                            .hasAuthority("ADMIN");
 
                     auth
                             .anyRequest()
@@ -75,11 +75,6 @@ public class SecurityConfig {
     public JwtAuthenticationConverter jwtAuthenticationConverterForKeycloak() {
         Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter = jwt -> {
             Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-
-            for (var i : resourceAccess.entrySet()) {
-                System.out.println(i.getKey() + ": " + i.getValue());
-            }
-
             Object client = resourceAccess.get(clientId);
 
             if (client == null)
@@ -91,7 +86,6 @@ public class SecurityConfig {
 
             List<String> clientRoles = new ArrayList<>(clientRoleMap.get("roles"));
 
-            System.out.println(clientRoles);
 
             return clientRoles.stream()
                     .map(SimpleGrantedAuthority::new)

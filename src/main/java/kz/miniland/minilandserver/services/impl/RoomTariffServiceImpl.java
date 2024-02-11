@@ -2,6 +2,7 @@ package kz.miniland.minilandserver.services.impl;
 
 import kz.miniland.minilandserver.dtos.request.RequestCreateTariffDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomTariffDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.custom.RoomTariffCustomMapper;
 import kz.miniland.minilandserver.repositories.RoomTariffRepository;
@@ -20,7 +21,7 @@ public class RoomTariffServiceImpl implements RoomTariffService {
     private final RoomTariffCustomMapper roomTariffCustomMapper;
 
     @Override
-    public ResponseCardRoomTariffDto getTariffById(Long id) {
+    public ResponseDetailRoomTariffDto getTariffById(Long id) {
         var roomOrderEntity = roomTariffRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room order doesn't exist"));
         return roomTariffCustomMapper.toDto(roomOrderEntity);
@@ -31,13 +32,14 @@ public class RoomTariffServiceImpl implements RoomTariffService {
         var roomTariff = roomTariffRepository.getAllByEnabled(enabled);
         return roomTariff
                 .stream()
-                .map(roomTariffCustomMapper::toDto)
+                .map(roomTariffCustomMapper::toCardDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void create(RequestCreateTariffDto requestCreateTariffDto) {
-        if (requestCreateTariffDto.getStartedAt().isAfter(requestCreateTariffDto.getFinishedAt())) {
+        if (requestCreateTariffDto.getStartedAt().isAfter(requestCreateTariffDto.getFinishedAt())
+                || requestCreateTariffDto.getStartedAt().toString().equals(requestCreateTariffDto.getFinishedAt().toString())) {
             throw new IllegalArgumentException("Started at time must be before finished at time.");
         }
         roomTariffRepository.save(roomTariffCustomMapper.toEntity(requestCreateTariffDto));

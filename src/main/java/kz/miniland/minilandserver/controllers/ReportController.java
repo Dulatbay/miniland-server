@@ -38,7 +38,6 @@ public class ReportController {
                                                                        @RequestParam("end_date") LocalDate endDate,
                                                                        @RequestParam(value = "username", required = false) String username
     ) {
-        log.info("{}", LocalDateTime.now(ZONE_ID));
         return ResponseEntity.ok(reportService.getReportByParams(username, startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
     }
 

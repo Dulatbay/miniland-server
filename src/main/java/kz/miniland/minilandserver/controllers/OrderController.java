@@ -26,12 +26,12 @@ public class OrderController {
     @PostMapping()
     public ResponseEntity<Void> createOrder(@RequestBody @Valid RequestCreateOrderDto requestCreateOrderDto) {
         var token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        requestCreateOrderDto.setAuthorId(token.getName());
+        requestCreateOrderDto.setAuthorId(token.getToken().getClaim("preferred_username"));
         orderService.createOrder(requestCreateOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping()
+    @GetMapping("/today")
     public ResponseEntity<List<ResponseCardOrderDto>> getTodaysOrderCards() {
         return ResponseEntity.ok(orderService.getTodaysOrderCards());
     }

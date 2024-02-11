@@ -11,7 +11,7 @@ public interface RoomOrderService {
 
     List<ResponseCardRoomOrderDto> getAllCurrentActiveRooms();
 
-    List<ResponseBookedDayDto> getBookedDaysAfterToday();
+    List<ResponseBookedDayDto> getBookedDaysAfterToday(Long id);
 
     ResponseDetailRoomOrderDto getOrderDetailById(Long id);
 

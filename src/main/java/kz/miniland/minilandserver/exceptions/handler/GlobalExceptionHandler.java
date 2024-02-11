@@ -69,16 +69,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ResponseErrorDto> handleStorageException(AuthenticationException ex) {
-        log.error("AuthenticationException: ", ex);
-        ResponseErrorDto errorResponse = new ResponseErrorDto(HttpStatus.UNAUTHORIZED.getReasonPhrase(), ex.getMessage(), null);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-    }
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ResponseErrorDto> handleStorageException(BadRequestException ex) {
-        log.error("BadRequestException: ", ex);
-        ResponseErrorDto errorResponse = new ResponseErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage(), null);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
 }

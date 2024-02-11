@@ -1,10 +1,12 @@
 package kz.miniland.minilandserver.dtos.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -26,7 +28,8 @@ public class RequestCreateRoomOrderDto {
     @JsonProperty("selected_booked_day")
     @NotNull(message = "The selected booked day must not be null")
     @FutureOrPresent(message = "The selected booked day must be in the future.")
-    private LocalDateTime selectedBookedDay;
+    @JsonFormat(pattern = "dd.MM.yyyy")
+    private LocalDate selectedBookedDay;
 
     @JsonProperty("extra_time")
     @Min(value = 0, message = "Extra time should not be less than 0")

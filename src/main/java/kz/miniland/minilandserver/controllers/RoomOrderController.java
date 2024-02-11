@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,14 +35,16 @@ public class RoomOrderController {
         return ResponseEntity.ok(allActiveRooms);
     }
 
-    @GetMapping("/booked-days")
-    public ResponseEntity<List<ResponseBookedDayDto>> getAllBookedDays() {
-        List<ResponseBookedDayDto> bookedDays = roomOrderService.getBookedDaysAfterToday();
+    @GetMapping("/booked-days/{id}")
+    public ResponseEntity<List<ResponseBookedDayDto>> getAllBookedDays(@PathVariable("id") Long id) {
+        List<ResponseBookedDayDto> bookedDays = roomOrderService.getBookedDaysAfterToday(id);
         return ResponseEntity.ok(bookedDays);
     }
 
     @PostMapping()
     public ResponseEntity<Void> createRoom(@Valid @RequestBody RequestCreateRoomOrderDto requestCreateRoomOrderDto) {
+        var token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        requestCreateRoomOrderDto.setAuthorName(token.getToken().getClaim("preferred_username"));
         roomOrderService.createRoomOrder(requestCreateRoomOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

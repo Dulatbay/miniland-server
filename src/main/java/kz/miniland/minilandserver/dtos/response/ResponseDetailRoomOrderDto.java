@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseDetailRoomOrderDto {
-    private ResponseCardRoomTariffDto tariffDto;
+    private ResponseDetailRoomTariffDto tariffDto;
     private String clientName;
     private String clientPhoneNumber;
     private LocalDateTime dayOfBooking;
@@ -21,5 +22,5 @@ public class ResponseDetailRoomOrderDto {
     private Long fullTime;
     private Double fullPrice;
     private String authorName;
-    private LocalDateTime bookedDay;
+    private LocalDate bookedDay;
 }

@@ -3,6 +3,7 @@ package kz.miniland.minilandserver.controllers;
 import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateTariffDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
+import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomTariffDto;
 import kz.miniland.minilandserver.services.RoomTariffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ public class RoomTariffController {
     private final RoomTariffService roomTariffService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseCardRoomTariffDto> getRoomTariffById(@PathVariable("id") Long id) {
-        ResponseCardRoomTariffDto tariff = roomTariffService.getTariffById(id);
+    public ResponseEntity<ResponseDetailRoomTariffDto> getRoomTariffById(@PathVariable("id") Long id) {
+        var tariff = roomTariffService.getTariffById(id);
         return ResponseEntity.ok(tariff);
     }
 

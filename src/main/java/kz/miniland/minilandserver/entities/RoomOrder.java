@@ -3,6 +3,7 @@ package kz.miniland.minilandserver.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Table(name = "room_order", schema = "schema_miniland")
@@ -22,9 +23,9 @@ public class RoomOrder {
     @Column(name = "day_of_booking", nullable = false)
     private LocalDateTime dayOfBooking;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "booked_day", nullable = false)
-    private LocalDateTime bookedDay;
+    private LocalDate bookedDay;
 
     @Column(name = "child_quentity", nullable = false)
     private Integer childQuentity;

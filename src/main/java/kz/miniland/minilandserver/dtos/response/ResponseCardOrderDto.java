@@ -25,4 +25,7 @@ public class ResponseCardOrderDto {
     private Long remainTime;
     @JsonProperty("is_paid")
     private Boolean isPaid;
+    @JsonProperty("author_name")
+    private String authorName;
+
 }

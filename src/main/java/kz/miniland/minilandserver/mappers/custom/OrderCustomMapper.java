@@ -60,7 +60,7 @@ public class OrderCustomMapper {
                             .stream()
                             .map(WeekDays::getInteger)
                             .anyMatch(integer -> dayOfWeek.getValue() == integer)
-                    ).collect(Collectors.toList());
+                    ).toList();
 
             if (prices.isEmpty())
                 throw new IllegalArgumentException("Price list today is empty");
@@ -110,6 +110,7 @@ public class OrderCustomMapper {
             responseCardOrderDto.setFullTime(orderEntity.getFullTime());
             responseCardOrderDto.setIsPaid(orderEntity.getIsPaid());
             responseCardOrderDto.setIsFinished(orderEntity.getIsFinished());
+            responseCardOrderDto.setAuthorName(orderEntity.getAuthorName());
             responseCardOrderDtos.add(responseCardOrderDto);
         }
         return responseCardOrderDtos;

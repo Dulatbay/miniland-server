@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
@@ -37,10 +38,8 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
     @Override
     public List<ResponseCardRoomOrderDto> getAllCurrentActiveRooms() {
         LocalDate now = LocalDate.now(ZONE_ID);
-        LocalDateTime startOfDay = LocalDateTime.of(now, LocalTime.MIN);
-        LocalDateTime endOfDay = LocalDateTime.of(now, LocalTime.MAX);
 
-        var roomOrders = roomOrderRepository.getAllByBookedDayBetween(startOfDay, endOfDay);
+        var roomOrders = roomOrderRepository.getAllByBookedDayBetween(now, now.plusDays(1));
 
         return roomOrders
                 .stream()
@@ -50,11 +49,14 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
 
 
     @Override
-    public List<ResponseBookedDayDto> getBookedDaysAfterToday() {
-        LocalDateTime now = LocalDateTime.now(ZONE_ID);
+    public List<ResponseBookedDayDto> getBookedDaysAfterToday(Long id) {
+        var now = LocalDate.now(ZONE_ID);
         var bookedRoomOrders = roomOrderRepository.getAllByBookedDayAfter(now);
+
+
         return bookedRoomOrders
                 .stream()
+                .filter(i -> Objects.equals(i.getRoomTariff().getId(), id))
                 .map(roomOrderCustomMapper::toBookedDayDto)
                 .collect(Collectors.toList());
     }

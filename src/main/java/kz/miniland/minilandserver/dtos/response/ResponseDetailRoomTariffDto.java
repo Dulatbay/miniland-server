@@ -6,14 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ResponseCardRoomTariffDto {
+@NoArgsConstructor
+public class ResponseDetailRoomTariffDto  {
     @JsonProperty("id")
     private Long id;
 
@@ -31,4 +30,13 @@ public class ResponseCardRoomTariffDto {
 
     @JsonProperty("week_days")
     private List<Integer> weekDays;
+
+    @JsonProperty("child_price")
+    private Double childPrice;
+
+    @JsonProperty("penalty_per_hour")
+    private Double penaltyPerHour;
+
+    @JsonProperty("penalty_per_half_hour")
+    private Double penaltyPerHalfHour;
 }

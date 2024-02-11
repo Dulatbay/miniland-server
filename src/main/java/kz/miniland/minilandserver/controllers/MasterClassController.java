@@ -26,7 +26,7 @@ public class MasterClassController {
                                                       @RequestParam("order-id") Long orderId) {
 
         var token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        masterClassService.addMasterClassToOrder(token.getName(), orderId, masterClassId);
+        masterClassService.addMasterClassToOrder(token.getToken().getClaim("preferred_username"), orderId, masterClassId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

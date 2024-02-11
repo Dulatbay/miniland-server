@@ -12,7 +12,7 @@ import net.minidev.json.annotate.JsonIgnore;
 public class RequestCreateOrderDto {
     @JsonProperty("parent_name")
     @NotNull(message = "The parent's name must not be null")
-    @Size(min = 3, max = 150, message = "Parent name must be between 10 and 150 characters")
+    @Size(min = 3, max = 150, message = "Parent name must be between 3 and 150 characters")
     private String parentName;
 
 

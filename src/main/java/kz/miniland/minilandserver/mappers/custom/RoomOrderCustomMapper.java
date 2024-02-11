@@ -20,7 +20,7 @@ public class RoomOrderCustomMapper {
 
     public ResponseBookedDayDto toBookedDayDto(RoomOrder roomOrder) {
         return ResponseBookedDayDto.builder()
-                .date(roomOrder.getBookedDay().toLocalDate())
+                .date(roomOrder.getBookedDay())
                 .startedTime(roomOrder.getRoomTariff().getStartedAt())
                 .endedTime(roomOrder.getRoomTariff().getStartedAt().plusSeconds(roomOrder.getFullTime()))
                 .build();

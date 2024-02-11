@@ -42,6 +42,12 @@ public class ResponseCardRoomOrderDto {
     @JsonProperty("author_name")
     private String authorName;
 
+    @JsonProperty("client_phone_number")
+    private String clientPhoneNumber;
+
+    @JsonProperty("extra_time")
+    private String extra_time;
+
     @JsonProperty("room_tariff")
-    private ResponseCardRoomTariffDto roomTariff;
+    private ResponseDetailRoomTariffDto roomTariff;
 }

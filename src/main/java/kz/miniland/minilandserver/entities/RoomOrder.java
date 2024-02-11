@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Table(name = "room_order", schema = "schema_miniland")
 @Entity
@@ -41,4 +42,10 @@ public class RoomOrder {
 
     @Column(name = "client_name", nullable = false)
     private String clientName;
+
+    @Column(name = "client_phone_number", nullable = false)
+    private String clientPhoneNumber;
+
+    @Column(name = "finished_at", nullable = false)
+    private LocalTime finishedAt;
 }

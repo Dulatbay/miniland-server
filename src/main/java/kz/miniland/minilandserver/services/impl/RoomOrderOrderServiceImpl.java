@@ -16,9 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.BadRequestException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
@@ -74,6 +74,21 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         var roomTariff = roomTariffRepository.findById(requestCreateRoomOrderDto.getTariffId())
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Room tariff doesn't exist"));
 
+        if (!roomTariff.getEnabled())
+            throw new BadRequestException("Room tariff doesn't exist or disabled");
+
+        var now = LocalDate.now(ZONE_ID);
+
+        var nextSession = roomOrderRepository.getFirstByBookedDayAfterAndRoomTariff(requestCreateRoomOrderDto.getSelectedBookedDay(), roomTariff);
+
+        if (now.isBefore(requestCreateRoomOrderDto.getSelectedBookedDay()))
+            throw new BadRequestException("The selected booked day must be in the future.");
+
+        var endedAt = roomTariff.getFinishedAt().plusSeconds(requestCreateRoomOrderDto.getExtraTime());
+
+        if (nextSession.isPresent() && !nextSession.get().getFinishedAt().isBefore(endedAt))
+            throw new BadRequestException("The selected booked day is not available");
+
         var roomOrder = new RoomOrder();
 
         roomOrder.setAuthorName(requestCreateRoomOrderDto.getAuthorName());
@@ -97,6 +112,8 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         );
 
         roomOrder.setFullPrice(roomTariff.getFirstPrice() + extraTimeChildPrice + fullPriceByExtraTime);
+        roomOrder.setClientPhoneNumber(requestCreateRoomOrderDto.getClientPhoneNumber());
+        roomOrder.setFinishedAt(endedAt);
 
         roomOrderRepository.save(roomOrder);
     }

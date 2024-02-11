@@ -39,7 +39,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
     public List<ResponseCardRoomOrderDto> getAllCurrentActiveRooms() {
         LocalDate now = LocalDate.now(ZONE_ID);
 
-        var roomOrders = roomOrderRepository.getAllByBookedDayBetween(now, now.plusDays(1));
+        var roomOrders = roomOrderRepository.getAllByBookedDayBetween(now, now.plusDays(7));
 
         return roomOrders
                 .stream()

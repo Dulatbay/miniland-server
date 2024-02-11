@@ -43,7 +43,8 @@ jwt:
 server:
   servlet:
     context-path: '/api/'
-
+  error:
+    include-message: always
   port: 8181
   address: 0.0.0.0
 

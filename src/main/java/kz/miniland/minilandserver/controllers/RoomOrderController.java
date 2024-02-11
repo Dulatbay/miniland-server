@@ -23,11 +23,11 @@ import java.util.List;
 public class RoomOrderController {
     private final RoomOrderService roomOrderService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseDetailRoomOrderDto> getOrderDetailById(@PathVariable("id") Long id) {
-        ResponseDetailRoomOrderDto order = roomOrderService.getOrderDetailById(id);
-        return ResponseEntity.ok(order);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<ResponseDetailRoomOrderDto> getOrderDetailById(@PathVariable("id") Long id) {
+//        ResponseDetailRoomOrderDto order = roomOrderService.getOrderDetailById(id);
+//        return ResponseEntity.ok(order);
+//    }
 
     @GetMapping("/today")
     public ResponseEntity<List<ResponseCardRoomOrderDto>> getTodayActiveRooms() {

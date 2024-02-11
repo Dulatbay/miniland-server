@@ -4,17 +4,27 @@ import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomOrderDto;
 import kz.miniland.minilandserver.entities.RoomOrder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoUnit;
 
 @Component
+@RequiredArgsConstructor
 public class RoomOrderCustomMapper {
+    private final RoomTariffCustomMapper roomTariffCustomMapper;
     public ResponseCardRoomOrderDto toCardDto(RoomOrder roomOrder) {
         return ResponseCardRoomOrderDto.builder()
                 .clientName(roomOrder.getClientName())
                 .startedTime(roomOrder.getRoomTariff().getStartedAt())
                 .endedTime(roomOrder.getRoomTariff().getFinishedAt())
+                .roomTariff(roomTariffCustomMapper.toCardDto(roomOrder.getRoomTariff()))
+                .fullPrice(roomOrder.getFullPrice())
+                .fullTime(roomOrder.getFullTime())
+                .childQuentity(roomOrder.getChildQuentity())
+                .bookedDay(roomOrder.getBookedDay())
+                .authorName(roomOrder.getAuthorName())
+                .dayOfBooking(roomOrder.getDayOfBooking())
                 .build();
     }
 

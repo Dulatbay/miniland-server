@@ -19,6 +19,11 @@
       "name": "application.keycloak-url",
       "type": "java.lang.String",
       "description": "Description for application.keycloak-url."
+    },
+    {
+      "name": "jwt.auth.converter.principle-attribute",
+      "type": "java.lang.String",
+      "description": "Description for jwt.auth.converter.principle-attribute."
     }
   ]
 }

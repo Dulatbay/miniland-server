@@ -32,6 +32,7 @@ public class SecurityConfig {
 
     @Value("${jwt.auth.converter.resource-id}")
     private String clientId;
+    private final CustomAuthenticationEntryPoint authEntryPoint;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -61,8 +62,11 @@ public class SecurityConfig {
         http
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
-                httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(new CustomAccessDeniedHandler())
+        http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
+                    httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(new CustomAccessDeniedHandler());
+//                    httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(authEntryPoint);
+
+                }
         );
 
         http.addFilterBefore(new CustomCorsFilter(), ChannelProcessingFilter.class);

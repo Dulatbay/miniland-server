@@ -75,19 +75,28 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Room tariff doesn't exist"));
 
         if (!roomTariff.getEnabled())
-            throw new BadRequestException("Room tariff doesn't exist or disabled");
+            throw new IllegalArgumentException("Room tariff doesn't exist or disabled");
 
         var now = LocalDate.now(ZONE_ID);
 
-        var nextSession = roomOrderRepository.getFirstByBookedDayAfterAndRoomTariff(requestCreateRoomOrderDto.getSelectedBookedDay(), roomTariff);
+        log.info("{}",requestCreateRoomOrderDto.getSelectedBookedDay());
 
-        if (now.isBefore(requestCreateRoomOrderDto.getSelectedBookedDay()))
-            throw new BadRequestException("The selected booked day must be in the future.");
+        var nextSession = roomOrderRepository.findTopByBookedDayAfterOrderByStartedAt(requestCreateRoomOrderDto.getSelectedBookedDay().minusDays(1));
+
+        log.info("{}", nextSession);
+
+        if (now.isAfter(requestCreateRoomOrderDto.getSelectedBookedDay()))
+            throw new IllegalArgumentException("The selected booked day must be in the future.");
 
         var endedAt = roomTariff.getFinishedAt().plusSeconds(requestCreateRoomOrderDto.getExtraTime());
 
-        if (nextSession.isPresent() && !nextSession.get().getFinishedAt().isBefore(endedAt))
-            throw new BadRequestException("The selected booked day is not available");
+        log.info("{}", nextSession.isPresent()
+                && isSameDate(nextSession.get().getBookedDay(), requestCreateRoomOrderDto.getSelectedBookedDay()));
+
+        if (nextSession.isPresent()
+                && isSameDate(nextSession.get().getBookedDay(), requestCreateRoomOrderDto.getSelectedBookedDay())
+                && !nextSession.get().getRoomTariff().getStartedAt().isAfter(endedAt))
+            throw new IllegalArgumentException("The selected booked day is not available");
 
         var roomOrder = new RoomOrder();
 
@@ -98,12 +107,16 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         roomOrder.setClientName(requestCreateRoomOrderDto.getClientName());
         roomOrder.setBookedDay(requestCreateRoomOrderDto.getSelectedBookedDay());
         roomOrder.setChildQuentity(requestCreateRoomOrderDto.getChildCount());
-
+        roomOrder.setStartedAt(roomTariff.getStartedAt());
 
         var tariffTime = roomTariff.getStartedAt().until(roomTariff.getFinishedAt(), ChronoUnit.SECONDS);
         roomOrder.setFullTime(requestCreateRoomOrderDto.getExtraTime() + tariffTime);
 
         var extraTimeChildPrice = ((requestCreateRoomOrderDto.getChildCount() - roomTariff.getMaxChild()) * roomTariff.getChildPrice());
+
+        if (extraTimeChildPrice < 0)
+            extraTimeChildPrice = 0;
+
         var fullPriceByExtraTime = getFullPriceByExtraTime(
                 requestCreateRoomOrderDto.getExtraTime(),
                 roomTariff.getPenaltyPerHalfHour(),
@@ -136,6 +149,12 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         }
 
         return extraTimePrice * childCount;
+    }
+
+    private boolean isSameDate(LocalDate dateTime1, LocalDate dateTime2) {
+        return dateTime1.getYear() == dateTime2.getYear() &&
+                dateTime1.getMonth() == dateTime2.getMonth() &&
+                dateTime1.getDayOfMonth() == dateTime2.getDayOfMonth();
     }
 
 }

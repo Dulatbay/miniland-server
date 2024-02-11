@@ -46,6 +46,9 @@ public class RoomOrder {
     @Column(name = "client_phone_number", nullable = false)
     private String clientPhoneNumber;
 
+    @Column(name = "started_at", nullable = false)
+    private LocalTime startedAt;
+
     @Column(name = "finished_at", nullable = false)
     private LocalTime finishedAt;
 }

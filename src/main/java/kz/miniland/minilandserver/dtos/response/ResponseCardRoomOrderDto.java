@@ -16,16 +16,16 @@ import java.time.LocalTime;
 @Builder
 public class ResponseCardRoomOrderDto {
     @JsonProperty("started_time")
-    private LocalTime startedTime;
+    private String startedTime;
 
     @JsonProperty("ended_time")
-    private LocalTime endedTime;
+    private String endedTime;
 
     @JsonProperty("booked_day")
     private LocalDate bookedDay;
 
     @JsonProperty("day_of_booking")
-    private LocalDateTime dayOfBooking;
+    private String dayOfBooking;
 
     @JsonProperty("client_name")
     private String clientName;
@@ -46,7 +46,7 @@ public class ResponseCardRoomOrderDto {
     private String clientPhoneNumber;
 
     @JsonProperty("extra_time")
-    private String extra_time;
+    private Long extra_time;
 
     @JsonProperty("room_tariff")
     private ResponseDetailRoomTariffDto roomTariff;

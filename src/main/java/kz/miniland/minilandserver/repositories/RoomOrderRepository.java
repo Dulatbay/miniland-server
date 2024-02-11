@@ -3,6 +3,7 @@ package kz.miniland.minilandserver.repositories;
 import kz.miniland.minilandserver.entities.RoomOrder;
 import kz.miniland.minilandserver.entities.RoomTariff;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -14,5 +15,5 @@ import java.util.Optional;
 public interface RoomOrderRepository extends JpaRepository<RoomOrder, Long> {
     List<RoomOrder> getAllByBookedDayBetween(LocalDate start, LocalDate end);
     List<RoomOrder> getAllByBookedDayAfter(LocalDate localDateTime);
-    Optional<RoomOrder> getFirstByBookedDayAfterAndRoomTariff(LocalDate localDate, RoomTariff roomTariff);
+    Optional<RoomOrder> findTopByBookedDayAfterOrderByStartedAt(LocalDate localDate);
 }

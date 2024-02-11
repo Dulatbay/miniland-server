@@ -7,6 +7,8 @@ import kz.miniland.minilandserver.entities.RoomOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 @Component
@@ -14,17 +16,26 @@ import java.time.temporal.ChronoUnit;
 public class RoomOrderCustomMapper {
     private final RoomTariffCustomMapper roomTariffCustomMapper;
     public ResponseCardRoomOrderDto toCardDto(RoomOrder roomOrder) {
+        var durationFullTime = Duration.between(roomOrder.getRoomTariff().getStartedAt(), roomOrder.getFinishedAt()).toSeconds();
+        var durationTariff = Duration.between(roomOrder.getRoomTariff().getStartedAt(), roomOrder.getRoomTariff().getFinishedAt()).toSeconds();
+
+        var format = DateTimeFormatter.ofPattern("HH:mm");
+        var formatDate = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
+
         return ResponseCardRoomOrderDto.builder()
                 .clientName(roomOrder.getClientName())
-                .startedTime(roomOrder.getRoomTariff().getStartedAt())
-                .endedTime(roomOrder.getRoomTariff().getFinishedAt())
-                .roomTariff(roomTariffCustomMapper.toCardDto(roomOrder.getRoomTariff()))
+                .startedTime(roomOrder.getRoomTariff().getStartedAt().format(format))
+                .endedTime(roomOrder.getRoomTariff().getFinishedAt().format(format))
+                .roomTariff(roomTariffCustomMapper.toDto(roomOrder.getRoomTariff()))
                 .fullPrice(roomOrder.getFullPrice())
                 .fullTime(roomOrder.getFullTime())
                 .childQuentity(roomOrder.getChildQuentity())
                 .bookedDay(roomOrder.getBookedDay())
                 .authorName(roomOrder.getAuthorName())
-                .dayOfBooking(roomOrder.getDayOfBooking())
+                .dayOfBooking(roomOrder.getDayOfBooking().format(formatDate))
+                .clientPhoneNumber(roomOrder.getClientPhoneNumber())
+                .extra_time(durationFullTime - durationTariff)
                 .build();
     }
 

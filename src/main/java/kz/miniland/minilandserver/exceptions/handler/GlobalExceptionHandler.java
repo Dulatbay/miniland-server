@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.naming.AuthenticationException;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
 
@@ -73,5 +74,11 @@ public class GlobalExceptionHandler {
         log.error("AuthenticationException: ", ex);
         ResponseErrorDto errorResponse = new ResponseErrorDto(HttpStatus.UNAUTHORIZED.getReasonPhrase(), ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ResponseErrorDto> handleStorageException(BadRequestException ex) {
+        log.error("BadRequestException: ", ex);
+        ResponseErrorDto errorResponse = new ResponseErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

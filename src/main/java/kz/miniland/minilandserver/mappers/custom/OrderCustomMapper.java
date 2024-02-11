@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
@@ -28,6 +27,44 @@ public class OrderCustomMapper {
     private final SaleRepository saleRepository;
     private final PriceRepository priceRepository;
     private final SaleMapper saleMapper;
+
+
+    private Double getFullPrice(LocalDateTime now, Long extraTime) {
+        if (extraTime == 0) return 0.0;
+
+        double resultPrice = 0;
+
+        DayOfWeek dayOfWeek = now.getDayOfWeek();
+        var prices = priceRepository.findAllByOrderByFullPriceDesc()
+                .stream()
+                .filter(i -> i
+                        .getDays()
+                        .stream()
+                        .map(WeekDays::getInteger)
+                        .anyMatch(integer -> dayOfWeek.getValue() == integer)
+                ).toList();
+
+        if (prices.isEmpty())
+            throw new IllegalArgumentException("Price list today is empty");
+        if (prices.getLast().getFullTime() > extraTime)
+            throw new IllegalArgumentException("Extra time is too short");
+
+
+        double requestTime = extraTime;
+
+        for (var p : prices) {
+            while (requestTime >= p.getFullTime()) {
+                requestTime -= p.getFullTime();
+                resultPrice += p.getFullPrice();
+            }
+        }
+
+        while (requestTime > 0) {
+            requestTime -= prices.getLast().getFullTime();
+            resultPrice += prices.getLast().getFullPrice();
+        }
+        return resultPrice;
+    }
 
     public Order toEntity(RequestCreateOrderDto requestCreateOrderDto) {
         var now = LocalDateTime.now(ZONE_ID);
@@ -50,43 +87,9 @@ public class OrderCustomMapper {
         }
 
 
-        double resultPrice = 0;
-        if (requestCreateOrderDto.getExtraTime() != 0) {
-            DayOfWeek dayOfWeek = now.getDayOfWeek();
-            var prices = priceRepository.findAllByOrderByFullPriceDesc()
-                    .stream()
-                    .filter(i -> i
-                            .getDays()
-                            .stream()
-                            .map(WeekDays::getInteger)
-                            .anyMatch(integer -> dayOfWeek.getValue() == integer)
-                    ).toList();
-
-            if (prices.isEmpty())
-                throw new IllegalArgumentException("Price list today is empty");
-            if (prices.getLast().getFullTime() > requestCreateOrderDto.getExtraTime())
-                throw new IllegalArgumentException("Extra time is too short");
-
-
-            double requestTime = requestCreateOrderDto.getExtraTime();
-
-            for (var p : prices) {
-                while (requestTime >= p.getFullTime()) {
-                    requestTime -= p.getFullTime();
-                    resultPrice += p.getFullPrice();
-                }
-            }
-
-            while (requestTime > 0) {
-                requestTime -= prices.getLast().getFullTime();
-                resultPrice += prices.getLast().getFullPrice();
-            }
-        }
-
-
         order.setExtraTime(requestCreateOrderDto.getExtraTime());
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
-        order.setFullPrice(resultPrice + sale.getFullPrice());
+        order.setFullPrice(getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice());
         order.setIsPaid(requestCreateOrderDto.getIsPaid());
         order.setCreatedAt(now);
         order.setIsFinished(false);
@@ -117,7 +120,7 @@ public class OrderCustomMapper {
     }
 
     public ResponseDetailOrderDto toDetailDto(Order orderEntity) {
-        var enteredTimeFormat = DateTimeFormatter.ofPattern("hh:mm");
+        var enteredTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
         ResponseDetailOrderDto responseDetailOrderDto = new ResponseDetailOrderDto();
         responseDetailOrderDto.setId(orderEntity.getId());
@@ -128,11 +131,19 @@ public class OrderCustomMapper {
 
         var now = orderEntity.getFinishedAt() == null ? LocalDateTime.now(ZONE_ID) : orderEntity.getFinishedAt();
         Duration duration = Duration.between(orderEntity.getCreatedAt(), now);
-        responseDetailOrderDto.setRemainTime(orderEntity.getFullTime() - duration.getSeconds());
+        var remainTime = orderEntity.getFullTime() - duration.getSeconds();
+        responseDetailOrderDto.setRemainTime(remainTime);
 
         responseDetailOrderDto.setSale(saleMapper.toDto(orderEntity.getSale()));
         responseDetailOrderDto.setExtraTime(orderEntity.getExtraTime());
-        responseDetailOrderDto.setFullPrice(orderEntity.getFullPrice());
+
+        var penaltyPrice = 0;
+        if (remainTime < 0) {
+            penaltyPrice += getFullPrice(now, remainTime);
+        }
+
+        responseDetailOrderDto.setFullPrice(orderEntity.getFullPrice() + penaltyPrice);
+
         responseDetailOrderDto.setFullTime(orderEntity.getFullTime());
         responseDetailOrderDto.setIsPaid(orderEntity.getIsPaid());
         responseDetailOrderDto.setIsFinished(orderEntity.getIsFinished());

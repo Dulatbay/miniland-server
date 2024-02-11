@@ -25,7 +25,6 @@ public class RoomTariff {
 
     @Column(name = "days", nullable = false)
     @Enumerated(EnumType.STRING)
-    @ElementCollection
     private Set<WeekDays> days;
 
     @Column(name = "first_price", nullable = false)

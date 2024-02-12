@@ -16,9 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +44,17 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
 
         return roomOrders
                 .stream()
-                .map(roomOrderCustomMapper::toCardDto)
+                .map(i -> {
+                    if (!i.isFinished()
+                            && i.getBookedDay().isAfter(LocalDateTime.now(ZONE_ID).toLocalDate())
+                            && i.getFinishedAt().isAfter(LocalTime.now(ZONE_ID))
+                    ) {
+                        i.setFinished(true);
+                        var saved = roomOrderRepository.save(i);
+                        return roomOrderCustomMapper.toCardDto(saved);
+                    }
+                    return roomOrderCustomMapper.toCardDto(i);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -79,9 +90,9 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
 
         var now = LocalDate.now(ZONE_ID);
 
-        log.info("{}",requestCreateRoomOrderDto.getSelectedBookedDay());
+        log.info("{}", requestCreateRoomOrderDto.getSelectedBookedDay());
 
-        var nextSession = roomOrderRepository.findTopByBookedDayAfterOrderByStartedAt(requestCreateRoomOrderDto.getSelectedBookedDay().minusDays(1));
+        var nextSession = roomOrderRepository.findTopByBookedDayAfterAndDeletedOrderByStartedAt(requestCreateRoomOrderDto.getSelectedBookedDay().minusDays(1), false);
 
         log.info("{}", nextSession);
 
@@ -127,18 +138,53 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         roomOrder.setFullPrice(roomTariff.getFirstPrice() + extraTimeChildPrice + fullPriceByExtraTime);
         roomOrder.setClientPhoneNumber(requestCreateRoomOrderDto.getClientPhoneNumber());
         roomOrder.setFinishedAt(endedAt);
+        roomOrder.setPaid(requestCreateRoomOrderDto.isPaid());
+        roomOrder.setDeleted(false);
 
         roomOrderRepository.save(roomOrder);
     }
 
     @Override
     public void deleteOrder(Long id) {
-        var entity = roomOrderRepository.findById(id)
-                .orElseThrow(()-> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+        var entity = getRoomOrderById(id);
 
-        roomOrderRepository.delete(entity);
+        var isStarted = entity.getBookedDay().isEqual(LocalDate.now(ZONE_ID))
+                && entity.getStartedAt().isAfter(LocalTime.now(ZONE_ID));
+
+        if (isStarted)
+            throw new IllegalArgumentException("Order already started, you can only finish this order");
+
+
+        entity.setDeleted(true);
+        roomOrderRepository.save(entity);
     }
 
+    @Override
+    public void finishRoom(Long id) {
+        var entity = getRoomOrderById(id);
+
+        var isStarted = entity.getBookedDay().isEqual(LocalDate.now(ZONE_ID))
+                && entity.getStartedAt().isAfter(LocalTime.now(ZONE_ID));
+
+        if (!isStarted)
+            throw new IllegalArgumentException("Order didn't start, you can only delete this order");
+
+        if(!entity.isPaid())
+            throw new IllegalArgumentException("The order must be paid before completion");
+
+        entity.setFinished(true);
+
+        roomOrderRepository.save(entity);
+    }
+
+    private RoomOrder getRoomOrderById(Long id) {
+        var entity = roomOrderRepository.findById(id)
+                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+
+        if (entity.isDeleted())
+            throw new NotFoundException("Order doesn't exist");
+        return entity;
+    }
 
     private Double getFullPriceByExtraTime(Long extraTime, Double penaltyPerHalfHour, Double penaltyPerHour, Integer childCount) {
         var extraTimePrice = 0.0;

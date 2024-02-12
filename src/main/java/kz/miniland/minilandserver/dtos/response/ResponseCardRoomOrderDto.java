@@ -7,14 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ResponseCardRoomOrderDto {
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty("started_time")
     private String startedTime;
 
@@ -50,4 +51,13 @@ public class ResponseCardRoomOrderDto {
 
     @JsonProperty("room_tariff")
     private ResponseDetailRoomTariffDto roomTariff;
+
+    @JsonProperty("finished")
+    private boolean finished;
+
+    @JsonProperty("started")
+    private boolean started;
+
+    @JsonProperty("paid")
+    private boolean paid;
 }

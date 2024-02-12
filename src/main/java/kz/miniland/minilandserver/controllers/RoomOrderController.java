@@ -54,4 +54,10 @@ public class RoomOrderController {
         roomOrderService.deleteOrder(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> finishRoom(@PathVariable("id") Long id) {
+        roomOrderService.finishRoom(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

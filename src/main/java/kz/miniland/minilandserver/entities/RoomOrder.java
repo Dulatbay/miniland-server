@@ -51,4 +51,13 @@ public class RoomOrder {
 
     @Column(name = "finished_at", nullable = false)
     private LocalTime finishedAt;
+
+    @Column(name = "finished", nullable = false)
+    private boolean finished;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
+    @Column(name = "paid", nullable = false)
+    private boolean paid;
 }

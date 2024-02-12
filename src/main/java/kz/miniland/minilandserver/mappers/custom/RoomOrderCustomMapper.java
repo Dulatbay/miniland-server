@@ -8,13 +8,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+
+import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
 @Component
 @RequiredArgsConstructor
 public class RoomOrderCustomMapper {
     private final RoomTariffCustomMapper roomTariffCustomMapper;
+
     public ResponseCardRoomOrderDto toCardDto(RoomOrder roomOrder) {
         var durationFullTime = Duration.between(roomOrder.getRoomTariff().getStartedAt(), roomOrder.getFinishedAt()).toSeconds();
         var durationTariff = Duration.between(roomOrder.getRoomTariff().getStartedAt(), roomOrder.getRoomTariff().getFinishedAt()).toSeconds();
@@ -22,8 +27,11 @@ public class RoomOrderCustomMapper {
         var format = DateTimeFormatter.ofPattern("HH:mm");
         var formatDate = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
+        var isStarted = roomOrder.getBookedDay().isEqual(LocalDate.now(ZONE_ID))
+                && roomOrder.getStartedAt().isAfter(LocalTime.now(ZONE_ID));
 
         return ResponseCardRoomOrderDto.builder()
+                .id(roomOrder.getId())
                 .clientName(roomOrder.getClientName())
                 .startedTime(roomOrder.getRoomTariff().getStartedAt().format(format))
                 .endedTime(roomOrder.getRoomTariff().getFinishedAt().format(format))
@@ -36,6 +44,9 @@ public class RoomOrderCustomMapper {
                 .dayOfBooking(roomOrder.getDayOfBooking().format(formatDate))
                 .clientPhoneNumber(roomOrder.getClientPhoneNumber())
                 .extra_time(durationFullTime - durationTariff)
+                .finished(roomOrder.isFinished())
+                .paid(roomOrder.isPaid())
+                .started(isStarted)
                 .build();
     }
 

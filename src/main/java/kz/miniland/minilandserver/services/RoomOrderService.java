@@ -18,4 +18,6 @@ public interface RoomOrderService {
     void createRoomOrder(RequestCreateRoomOrderDto requestCreateRoomOrderDto);
 
     void deleteOrder(Long id);
+
+    void finishRoom(Long id);
 }

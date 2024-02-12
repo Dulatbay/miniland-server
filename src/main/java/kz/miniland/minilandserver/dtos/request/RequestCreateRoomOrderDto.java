@@ -41,6 +41,10 @@ public class RequestCreateRoomOrderDto {
     @Positive(message = "The number of children must be greater than 0")
     private Integer childCount;
 
+    @JsonProperty("child_count")
+    @NotNull(message = "Property paid must be not null")
+    private boolean paid;
+
     @JsonIgnore
     private String authorName;
 }

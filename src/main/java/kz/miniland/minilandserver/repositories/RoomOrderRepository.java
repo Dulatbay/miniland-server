@@ -15,5 +15,5 @@ import java.util.Optional;
 public interface RoomOrderRepository extends JpaRepository<RoomOrder, Long> {
     List<RoomOrder> getAllByBookedDayBetween(LocalDate start, LocalDate end);
     List<RoomOrder> getAllByBookedDayAfter(LocalDate localDateTime);
-    Optional<RoomOrder> findTopByBookedDayAfterOrderByStartedAt(LocalDate localDate);
+    Optional<RoomOrder> findTopByBookedDayAfterAndDeletedOrderByStartedAt(LocalDate localDate, boolean deleted);
 }

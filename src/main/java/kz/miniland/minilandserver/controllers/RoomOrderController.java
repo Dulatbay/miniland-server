@@ -9,6 +9,7 @@ import kz.miniland.minilandserver.services.RoomOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -41,7 +42,7 @@ public class RoomOrderController {
         return ResponseEntity.ok(bookedDays);
     }
 
-    @PostMapping()
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createRoom(@Valid @RequestBody RequestCreateRoomOrderDto requestCreateRoomOrderDto) {
         var token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         requestCreateRoomOrderDto.setAuthorName(token.getToken().getClaim("preferred_username"));
@@ -56,8 +57,8 @@ public class RoomOrderController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> finishRoom(@PathVariable("id") Long id) {
-        roomOrderService.finishRoom(id);
+    public ResponseEntity<Void> finishRoom(@PathVariable("id") Long id, @RequestParam("paid") boolean paid) {
+        roomOrderService.finishRoom(id, paid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

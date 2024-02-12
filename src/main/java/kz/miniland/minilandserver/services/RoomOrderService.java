@@ -19,5 +19,5 @@ public interface RoomOrderService {
 
     void deleteOrder(Long id);
 
-    void finishRoom(Long id);
+    void finishRoom(Long id, boolean paid);
 }

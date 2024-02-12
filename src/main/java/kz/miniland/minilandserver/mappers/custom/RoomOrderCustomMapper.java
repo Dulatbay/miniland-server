@@ -5,6 +5,7 @@ import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomOrderDto;
 import kz.miniland.minilandserver.entities.RoomOrder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -16,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class RoomOrderCustomMapper {
     private final RoomTariffCustomMapper roomTariffCustomMapper;
@@ -27,8 +29,15 @@ public class RoomOrderCustomMapper {
         var format = DateTimeFormatter.ofPattern("HH:mm");
         var formatDate = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
+        log.info("now: {}, {}", LocalDate.now(ZONE_ID), LocalTime.now(ZONE_ID));
+        log.info("booked day: {}, {}", roomOrder.getBookedDay(), roomOrder.getStartedAt());
+        log.info("booked day is equal: {}", roomOrder.getBookedDay().isEqual(LocalDate.now(ZONE_ID)));
+        log.info("startedAt day is after: {}", roomOrder.getStartedAt().isBefore(LocalTime.now(ZONE_ID)));
+
         var isStarted = roomOrder.getBookedDay().isEqual(LocalDate.now(ZONE_ID))
-                && roomOrder.getStartedAt().isAfter(LocalTime.now(ZONE_ID));
+                && roomOrder.getStartedAt().isBefore(LocalTime.now(ZONE_ID));
+
+
 
         return ResponseCardRoomOrderDto.builder()
                 .id(roomOrder.getId())

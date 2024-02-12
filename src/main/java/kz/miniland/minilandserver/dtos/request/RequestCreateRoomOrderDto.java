@@ -3,11 +3,14 @@ package kz.miniland.minilandserver.dtos.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.FutureOrPresent;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 public class RequestCreateRoomOrderDto {
@@ -36,12 +39,12 @@ public class RequestCreateRoomOrderDto {
     @Max(value = 36000, message = "Extra time should not be greater than 10 hours")
     private Long extraTime;
 
-    @JsonProperty("child_count")
     @NotNull(message = "The number of child must not be null")
-    @Positive(message = "The number of children must be greater than 0")
+    @Min(value = 0, message = "Child should not be less than 0")
+    @JsonProperty("child_count")
     private Integer childCount;
 
-    @JsonProperty("child_count")
+    @JsonProperty("paid")
     @NotNull(message = "Property paid must be not null")
     private boolean paid;
 

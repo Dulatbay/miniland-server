@@ -40,14 +40,18 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
     public List<ResponseCardRoomOrderDto> getAllCurrentActiveRooms() {
         LocalDate now = LocalDate.now(ZONE_ID);
 
-        var roomOrders = roomOrderRepository.getAllByBookedDayBetween(now, now.plusDays(7));
+        var roomOrders = roomOrderRepository.getAllByBookedDayBetweenAndDeletedAndFinished(now,
+                now.plusDays(7),
+                false,
+                false);
 
         return roomOrders
                 .stream()
                 .map(i -> {
                     if (!i.isFinished()
-                            && i.getBookedDay().isAfter(LocalDateTime.now(ZONE_ID).toLocalDate())
+                            && i.getBookedDay().isEqual(LocalDateTime.now(ZONE_ID).toLocalDate())
                             && i.getFinishedAt().isAfter(LocalTime.now(ZONE_ID))
+                            && i.isPaid()
                     ) {
                         i.setFinished(true);
                         var saved = roomOrderRepository.save(i);
@@ -90,19 +94,19 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
 
         var now = LocalDate.now(ZONE_ID);
 
-        log.info("{}", requestCreateRoomOrderDto.getSelectedBookedDay());
 
-        var nextSession = roomOrderRepository.findTopByBookedDayAfterAndDeletedOrderByStartedAt(requestCreateRoomOrderDto.getSelectedBookedDay().minusDays(1), false);
+        var nextSession
+                = roomOrderRepository.findTopByBookedDayAfterAndDeletedAndFinishedOrderByStartedAt(
+                requestCreateRoomOrderDto.getSelectedBookedDay().minusDays(1),
+                false,
+                false);
 
-        log.info("{}", nextSession);
 
         if (now.isAfter(requestCreateRoomOrderDto.getSelectedBookedDay()))
             throw new IllegalArgumentException("The selected booked day must be in the future.");
 
         var endedAt = roomTariff.getFinishedAt().plusSeconds(requestCreateRoomOrderDto.getExtraTime());
 
-        log.info("{}", nextSession.isPresent()
-                && isSameDate(nextSession.get().getBookedDay(), requestCreateRoomOrderDto.getSelectedBookedDay()));
 
         if (nextSession.isPresent()
                 && isSameDate(nextSession.get().getBookedDay(), requestCreateRoomOrderDto.getSelectedBookedDay())
@@ -135,6 +139,9 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
                 requestCreateRoomOrderDto.getChildCount()
         );
 
+        log.info("fullPriceByExtraTime: {}", fullPriceByExtraTime);
+        log.info("roomTariff.getFirstPrice: {}", roomTariff.getFirstPrice());
+
         roomOrder.setFullPrice(roomTariff.getFirstPrice() + extraTimeChildPrice + fullPriceByExtraTime);
         roomOrder.setClientPhoneNumber(requestCreateRoomOrderDto.getClientPhoneNumber());
         roomOrder.setFinishedAt(endedAt);
@@ -149,7 +156,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         var entity = getRoomOrderById(id);
 
         var isStarted = entity.getBookedDay().isEqual(LocalDate.now(ZONE_ID))
-                && entity.getStartedAt().isAfter(LocalTime.now(ZONE_ID));
+                && entity.getStartedAt().isBefore(LocalTime.now(ZONE_ID));
 
         if (isStarted)
             throw new IllegalArgumentException("Order already started, you can only finish this order");
@@ -160,17 +167,26 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
     }
 
     @Override
-    public void finishRoom(Long id) {
+    public void finishRoom(Long id, boolean paid) {
         var entity = getRoomOrderById(id);
 
         var isStarted = entity.getBookedDay().isEqual(LocalDate.now(ZONE_ID))
-                && entity.getStartedAt().isAfter(LocalTime.now(ZONE_ID));
+                && entity.getStartedAt().isBefore(LocalTime.now(ZONE_ID));
+
+
+        log.info("now: {}, {}", LocalDate.now(ZONE_ID), LocalTime.now(ZONE_ID));
+        log.info("booked day: {}, {}", entity.getBookedDay(), entity.getStartedAt());
+        log.info("booked day is equal: {}", entity.getBookedDay().isEqual(LocalDate.now(ZONE_ID)));
+        log.info("startedAt day is after: {}", entity.getStartedAt().isBefore(LocalTime.now(ZONE_ID)));
 
         if (!isStarted)
             throw new IllegalArgumentException("Order didn't start, you can only delete this order");
 
-        if(!entity.isPaid())
+        if (!paid && !entity.isPaid())
             throw new IllegalArgumentException("The order must be paid before completion");
+
+        if(!entity.isPaid())
+            entity.setPaid(true);
 
         entity.setFinished(true);
 
@@ -187,16 +203,20 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
     }
 
     private Double getFullPriceByExtraTime(Long extraTime, Double penaltyPerHalfHour, Double penaltyPerHour, Integer childCount) {
+        if (extraTime == 0)
+            return 0.0;
         var extraTimePrice = 0.0;
         var hour = 60 * 60;
 
-        while (extraTime - hour > 0) {
+        while (extraTime - hour >= 0) {
             extraTimePrice += penaltyPerHour;
             extraTime -= hour;
         }
+        log.info("extraTimePrice: {}, extraTime: {}", extraTimePrice, extraTime);
+
         if (extraTime > 0) {
             var halfHour = 30 * 60;
-            while (extraTime > 0) {
+            while (extraTime - halfHour >= 0) {
                 extraTimePrice += penaltyPerHalfHour;
                 extraTime -= halfHour;
             }

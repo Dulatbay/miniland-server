@@ -16,4 +16,6 @@ public interface RoomOrderService {
     ResponseDetailRoomOrderDto getOrderDetailById(Long id);
 
     void createRoomOrder(RequestCreateRoomOrderDto requestCreateRoomOrderDto);
+
+    void deleteOrder(Long id);
 }

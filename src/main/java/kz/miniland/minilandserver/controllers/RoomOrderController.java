@@ -48,4 +48,10 @@ public class RoomOrderController {
         roomOrderService.createRoomOrder(requestCreateRoomOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable("id") Long id) {
+        roomOrderService.deleteOrder(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

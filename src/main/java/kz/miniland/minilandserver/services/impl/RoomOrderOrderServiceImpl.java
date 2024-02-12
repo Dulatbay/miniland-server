@@ -131,6 +131,14 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         roomOrderRepository.save(roomOrder);
     }
 
+    @Override
+    public void deleteOrder(Long id) {
+        var entity = roomOrderRepository.findById(id)
+                .orElseThrow(()-> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+
+        roomOrderRepository.delete(entity);
+    }
+
 
     private Double getFullPriceByExtraTime(Long extraTime, Double penaltyPerHalfHour, Double penaltyPerHour, Integer childCount) {
         var extraTimePrice = 0.0;

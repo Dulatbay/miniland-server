@@ -31,7 +31,7 @@ public class MasterClassController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> createMasterClass(@ModelAttribute @Valid RequestCreateMasterClassDto requestCreateMasterClassDto) throws IOException {
+    public ResponseEntity<Void> createMasterClass(@ModelAttribute @Valid RequestCreateMasterClassDto requestCreateMasterClassDto) {
         masterClassService.createMasterClass(requestCreateMasterClassDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

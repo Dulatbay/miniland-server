@@ -58,6 +58,7 @@ public class RoomTariffServiceImpl implements RoomTariffService {
         if (!roomTariff.getEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist or already deleted");
 
-        roomTariffRepository.delete(roomTariff);
+        roomTariff.setEnabled(true);
+        roomTariffRepository.save(roomTariff);
     }
 }

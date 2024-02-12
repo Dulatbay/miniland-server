@@ -21,9 +21,9 @@ import java.util.List;
 public class MasterClassController {
     private final MasterClassService masterClassService;
 
-    @PostMapping("/add-to-order")
-    public ResponseEntity<Void> addMasterClassToOrder(@RequestParam("master-class-id") Long masterClassId,
-                                                      @RequestParam("order-id") Long orderId) {
+    @PostMapping("/{master-class-id}/add-to-order/{order-id}")
+    public ResponseEntity<Void> addMasterClassToOrder(@PathVariable("master-class-id") Long masterClassId,
+                                                      @PathVariable("order-id") Long orderId) {
 
         var token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         masterClassService.addMasterClassToOrder(token.getToken().getClaim("preferred_username"), orderId, masterClassId);

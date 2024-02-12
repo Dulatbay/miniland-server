@@ -10,6 +10,8 @@ import kz.miniland.minilandserver.mappers.SaleMapper;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -22,6 +24,7 @@ import java.util.List;
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class OrderCustomMapper {
     private final SaleRepository saleRepository;
@@ -44,9 +47,11 @@ public class OrderCustomMapper {
                         .anyMatch(integer -> dayOfWeek.getValue() == integer)
                 ).toList();
 
+        log.info("min price: {} seconds, {} tg", prices.getFirst().getFullTime(), prices.getFirst().getFullPrice());
+
         if (prices.isEmpty())
             throw new IllegalArgumentException("Price list today is empty");
-        if (prices.getLast().getFullTime() > extraTime)
+        if (prices.getFirst().getFullPrice() > extraTime)
             throw new IllegalArgumentException("Extra time is too short");
 
 

@@ -24,6 +24,11 @@ public class RoomTariffServiceImpl implements RoomTariffService {
     public ResponseDetailRoomTariffDto getTariffById(Long id) {
         var roomOrderEntity = roomTariffRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room order doesn't exist"));
+
+        if (!roomOrderEntity.getEnabled())
+            throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist or already deleted");
+
+
         return roomTariffCustomMapper.toDto(roomOrderEntity);
     }
 

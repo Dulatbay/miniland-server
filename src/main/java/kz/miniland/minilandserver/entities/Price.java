@@ -26,4 +26,8 @@ public class Price {
     @Column(name = "days", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<WeekDays> days;
+
+    @Column(name = "enabled")
+    private boolean enabled;
+
 }

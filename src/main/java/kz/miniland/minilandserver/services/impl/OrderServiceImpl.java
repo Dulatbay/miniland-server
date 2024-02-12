@@ -1,10 +1,13 @@
 package kz.miniland.minilandserver.services.impl;
 
 import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
+import kz.miniland.minilandserver.mappers.MasterClassMapper;
 import kz.miniland.minilandserver.mappers.custom.OrderCustomMapper;
+import kz.miniland.minilandserver.repositories.OrderMasterClassRepository;
 import kz.miniland.minilandserver.repositories.OrderRepository;
 import kz.miniland.minilandserver.services.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 
@@ -26,6 +30,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderCustomMapper orderCustomMapper;
+    private final OrderMasterClassRepository orderMasterClassRepository;
+    private final MasterClassMapper masterClassMapper;
 
     @Override
     public void createOrder(RequestCreateOrderDto requestCreateOrderDto) {
@@ -59,6 +65,19 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setIsFinished(true);
         orderEntity.setFinishedAt(LocalDateTime.now(ZONE_ID));
         orderRepository.save(orderEntity);
+    }
+
+    @Override
+    public List<ResponseCardMasterClassDto> getMasterClassesByOrderId(Long id) {
+        var order = orderRepository.findById(id)
+                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+
+        var orderMasterClassList = orderMasterClassRepository.findAllByOrder(order);
+
+        return orderMasterClassList
+                .stream().filter(i -> i.getMasterClass().getEnabled())
+                .map(i -> masterClassMapper.toDto(i.getMasterClass()))
+                .collect(Collectors.toList());
     }
 
 

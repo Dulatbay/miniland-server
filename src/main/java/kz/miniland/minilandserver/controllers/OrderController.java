@@ -3,6 +3,7 @@ package kz.miniland.minilandserver.controllers;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.services.OrderService;
@@ -37,8 +38,13 @@ public class OrderController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<ResponseDetailOrderDto> getOrderByOd(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseDetailOrderDto> getOrderById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(orderService.getDetailOrderById(id));
+    }
+
+    @GetMapping("/{id}/master-classes")
+    public ResponseEntity<List<ResponseCardMasterClassDto>> getMasterClassesByOrderId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(orderService.getMasterClassesByOrderId(id));
     }
 
     @PatchMapping("/finish/{id}")

@@ -1,6 +1,7 @@
 package kz.miniland.minilandserver.services;
 
 import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 
@@ -15,4 +16,5 @@ public interface OrderService {
 
     void finishOrderById(Long id, Boolean isPaid);
 
+    List<ResponseCardMasterClassDto> getMasterClassesByOrderId(Long id);
 }

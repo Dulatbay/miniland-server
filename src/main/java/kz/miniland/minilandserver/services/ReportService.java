@@ -4,6 +4,7 @@ import kz.miniland.minilandserver.dtos.request.RequestCreateProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
+import org.springframework.core.io.Resource;
 
 import java.time.LocalDate;
 
@@ -15,4 +16,6 @@ public interface ReportService {
     ResponseReportProfitDto getReportProfitInRange(LocalDate startDate, LocalDate endDate);
 
     void createProfit(RequestCreateProfitDto requestCreateProfitDto);
+
+    Resource getReportExcel(LocalDate startDate, LocalDate endDate);
 }

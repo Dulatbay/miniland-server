@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order", schema = "schema_miniland")
-@Getter
 @Setter
-public class Order {
+@Getter
+public class Order  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -39,7 +39,6 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
-
 
     @Column(name = "full_time", nullable = false)
     private Long fullTime;

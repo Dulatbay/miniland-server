@@ -5,6 +5,7 @@ import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
 import kz.miniland.minilandserver.entities.Order;
+import kz.miniland.minilandserver.entities.OrderWithPriceAndTime;
 import kz.miniland.minilandserver.entities.Profit;
 import kz.miniland.minilandserver.entities.ProfitTypes;
 import kz.miniland.minilandserver.repositories.OrderRepository;
@@ -14,13 +15,15 @@ import kz.miniland.minilandserver.services.ReportService;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.OutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -226,125 +229,89 @@ public class ReportServiceImpl implements ReportService {
             new Tuple<>(KeyIndexType.FULL_PRICE_ROOM_ORDER, "ОБЩИЙ ЗАРАБОТОК С БРОНИ")
     );
 
+
     @Override
     public Resource getReportExcel(LocalDate startDate, LocalDate endDate) {
-        @Cleanup
-        var workbook = new XSSFWorkbook();
-        var sheet = workbook.createSheet(String.format("Отчет о сотрудниках, %s - %s", startDate, endDate));
-        sheet.setDefaultColumnWidth(15000);
+        try (var workbook = new XSSFWorkbook()) {
+            var sheet = workbook.createSheet(String.format("Отчет о сотрудниках, %s - %s", startDate, endDate));
+            sheet.setDefaultColumnWidth(15000);
 
+            createHeader(sheet, workbook);
+
+            var style = createCellStyle(workbook);
+
+            final Map<String, EmployeeExcelRow> excelRowMap = new HashMap<>();
+
+            processOrders(startDate, endDate, excelRowMap);
+
+            int rowCount = 2;
+
+            for (var employee : excelRowMap.entrySet()) {
+                Row row = sheet.createRow(rowCount++);
+                for (var key : excelKeys) {
+                    Cell cell = row.createCell(key.getKey().ordinal());
+                    cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
+                    cell.setCellStyle(style);
+                }
+            }
+
+            var file = File.createTempFile("report", ".xlsx");
+            try (var fileOutputStream = new FileOutputStream(file)) {
+                workbook.write(fileOutputStream);
+            }
+            return new ByteArrayResource(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            log.info("IOException: {}", e.toString());
+            return null;
+        }
+    }
+
+    private void createHeader(Sheet sheet, Workbook workbook) {
         var header = sheet.createRow(0);
-
         var headerStyle = workbook.createCellStyle();
-        headerStyle.setFillBackgroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
-        final XSSFFont font = workbook.createFont();
+        var font = workbook.createFont();
         font.setFontName("Arial");
         font.setFontHeightInPoints((short) 16);
         font.setBold(true);
         headerStyle.setFont(font);
 
-
-        excelKeys.forEach((key) -> {
+        excelKeys.forEach(key -> {
             Cell headerCell = header.createCell(key.getKey().ordinal());
             headerCell.setCellValue(key.value);
             headerCell.setCellStyle(headerStyle);
         });
+    }
 
-        CellStyle style = workbook.createCellStyle();
+    private CellStyle createCellStyle(Workbook workbook) {
+        var style = workbook.createCellStyle();
         style.setWrapText(true);
+        return style;
+    }
 
-        final Map<String, EmployeeExcelRow> excelRowMap = new HashMap<>();
+    private void processOrders(LocalDate startDate, LocalDate endDate, Map<String, EmployeeExcelRow> excelRowMap) {
+        List<OrderWithPriceAndTime> orders = new ArrayList<>();
+        orders.addAll(orderRepository.findByCreatedAtBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
+        orders.addAll(roomOrderRepository.getAllByBookedDayBetween(startDate, endDate));
 
-        final var orders = orderRepository.findByCreatedAtBetween(startDate.atStartOfDay(), endDate.atStartOfDay());
-        final var roomOrders = roomOrderRepository.getAllByBookedDayBetween(startDate, endDate);
 
         orders.forEach(order -> {
-            excelRowMap.computeIfAbsent(order.getAuthorName(), (i) -> new EmployeeExcelRow(order.getAuthorName()));
-            var em = excelRowMap.get(order.getAuthorName());
-            excelKeys.forEach(i -> {
-                switch (i.key) {
-                    case MAX_TIME:
-                        em.setMaxWorkTime(Math.max(order.getFullTime(), em.getMaxWorkTime()));
-                        break;
-                    case MIN_TIME:
-                        em.setMinWorkTime(Math.min(order.getFullTime(), em.getMinWorkTime()));
-                        break;
-                    case FULL_TIME:
-                        em.setTotalWorkTime(order.getFullTime() + em.getMaxWorkTime());
-                        break;
-                    case MAX_PRICE:
-                        em.setMaxProfit(Math.max(order.getFullPrice(), em.getMaxProfit()));
-                        break;
-                    case MIN_PRICE:
-                        em.setMinProfit(Math.min(order.getFullPrice(), em.getMinProfit()));
-                        break;
-                    case FULL_PRICE:
-                        em.setTotalProfit(order.getFullPrice() + em.getTotalProfit());
-                        break;
-                    case ORDER_COUNT:
-                        em.setOrdersCount(1 + em.getOrdersCount());
-                        break;
-                    case FULL_PRICE_ORDER:
-                        em.setTotalOrdersProfit(em.getTotalOrdersProfit() + order.getFullPrice());
-                        break;
-                }
-            });
+            excelRowMap.merge(order.getAuthorName(), new EmployeeExcelRow(order.getAuthorName()),
+                    (existingRow, newRow) -> {
+                        existingRow.setMaxWorkTime(Math.max(order.getTotalFullTime(), existingRow.getMaxWorkTime()));
+                        existingRow.setMinWorkTime(Math.min(order.getTotalFullTime(), existingRow.getMinWorkTime()));
+                        existingRow.setTotalWorkTime(order.getTotalFullTime() + existingRow.getMaxWorkTime());
+                        existingRow.setMaxProfit(Math.max(order.getTotalFullPrice(), existingRow.getMaxProfit()));
+                        existingRow.setMinProfit(Math.min(order.getTotalFullPrice(), existingRow.getMinProfit()));
+                        existingRow.setTotalProfit(order.getTotalFullPrice() + existingRow.getTotalProfit());
+                        existingRow.setOrdersCount(1 + existingRow.getOrdersCount());
+                        existingRow.setTotalOrdersProfit(order.getTotalFullPrice() + existingRow.getTotalOrdersProfit());
+                        return existingRow;
+                    });
         });
-
-        roomOrders.forEach(order -> {
-            excelRowMap.computeIfAbsent(order.getAuthorName(), (i) -> new EmployeeExcelRow(order.getAuthorName()));
-            var em = excelRowMap.get(order.getAuthorName());
-            excelKeys.forEach(i -> {
-                switch (i.key) {
-                    case MAX_TIME:
-                        em.setMaxWorkTime(Math.max(order.getFullTime(), em.getMaxWorkTime()));
-                        break;
-                    case MIN_TIME:
-                        em.setMinWorkTime(Math.min(order.getFullTime(), em.getMinWorkTime()));
-                        break;
-                    case FULL_TIME:
-                        em.setTotalWorkTime(order.getFullTime() + em.getMaxWorkTime());
-                        break;
-                    case MAX_PRICE:
-                        em.setMaxProfit(Math.max(order.getFullPrice(), em.getMaxProfit()));
-                        break;
-                    case MIN_PRICE:
-                        em.setMinProfit(Math.min(order.getFullPrice(), em.getMinProfit()));
-                        break;
-                    case FULL_PRICE:
-                        em.setTotalProfit(order.getFullPrice() + em.getTotalProfit());
-                        break;
-                    case ORDER_COUNT:
-                        em.setOrdersCount(1 + em.getOrdersCount());
-                        break;
-                    case FULL_PRICE_ORDER:
-                        em.setTotalOrdersProfit(em.getTotalOrdersProfit() + order.getFullPrice());
-                        break;
-                }
-            });
-        });
-
-        int rowCount = 2;
-
-        for (var employee : excelRowMap.entrySet()) {
-            final int finalRowCount = rowCount;
-
-            excelKeys.forEach(i -> {
-                Row row = sheet.createRow(finalRowCount);
-                Cell cell = row.createCell(i.key.ordinal());
-                cell.setCellValue(employee.getValue().getByKeyIndexType(i.key).toString());
-                cell.setCellStyle(style);
-            });
-
-            rowCount++;
-        }
-
-        StreamingResponseBody responseBody = workbook::write;
-
-
     }
+
 
 }
 

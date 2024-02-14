@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "order", schema = "schema_miniland")
 @Setter
 @Getter
-public class Order  {
+public class Order implements OrderWithPriceAndTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -58,4 +58,14 @@ public class Order  {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(columnDefinition = "integer", name = "sale_id")
     private Sale sale;
+
+    @Override
+    public Double getTotalFullPrice() {
+        return this.fullPrice;
+    }
+
+    @Override
+    public Long getTotalFullTime() {
+        return this.fullTime;
+    }
 }

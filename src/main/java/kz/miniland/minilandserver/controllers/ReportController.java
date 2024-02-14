@@ -42,7 +42,7 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getReportByParams(username, startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
     }
 
-    @GetMapping("/report-excel")
+    @GetMapping("/excel")
     public Resource getReportExcel(@RequestParam("start_date") LocalDate startDate,
                                    @RequestParam("end_date") LocalDate endDate){
         return reportService.getReportExcel(startDate, endDate);

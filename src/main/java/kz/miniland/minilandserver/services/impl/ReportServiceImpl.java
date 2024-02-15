@@ -154,12 +154,12 @@ public class ReportServiceImpl implements ReportService {
             this.name = name;
             totalWorkTime = 0L;
             avgWorkTime = 0.0;
-            minWorkTime = 0L;
-            maxWorkTime = 0L;
+            minWorkTime = Long.MAX_VALUE;
+            maxWorkTime = Long.MIN_VALUE;
             totalProfit = 0.0;
             avgProfit = 0.0;
-            minProfit = 0.0;
-            maxProfit = 0.0;
+            minProfit = Double.MAX_VALUE;
+            maxProfit = Double.MIN_VALUE;
             ordersCount = 0;
             bookedRoomsCount = 0;
             totalOrdersProfit = 0.0;
@@ -216,6 +216,7 @@ public class ReportServiceImpl implements ReportService {
             new Tuple<>(KeyIndexType.AVG_TIME, "СРЕДНЕЕ ВРЕМЯ РАБОТЫ В ДЕНЬ"),
             new Tuple<>(KeyIndexType.MIN_TIME, "МИНИМАЛЬНОЕ ВРЕМЯ РАБОТЫ В ДЕНЬ"),
             new Tuple<>(KeyIndexType.MAX_TIME, "МАКСИМАЛЬНОЕ ВРЕМЯ РАБОТЫ В ДЕНЬ"),
+            new Tuple<>(KeyIndexType.FULL_PRICE, "ОБЩИЙ ЗАРАБОТОК"),
             new Tuple<>(KeyIndexType.AVG_PRICE, "СРЕДНИЙ ЗАРАБОТОК В ДЕНЬ"),
             new Tuple<>(KeyIndexType.MIN_PRICE, "МИНИМАЛЬНЫЙ ЗАРАБОТОК В ДЕНЬ"),
             new Tuple<>(KeyIndexType.MAX_PRICE, "МАКСИМАЛЬНЫЙ ЗАРАБОТОК В ДЕНЬ"),
@@ -230,8 +231,7 @@ public class ReportServiceImpl implements ReportService {
     public byte[] getReportExcel(LocalDate startDate, LocalDate endDate) {
         try (var workbook = new XSSFWorkbook()) {
             var sheet = workbook.createSheet(String.format("Отчет о сотрудниках, %s - %s", startDate, endDate));
-            sheet.setDefaultColumnWidth(150);
-
+            sheet.setDefaultColumnWidth(25);
             createHeader(sheet, workbook);
 
             var style = createCellStyle(workbook);
@@ -240,7 +240,7 @@ public class ReportServiceImpl implements ReportService {
 
             processOrders(startDate, endDate, excelRowMap);
 
-            int rowCount = 2;
+            int rowCount = 1;
 
             for (var employee : excelRowMap.entrySet()) {
                 Row row = sheet.createRow(rowCount++);
@@ -264,11 +264,12 @@ public class ReportServiceImpl implements ReportService {
     private void createHeader(Sheet sheet, Workbook workbook) {
         var header = sheet.createRow(0);
         var headerStyle = workbook.createCellStyle();
-        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        headerStyle.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerStyle.setWrapText(true);
         var font = workbook.createFont();
         font.setFontName("Arial");
-        font.setFontHeightInPoints((short) 16);
+        font.setFontHeightInPoints((short) 12);
         font.setBold(true);
         headerStyle.setFont(font);
 
@@ -305,6 +306,16 @@ public class ReportServiceImpl implements ReportService {
                         return existingRow;
                     });
         });
+
+        excelRowMap.forEach((key, value)->{
+            if(value.getTotalProfit() != 0)
+                value.setAvgProfit(value.getTotalProfit() / (value.getOrdersCount() + value.getBookedRoomsCount()));
+            else value.setAvgProfit(0.0);
+            if(value.getTotalWorkTime() != 0)
+                value.setAvgWorkTime((double) (value.getTotalWorkTime() / (value.getOrdersCount() + value.getBookedRoomsCount())));
+            else value.setAvgWorkTime(0.0);
+        });
+
     }
 
 

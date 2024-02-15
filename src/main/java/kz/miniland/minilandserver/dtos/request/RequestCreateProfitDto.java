@@ -10,7 +10,7 @@ import lombok.Data;
 public class RequestCreateProfitDto {
     @NotNull(message = "Reason text must not be null")
     @JsonProperty("reason")
-    @Size(min = 3, max = 150, message = "Profit must be between 10 and 150 characters")
+    @Size(min = 3, max = 150, message = "Profit must be between 3 and 150 characters")
     private String reason;
 
     @NotNull(message = "Profit must not be null")

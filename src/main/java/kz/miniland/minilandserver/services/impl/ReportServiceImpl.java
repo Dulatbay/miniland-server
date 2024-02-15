@@ -316,6 +316,7 @@ public class ReportServiceImpl implements ReportService {
             row.setTotalProfit(order.getTotalFullPrice() + row.getTotalProfit());
             row.setOrdersCount(1 + row.getOrdersCount());
             row.setTotalOrdersProfit(order.getTotalFullPrice() + row.getTotalOrdersProfit());
+            log.info("author name: {}", order.getAuthorName());
         });
 
         excelRowMap.forEach((key, value) -> {

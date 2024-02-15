@@ -46,6 +46,9 @@ public class MasterClassServiceImpl implements MasterClassService {
         orderMasterClass.setOrder(order);
         orderMasterClass.setMasterClass(masterClass);
 
+        order.setFullPrice(orderMasterClass.getOrder().getFullPrice());
+
+        orderRepository.save(order);
         orderMasterClassRepository.save(orderMasterClass);
     }
 

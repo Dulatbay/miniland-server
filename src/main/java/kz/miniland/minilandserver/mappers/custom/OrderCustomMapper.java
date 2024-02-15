@@ -7,6 +7,8 @@ import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Sale;
 import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.mappers.SaleMapper;
+import kz.miniland.minilandserver.repositories.MasterClassRepository;
+import kz.miniland.minilandserver.repositories.OrderMasterClassRepository;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,6 @@ public class OrderCustomMapper {
     private final PriceRepository priceRepository;
     private final SaleMapper saleMapper;
 
-
     private Double getFullPrice(LocalDateTime now, Long extraTime) {
         if (extraTime == 0) return 0.0;
 
@@ -47,7 +48,6 @@ public class OrderCustomMapper {
                         .anyMatch(integer -> dayOfWeek.getValue() == integer)
                 ).toList();
 
-        log.info("min price: {} seconds, {} tg", prices.getFirst().getFullTime(), prices.getFirst().getFullPrice());
 
         if (prices.isEmpty())
             throw new IllegalArgumentException("Price list today is empty");

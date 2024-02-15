@@ -12,9 +12,11 @@ import kz.miniland.minilandserver.repositories.OrderRepository;
 import kz.miniland.minilandserver.repositories.ProfitRepository;
 import kz.miniland.minilandserver.repositories.RoomOrderRepository;
 import kz.miniland.minilandserver.services.ReportService;
-import lombok.*;
+import kz.miniland.minilandserver.utils.ExcelUtils.ExcelUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
@@ -90,7 +92,6 @@ public class ReportServiceImpl implements ReportService {
             orders = orderRepository.findByAuthorNameAndCreatedAtBetween(username, startOfDay, endOfDay);
         }
 
-        log.info("orders: {}", orders);
         ResponseReportByParamsDto responseReportByParamsDto = new ResponseReportByParamsDto(orders.size(), 0L, 0.0);
         orders.forEach(order -> {
             responseReportByParamsDto.setProfit(responseReportByParamsDto.getProfit() + order.getFullPrice());
@@ -134,119 +135,26 @@ public class ReportServiceImpl implements ReportService {
         profitRepository.save(profit);
     }
 
-    @Data
-    private static class EmployeeExcelRow {
-        private String name;
-        private Long totalWorkTime;
-        private Double avgWorkTime;
-        private Long minWorkTime;
-        private Long maxWorkTime;
-        private Double totalProfit;
-        private Double avgProfit;
-        private Double minProfit;
-        private Double maxProfit;
-        private Integer ordersCount;
-        private Integer bookedRoomsCount;
-        private Double totalOrdersProfit;
-        private Double totalRoomOrdersProfit;
-
-        public EmployeeExcelRow(String name) {
-            this.name = name;
-            totalWorkTime = 0L;
-            avgWorkTime = 0.0;
-            minWorkTime = Long.MAX_VALUE;
-            maxWorkTime = Long.MIN_VALUE;
-            totalProfit = 0.0;
-            avgProfit = 0.0;
-            minProfit = Double.MAX_VALUE;
-            maxProfit = Double.MIN_VALUE;
-            ordersCount = 0;
-            bookedRoomsCount = 0;
-            totalOrdersProfit = 0.0;
-            totalRoomOrdersProfit = 0.0;
-        }
-
-        public Object getByKeyIndexType(KeyIndexType keyIndexType) {
-            return switch (keyIndexType) {
-                case MAX_TIME -> maxWorkTime;
-                case MIN_TIME -> minWorkTime;
-                case FULL_TIME -> totalWorkTime;
-                case MAX_PRICE -> maxProfit;
-                case MIN_PRICE -> minProfit;
-                case FULL_PRICE -> totalProfit;
-                case ORDER_COUNT -> ordersCount;
-                case FULL_PRICE_ORDER -> totalOrdersProfit;
-                case FULL_PRICE_ROOM_ORDER -> totalRoomOrdersProfit;
-                case AVG_TIME -> avgWorkTime;
-                case ROOM_ORDER_COUNT -> bookedRoomsCount;
-                case AVG_PRICE -> avgProfit;
-                case FULL_NAME -> name;
-            };
-        }
-
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Tuple<K, V> {
-        private K key;
-        private V value;
-    }
-
-    enum KeyIndexType {
-        FULL_NAME,
-        FULL_TIME,
-        AVG_TIME,
-        MIN_TIME,
-        MAX_TIME,
-        FULL_PRICE,
-        AVG_PRICE,
-        MIN_PRICE,
-        MAX_PRICE,
-        ORDER_COUNT,
-        ROOM_ORDER_COUNT,
-        FULL_PRICE_ORDER,
-        FULL_PRICE_ROOM_ORDER,
-    }
-
-    final List<Tuple<KeyIndexType, String>> excelKeys = List.of(
-            new Tuple<>(KeyIndexType.FULL_NAME, "ФИО"),
-            new Tuple<>(KeyIndexType.FULL_TIME, "ОБЩЕЕ ВРЕМЯ РАБОТЫ"),
-            new Tuple<>(KeyIndexType.AVG_TIME, "СРЕДНЕЕ ВРЕМЯ РАБОТЫ В ДЕНЬ"),
-            new Tuple<>(KeyIndexType.MIN_TIME, "МИНИМАЛЬНОЕ ВРЕМЯ РАБОТЫ В ДЕНЬ"),
-            new Tuple<>(KeyIndexType.MAX_TIME, "МАКСИМАЛЬНОЕ ВРЕМЯ РАБОТЫ В ДЕНЬ"),
-            new Tuple<>(KeyIndexType.FULL_PRICE, "ОБЩИЙ ЗАРАБОТОК"),
-            new Tuple<>(KeyIndexType.AVG_PRICE, "СРЕДНИЙ ЗАРАБОТОК В ДЕНЬ"),
-            new Tuple<>(KeyIndexType.MIN_PRICE, "МИНИМАЛЬНЫЙ ЗАРАБОТОК В ДЕНЬ"),
-            new Tuple<>(KeyIndexType.MAX_PRICE, "МАКСИМАЛЬНЫЙ ЗАРАБОТОК В ДЕНЬ"),
-            new Tuple<>(KeyIndexType.ORDER_COUNT, "ЗАКАЗОВ БЫЛО СДЕЛАНО"),
-            new Tuple<>(KeyIndexType.ROOM_ORDER_COUNT, "БРОНЬ БЫЛО СДЕЛАНО"),
-            new Tuple<>(KeyIndexType.FULL_PRICE_ORDER, "ОБЩИЙ ЗАРАБАТОК С ЗАКАЗОВ"),
-            new Tuple<>(KeyIndexType.FULL_PRICE_ROOM_ORDER, "ОБЩИЙ ЗАРАБОТОК С БРОНИ")
-    );
-
 
     @Override
     public byte[] getReportExcel(LocalDate startDate, LocalDate endDate) {
+        List<OrderWithPriceAndTime> orders = new ArrayList<>();
+        orders.addAll(orderRepository.findByCreatedAtBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
+        orders.addAll(roomOrderRepository.getAllByBookedDayBetweenAndDeletedIsFalse(startDate, endDate));
         try (var workbook = new XSSFWorkbook()) {
             String excelName = String.format("Отчет о сотрудниках, %s - %s", startDate, endDate);
             log.info("excelName: {}", excelName);
             var sheet = workbook.createSheet();
             sheet.setDefaultColumnWidth(25);
-            createHeader(sheet, workbook);
-
-            var style = createCellStyle(workbook);
-
-            final Map<String, EmployeeExcelRow> excelRowMap = new HashMap<>();
-
-            processOrders(startDate, endDate, excelRowMap);
+            ExcelUtil.createHeader(sheet, workbook);
+            var style = ExcelUtil.createCellStyle(workbook);
+            var excelRowMap = ExcelUtil.processOrders(orders);
 
             int rowCount = 1;
 
             for (var employee : excelRowMap.entrySet()) {
                 Row row = sheet.createRow(rowCount++);
-                for (var key : excelKeys) {
+                for (var key : ExcelUtil.excelKeys) {
                     Cell cell = row.createCell(key.getKey().ordinal());
                     cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
                     cell.setCellStyle(style);
@@ -261,92 +169,6 @@ public class ReportServiceImpl implements ReportService {
             log.info("IOException: {}", e.toString());
             return null;
         }
-    }
-
-    private void createHeader(Sheet sheet, Workbook workbook) {
-        var header = sheet.createRow(0);
-        var headerStyle = workbook.createCellStyle();
-        headerStyle.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
-        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        headerStyle.setWrapText(true);
-        var font = workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short) 12);
-        font.setBold(true);
-        headerStyle.setFont(font);
-
-        excelKeys.forEach(key -> {
-            Cell headerCell = header.createCell(key.getKey().ordinal());
-            headerCell.setCellValue(key.value);
-            headerCell.setCellStyle(headerStyle);
-        });
-    }
-
-    private CellStyle createCellStyle(Workbook workbook) {
-        var style = workbook.createCellStyle();
-        style.setWrapText(true);
-        return style;
-    }
-
-    private void processOrders(LocalDate startDate, LocalDate endDate, Map<String, EmployeeExcelRow> excelRowMap) {
-        List<OrderWithPriceAndTime> orders = new ArrayList<>();
-        orders.addAll(orderRepository.findByCreatedAtBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
-        orders.addAll(roomOrderRepository.getAllByBookedDayBetween(startDate, endDate));
-
-
-//        orders.forEach(order -> {
-//            excelRowMap.forEach(order.getAuthorName(), new EmployeeExcelRow(order.getAuthorName()),
-//                    (existingRow, newRow) -> {
-//                        existingRow.setMaxWorkTime(Math.max(order.getTotalFullTime(), existingRow.getMaxWorkTime()));
-//                        existingRow.setMinWorkTime(Math.min(order.getTotalFullTime(), existingRow.getMinWorkTime()));
-//                        existingRow.setTotalWorkTime(order.getTotalFullTime() + existingRow.getMaxWorkTime());
-//                        existingRow.setMaxProfit(Math.max(order.getTotalFullPrice(), existingRow.getMaxProfit()));
-//                        existingRow.setMinProfit(Math.min(order.getTotalFullPrice(), existingRow.getMinProfit()));
-//                        existingRow.setTotalProfit(order.getTotalFullPrice() + existingRow.getTotalProfit());
-//                        existingRow.setOrdersCount(1 + existingRow.getOrdersCount());
-//                        existingRow.setTotalOrdersProfit(order.getTotalFullPrice() + existingRow.getTotalOrdersProfit());
-//                        return existingRow;
-//                    });
-//        });
-        orders.forEach(order -> {
-            var row = excelRowMap.computeIfAbsent(order.getAuthorName(), (i) -> new EmployeeExcelRow(order.getAuthorName()));
-            row.setMaxWorkTime(Math.max(order.getTotalFullTime(), row.getMaxWorkTime()));
-            row.setMinWorkTime(Math.min(order.getTotalFullTime(), row.getMinWorkTime()));
-            row.setTotalWorkTime(order.getTotalFullTime() + row.getMaxWorkTime());
-            row.setMaxProfit(Math.max(order.getTotalFullPrice(), row.getMaxProfit()));
-            row.setMinProfit(Math.min(order.getTotalFullPrice(), row.getMinProfit()));
-            row.setTotalProfit(order.getTotalFullPrice() + row.getTotalProfit());
-            if (order.isRoomOrder()){
-                row.setTotalRoomOrdersProfit(order.getTotalFullPrice() + row.getTotalRoomOrdersProfit());
-                row.setBookedRoomsCount(1 + row.getBookedRoomsCount());
-            }
-            else{
-                row.setTotalOrdersProfit(order.getTotalFullPrice() + row.getTotalOrdersProfit());
-                row.setOrdersCount(1 + row.getOrdersCount());
-            }
-            log.info("author name: {}", order.getAuthorName());
-        });
-
-        excelRowMap.forEach((key, value) -> {
-            if (value.getMinProfit() == Double.MIN_VALUE)
-                value.setMinProfit(null);
-            if (value.getMaxProfit() == Double.MAX_VALUE)
-                value.setMaxProfit(null);
-            if (value.getMaxWorkTime() == Long.MAX_VALUE)
-                value.setMaxWorkTime(null);
-            if (value.getMinWorkTime() == Long.MIN_VALUE)
-                value.setMinWorkTime(null);
-
-            if (value.getTotalProfit() != 0)
-                value.setAvgProfit(value.getTotalProfit() / (value.getOrdersCount() + value.getBookedRoomsCount()));
-            else value.setAvgProfit(0.0);
-            if (value.getTotalWorkTime() != 0)
-                value.setAvgWorkTime((double) (value.getTotalWorkTime() / (value.getOrdersCount() + value.getBookedRoomsCount())));
-            else value.setAvgWorkTime(0.0);
-
-        });
-
-
     }
 
 

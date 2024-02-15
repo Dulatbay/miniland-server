@@ -167,10 +167,16 @@ public class ReportServiceImpl implements ReportService {
 
                     if (key.getKey() == KeyIndexType.MIN_TIME
                             || key.getKey() == KeyIndexType.MAX_TIME
-                            || key.getKey() == KeyIndexType.FULL_TIME) {
+                            || key.getKey() == KeyIndexType.FULL_TIME
+                    ) {
                         long seconds = Long.parseLong(data.toString());
                         cell.setCellValue(Duration.ofSeconds(seconds).toString());
-                    } else cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
+                    }
+                    else if(key.getKey() == KeyIndexType.AVG_TIME){
+                        long seconds = (long) Double.parseDouble(data.toString());
+                        cell.setCellValue(Duration.ofSeconds(seconds).toString());
+                    }
+                    else cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
 
                 }
             }

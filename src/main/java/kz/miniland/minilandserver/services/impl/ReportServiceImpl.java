@@ -170,13 +170,11 @@ public class ReportServiceImpl implements ReportService {
                             || key.getKey() == KeyIndexType.FULL_TIME
                     ) {
                         long seconds = Long.parseLong(data.toString());
-                        cell.setCellValue(Duration.ofSeconds(seconds).toString());
-                    }
-                    else if(key.getKey() == KeyIndexType.AVG_TIME){
+                        cell.setCellValue(getDuration(Duration.ofSeconds(seconds)));
+                    } else if (key.getKey() == KeyIndexType.AVG_TIME) {
                         long seconds = (long) Double.parseDouble(data.toString());
-                        cell.setCellValue(Duration.ofSeconds(seconds).toString());
-                    }
-                    else cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
+                        cell.setCellValue(getDuration(Duration.ofSeconds(seconds)));
+                    } else cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
 
                 }
             }
@@ -189,6 +187,12 @@ public class ReportServiceImpl implements ReportService {
             log.info("IOException: {}", e.toString());
             return null;
         }
+    }
+
+    private String getDuration(Duration duration) {
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        return String.format("%sч. %sм.", hours, minutes);
     }
 
 

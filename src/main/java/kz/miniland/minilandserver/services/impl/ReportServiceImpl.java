@@ -230,7 +230,7 @@ public class ReportServiceImpl implements ReportService {
     public byte[] getReportExcel(LocalDate startDate, LocalDate endDate) {
         try (var workbook = new XSSFWorkbook()) {
             var sheet = workbook.createSheet(String.format("Отчет о сотрудниках, %s - %s", startDate, endDate));
-            sheet.setDefaultColumnWidth(15000);
+            sheet.setDefaultColumnWidth(150);
 
             createHeader(sheet, workbook);
 

@@ -47,7 +47,7 @@ public class ReportController {
                                                  @RequestParam("end_date") LocalDate endDate) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.setContentDispositionFormData("attachment", "sample.xlsx");
+        headers.setContentDispositionFormData("attachment", String.format("%s - %s", startDate, endDate) + ".xlsx");
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(reportService.getReportExcel(startDate, endDate));

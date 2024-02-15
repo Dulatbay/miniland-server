@@ -1,6 +1,8 @@
 package kz.miniland.minilandserver.utils.ExcelUtils;
 
 import kz.miniland.minilandserver.entities.OrderWithPriceAndTime;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExcelUtil {
     public final static List<Tuple<KeyIndexType, String>> excelKeys = List.of(
             new Tuple<>(KeyIndexType.FULL_NAME, "ФИО"),

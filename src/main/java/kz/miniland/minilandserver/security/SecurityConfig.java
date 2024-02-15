@@ -51,12 +51,9 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/prices", "/sales", "/master-classes", "/room-tariffs")
                             .hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/prices", "/sales", "/master-classes", "/room-tariffs")
+                            .hasAuthority("ADMIN")
+                            .requestMatchers("/reports/**", "/reports")
                             .hasAuthority("ADMIN");
-//                            .requestMatchers("/reports/**", "/reports")
-//                            .hasAuthority("ADMIN");
-                    // Akhan soska
-                    // QQQQQQANLYYYYYY
-                    System.out.println("Akhan Krasavchik");
 
                     auth
                             .anyRequest()

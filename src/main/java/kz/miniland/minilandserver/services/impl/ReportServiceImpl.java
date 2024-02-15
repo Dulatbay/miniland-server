@@ -145,12 +145,16 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public byte[] getReportExcel(LocalDate startDate, LocalDate endDate) {
         List<OrderWithPriceAndTime> orders = new ArrayList<>();
-        orders.addAll(orderRepository.findByCreatedAtBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
+        LocalDateTime startOfDay = LocalDateTime.of(startDate, LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(endDate, LocalTime.MAX);
+
+        orders.addAll(orderRepository.findByCreatedAtBetween(startOfDay, endOfDay));
         orders.addAll(roomOrderRepository.getAllByBookedDayBetweenAndDeletedIsFalse(startDate, endDate));
+
         try (var workbook = new XSSFWorkbook()) {
-            String excelName = String.format("Отчет о сотрудниках, %s - %s", startDate, endDate);
-            log.info("excelName: {}", excelName);
-            var sheet = workbook.createSheet();
+            String sheetName = String.format("Отчет о сотрудниках, %s - %s", startDate, endDate);
+            log.info("sheetName: {}", sheetName);
+            var sheet = workbook.createSheet(sheetName);
             sheet.setDefaultColumnWidth(25);
             ExcelUtil.createHeader(sheet, workbook);
             var style = ExcelUtil.createCellStyle(workbook);

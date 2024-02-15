@@ -65,6 +65,7 @@ public class ExcelUtil {
             row.setMaxProfit(Math.max(order.getTotalFullPrice(), row.getMaxProfit()));
             row.setMinProfit(Math.min(order.getTotalFullPrice(), row.getMinProfit()));
             row.setTotalProfit(order.getTotalFullPrice() + row.getTotalProfit());
+
             if (order.isRoomOrder()) {
                 row.setTotalRoomOrdersProfit(order.getTotalFullPrice() + row.getTotalRoomOrdersProfit());
                 row.setBookedRoomsCount(1 + row.getBookedRoomsCount());

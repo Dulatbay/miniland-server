@@ -69,4 +69,9 @@ public class RoomOrder  implements OrderWithPriceAndTime {
     public Long getTotalFullTime() {
         return this.fullTime;
     }
+
+    @Override
+    public boolean isRoomOrder() {
+        return true;
+    }
 }

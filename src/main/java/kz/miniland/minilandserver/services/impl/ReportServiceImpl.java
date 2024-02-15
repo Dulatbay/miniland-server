@@ -292,29 +292,51 @@ public class ReportServiceImpl implements ReportService {
         orders.addAll(roomOrderRepository.getAllByBookedDayBetween(startDate, endDate));
 
 
+//        orders.forEach(order -> {
+//            excelRowMap.forEach(order.getAuthorName(), new EmployeeExcelRow(order.getAuthorName()),
+//                    (existingRow, newRow) -> {
+//                        existingRow.setMaxWorkTime(Math.max(order.getTotalFullTime(), existingRow.getMaxWorkTime()));
+//                        existingRow.setMinWorkTime(Math.min(order.getTotalFullTime(), existingRow.getMinWorkTime()));
+//                        existingRow.setTotalWorkTime(order.getTotalFullTime() + existingRow.getMaxWorkTime());
+//                        existingRow.setMaxProfit(Math.max(order.getTotalFullPrice(), existingRow.getMaxProfit()));
+//                        existingRow.setMinProfit(Math.min(order.getTotalFullPrice(), existingRow.getMinProfit()));
+//                        existingRow.setTotalProfit(order.getTotalFullPrice() + existingRow.getTotalProfit());
+//                        existingRow.setOrdersCount(1 + existingRow.getOrdersCount());
+//                        existingRow.setTotalOrdersProfit(order.getTotalFullPrice() + existingRow.getTotalOrdersProfit());
+//                        return existingRow;
+//                    });
+//        });
         orders.forEach(order -> {
-            excelRowMap.merge(order.getAuthorName(), new EmployeeExcelRow(order.getAuthorName()),
-                    (existingRow, newRow) -> {
-                        existingRow.setMaxWorkTime(Math.max(order.getTotalFullTime(), existingRow.getMaxWorkTime()));
-                        existingRow.setMinWorkTime(Math.min(order.getTotalFullTime(), existingRow.getMinWorkTime()));
-                        existingRow.setTotalWorkTime(order.getTotalFullTime() + existingRow.getMaxWorkTime());
-                        existingRow.setMaxProfit(Math.max(order.getTotalFullPrice(), existingRow.getMaxProfit()));
-                        existingRow.setMinProfit(Math.min(order.getTotalFullPrice(), existingRow.getMinProfit()));
-                        existingRow.setTotalProfit(order.getTotalFullPrice() + existingRow.getTotalProfit());
-                        existingRow.setOrdersCount(1 + existingRow.getOrdersCount());
-                        existingRow.setTotalOrdersProfit(order.getTotalFullPrice() + existingRow.getTotalOrdersProfit());
-                        return existingRow;
-                    });
+            var row = excelRowMap.computeIfAbsent(order.getAuthorName(), (i) -> new EmployeeExcelRow(order.getAuthorName()));
+            row.setMaxWorkTime(Math.max(order.getTotalFullTime(), row.getMaxWorkTime()));
+            row.setMinWorkTime(Math.min(order.getTotalFullTime(), row.getMinWorkTime()));
+            row.setTotalWorkTime(order.getTotalFullTime() + row.getMaxWorkTime());
+            row.setMaxProfit(Math.max(order.getTotalFullPrice(), row.getMaxProfit()));
+            row.setMinProfit(Math.min(order.getTotalFullPrice(), row.getMinProfit()));
+            row.setTotalProfit(order.getTotalFullPrice() + row.getTotalProfit());
+            row.setOrdersCount(1 + row.getOrdersCount());
+            row.setTotalOrdersProfit(order.getTotalFullPrice() + row.getTotalOrdersProfit());
         });
 
-        excelRowMap.forEach((key, value)->{
-            if(value.getTotalProfit() != 0)
+        excelRowMap.forEach((key, value) -> {
+            if (value.getMinProfit() == Double.MIN_VALUE)
+                value.setMinProfit(null);
+            if (value.getMaxProfit() == Double.MAX_VALUE)
+                value.setMaxProfit(null);
+            if (value.getMaxWorkTime() == Long.MAX_VALUE)
+                value.setMaxWorkTime(null);
+            if (value.getMinWorkTime() == Long.MIN_VALUE)
+                value.setMinWorkTime(null);
+
+            if (value.getTotalProfit() != 0)
                 value.setAvgProfit(value.getTotalProfit() / (value.getOrdersCount() + value.getBookedRoomsCount()));
             else value.setAvgProfit(0.0);
-            if(value.getTotalWorkTime() != 0)
+            if (value.getTotalWorkTime() != 0)
                 value.setAvgWorkTime((double) (value.getTotalWorkTime() / (value.getOrdersCount() + value.getBookedRoomsCount())));
             else value.setAvgWorkTime(0.0);
+
         });
+
 
     }
 

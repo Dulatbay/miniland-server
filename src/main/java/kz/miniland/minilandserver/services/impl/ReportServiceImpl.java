@@ -316,8 +316,14 @@ public class ReportServiceImpl implements ReportService {
             row.setMaxProfit(Math.max(order.getTotalFullPrice(), row.getMaxProfit()));
             row.setMinProfit(Math.min(order.getTotalFullPrice(), row.getMinProfit()));
             row.setTotalProfit(order.getTotalFullPrice() + row.getTotalProfit());
-            row.setOrdersCount(1 + row.getOrdersCount());
-            row.setTotalOrdersProfit(order.getTotalFullPrice() + row.getTotalOrdersProfit());
+            if (order.isRoomOrder()){
+                row.setTotalRoomOrdersProfit(order.getTotalFullPrice() + row.getTotalOrdersProfit());
+                row.setBookedRoomsCount(1 + row.getOrdersCount());
+            }
+            else{
+                row.setTotalOrdersProfit(order.getTotalFullPrice() + row.getTotalOrdersProfit());
+                row.setOrdersCount(1 + row.getOrdersCount());
+            }
             log.info("author name: {}", order.getAuthorName());
         });
 

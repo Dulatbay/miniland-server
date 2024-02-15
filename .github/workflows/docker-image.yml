@@ -23,8 +23,11 @@ jobs:
       contents: read
 
     steps:
+    - name: test
+      run: echo ${{env.DOCKERHUB_TOKEN}} ${{secrets.DOCKERHUB_TOKEN}}
     - name: Log in to Docker Hub
       run: echo "${{ env.DOCKERHUB_TOKEN }}" | docker login --username ${{ env.DOCKERHUB_USERNAME }} --password-stdin
+
 
     # Push the Docker image to Docker Hub
     - name: Push Docker image to Docker Hub

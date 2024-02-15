@@ -12,6 +12,7 @@ import kz.miniland.minilandserver.repositories.ProfitRepository;
 import kz.miniland.minilandserver.repositories.RoomOrderRepository;
 import kz.miniland.minilandserver.services.ReportService;
 import kz.miniland.minilandserver.utils.ExcelUtils.ExcelUtil;
+import kz.miniland.minilandserver.utils.ExcelUtils.KeyIndexType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -160,8 +162,16 @@ public class ReportServiceImpl implements ReportService {
                 Row row = sheet.createRow(rowCount++);
                 for (var key : ExcelUtil.excelKeys) {
                     Cell cell = row.createCell(key.getKey().ordinal());
-                    cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
                     cell.setCellStyle(style);
+                    var data = employee.getValue().getByKeyIndexType(key.getKey());
+
+                    if (key.getKey() == KeyIndexType.MIN_TIME
+                            || key.getKey() == KeyIndexType.MAX_TIME
+                            || key.getKey() == KeyIndexType.FULL_TIME) {
+                        long seconds = Long.parseLong(data.toString());
+                        cell.setCellValue(Duration.ofSeconds(seconds).toString());
+                    } else cell.setCellValue(employee.getValue().getByKeyIndexType(key.getKey()).toString());
+
                 }
             }
 

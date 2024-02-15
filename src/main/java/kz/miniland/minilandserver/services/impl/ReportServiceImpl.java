@@ -291,7 +291,7 @@ public class ReportServiceImpl implements ReportService {
     private void processOrders(LocalDate startDate, LocalDate endDate, Map<String, EmployeeExcelRow> excelRowMap) {
         List<OrderWithPriceAndTime> orders = new ArrayList<>();
         orders.addAll(orderRepository.findByCreatedAtBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
-        orders.addAll(roomOrderRepository.getAllByBookedDayBetween(startDate, endDate));
+        orders.addAll(roomOrderRepository.getAllByBookedDayBetweenAndDeletedIsFalse(startDate, endDate));
 
 
 //        orders.forEach(order -> {

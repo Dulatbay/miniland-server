@@ -10,7 +10,7 @@ import java.time.LocalTime;
 @Table(name = "room_order", schema = "schema_miniland")
 @Entity
 @Data
-public class RoomOrder {
+public class RoomOrder  implements OrderWithPriceAndTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -60,4 +60,18 @@ public class RoomOrder {
 
     @Column(name = "paid", nullable = false)
     private boolean paid;
+
+    @Override
+    public Double getTotalFullPrice() {
+        return this.fullPrice;
+    }
+    @Override
+    public Long getTotalFullTime() {
+        return this.fullTime;
+    }
+
+    @Override
+    public boolean isRoomOrder() {
+        return true;
+    }
 }

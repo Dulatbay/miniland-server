@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order", schema = "schema_miniland")
-@Getter
 @Setter
-public class Order {
+@Getter
+public class Order implements OrderWithPriceAndTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -40,7 +40,6 @@ public class Order {
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
 
-
     @Column(name = "full_time", nullable = false)
     private Long fullTime;
 
@@ -59,4 +58,19 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(columnDefinition = "integer", name = "sale_id")
     private Sale sale;
+
+    @Override
+    public Double getTotalFullPrice() {
+        return this.fullPrice;
+    }
+
+    @Override
+    public Long getTotalFullTime() {
+        return this.fullTime;
+    }
+
+    @Override
+    public boolean isRoomOrder() {
+        return false;
+    }
 }

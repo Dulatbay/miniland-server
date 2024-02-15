@@ -10,12 +10,13 @@ import kz.miniland.minilandserver.services.KeycloakService;
 import kz.miniland.minilandserver.services.ReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
@@ -39,6 +40,17 @@ public class ReportController {
                                                                        @RequestParam(value = "username", required = false) String username
     ) {
         return ResponseEntity.ok(reportService.getReportByParams(username, startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
+    }
+
+    @GetMapping("/excel")
+    public ResponseEntity<byte[]> getReportExcel(@RequestParam("start_date") LocalDate startDate,
+                                                 @RequestParam("end_date") LocalDate endDate) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", String.format("%s - %s", startDate, endDate) + ".xlsx");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(reportService.getReportExcel(startDate, endDate));
     }
 
     @GetMapping("/usernames")

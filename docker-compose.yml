@@ -16,8 +16,8 @@ services:
       - "5432:5432"
     restart: unless-stopped
   keycloak:
-#    image: jboss/keycloak
-    image: sleighzy/keycloak
+    image: jboss/keycloak
+#    image: sleighzy/keycloak
     container_name: miniland-keycloak
     environment:
       DB_VENDOR: POSTGRES

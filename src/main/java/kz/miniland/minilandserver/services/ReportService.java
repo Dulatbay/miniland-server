@@ -15,4 +15,6 @@ public interface ReportService {
     ResponseReportProfitDto getReportProfitInRange(LocalDate startDate, LocalDate endDate);
 
     void createProfit(RequestCreateProfitDto requestCreateProfitDto);
+
+    byte[] getReportExcel(LocalDate startDate, LocalDate endDate);
 }

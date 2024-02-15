@@ -16,14 +16,10 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -231,7 +227,7 @@ public class ReportServiceImpl implements ReportService {
 
 
     @Override
-    public Resource getReportExcel(LocalDate startDate, LocalDate endDate) {
+    public byte[] getReportExcel(LocalDate startDate, LocalDate endDate) {
         try (var workbook = new XSSFWorkbook()) {
             var sheet = workbook.createSheet(String.format("Отчет о сотрудниках, %s - %s", startDate, endDate));
             sheet.setDefaultColumnWidth(15000);
@@ -255,11 +251,10 @@ public class ReportServiceImpl implements ReportService {
                 }
             }
 
-            var file = File.createTempFile("report", ".xlsx");
-            try (var fileOutputStream = new FileOutputStream(file)) {
-                workbook.write(fileOutputStream);
-            }
-            return new ByteArrayResource(Files.readAllBytes(file.toPath()));
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            workbook.write(stream);
+
+            return stream.toByteArray();
         } catch (IOException e) {
             log.info("IOException: {}", e.toString());
             return null;

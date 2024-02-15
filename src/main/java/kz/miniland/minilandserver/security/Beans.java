@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class Beans {
     @Value("${application.keycloak-url}")
     private String keycloakUrl;
+
     @Bean
     Keycloak keycloak() {
         return KeycloakBuilder.builder()

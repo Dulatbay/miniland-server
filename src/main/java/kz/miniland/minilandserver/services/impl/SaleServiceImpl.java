@@ -42,7 +42,7 @@ public class SaleServiceImpl implements SaleService {
         var sale = saleRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Sale doesn't exist"));
 
-        if(!sale.isEnabled())
+        if (!sale.isEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Sale doesn't exist or already deleted");
 
         sale.setEnabled(false);

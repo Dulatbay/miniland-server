@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
-import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomOrderDto;
 import kz.miniland.minilandserver.services.RoomOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

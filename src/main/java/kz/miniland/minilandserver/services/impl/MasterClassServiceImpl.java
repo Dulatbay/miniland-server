@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,7 +73,7 @@ public class MasterClassServiceImpl implements MasterClassService {
         var masterClass = masterClassRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Master class doesn't exist"));
 
-        if(!masterClass.getEnabled())
+        if (!masterClass.getEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Master class doesn't exist or already deleted");
 
         masterClass.setEnabled(false);

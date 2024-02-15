@@ -7,12 +7,9 @@ import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Sale;
 import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.mappers.SaleMapper;
-import kz.miniland.minilandserver.repositories.MasterClassRepository;
-import kz.miniland.minilandserver.repositories.OrderMasterClassRepository;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +29,7 @@ import static kz.miniland.minilandserver.constants.ValueConstants.UPLOADED_FOLDE
 public class FileServiceImpl implements FileService {
 
     private final Path rootLocation;
+
     public FileServiceImpl() {
         this.rootLocation = Paths.get(UPLOADED_FOLDER);
     }

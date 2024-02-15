@@ -38,7 +38,6 @@ public class RoomOrderCustomMapper {
                 && roomOrder.getStartedAt().isBefore(LocalTime.now(ZONE_ID));
 
 
-
         return ResponseCardRoomOrderDto.builder()
                 .id(roomOrder.getId())
                 .clientName(roomOrder.getClientName())

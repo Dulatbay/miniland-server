@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDetailRoomTariffDto  {
+public class ResponseDetailRoomTariffDto {
     @JsonProperty("id")
     private Long id;
 

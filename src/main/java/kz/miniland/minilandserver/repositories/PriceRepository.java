@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface PriceRepository extends JpaRepository<Price, Long> {
     List<Price> findAllByEnabledIsTrueOrderByFullPriceDesc();
+
     List<Price> findAllByOrderByFullPriceDesc();
 }

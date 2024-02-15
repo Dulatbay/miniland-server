@@ -2,7 +2,6 @@ package kz.miniland.minilandserver.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.ZoneId;
 

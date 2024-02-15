@@ -15,12 +15,13 @@ import static kz.miniland.minilandserver.constants.ValueConstants.ZONE_ID;
 @Component
 public class RoomTariffCustomMapper {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZONE_ID);
+
     public ResponseCardRoomTariffDto toCardDto(RoomTariff roomTariff) {
         return ResponseCardRoomTariffDto
                 .builder()
                 .id(roomTariff.getId())
                 .firstPrice(roomTariff.getFirstPrice())
-                .startedTime(roomTariff.getStartedAt() .format(dateTimeFormatter))
+                .startedTime(roomTariff.getStartedAt().format(dateTimeFormatter))
                 .endedTime(roomTariff.getFinishedAt().format(dateTimeFormatter))
                 .maxChild(roomTariff.getMaxChild())
                 .weekDays(roomTariff.getDays()
@@ -36,7 +37,7 @@ public class RoomTariffCustomMapper {
                 .builder()
                 .id(roomTariff.getId())
                 .firstPrice(roomTariff.getFirstPrice())
-                .startedTime(roomTariff.getStartedAt() .format(dateTimeFormatter))
+                .startedTime(roomTariff.getStartedAt().format(dateTimeFormatter))
                 .endedTime(roomTariff.getFinishedAt().format(dateTimeFormatter))
                 .maxChild(roomTariff.getMaxChild())
                 .weekDays(roomTariff.getDays()

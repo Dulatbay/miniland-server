@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,7 @@ public class PriceServiceImpl implements PriceService {
         var price = priceRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Price doesn't exist"));
 
-        if(!price.isEnabled())
+        if (!price.isEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Price doesn't exist or already deleted");
 
         price.setEnabled(false);

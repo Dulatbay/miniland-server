@@ -4,7 +4,6 @@ import kz.miniland.minilandserver.dtos.request.RequestCreateProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
-import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.OrderWithPriceAndTime;
 import kz.miniland.minilandserver.entities.Profit;
 import kz.miniland.minilandserver.entities.ProfitTypes;
@@ -85,17 +84,19 @@ public class ReportServiceImpl implements ReportService {
 
         LocalDateTime endOfDay = LocalDateTime.of(endDate, LocalTime.MAX);
 
-        List<Order> orders;
+        List<OrderWithPriceAndTime> orders = new ArrayList<>();
         if (username == null) {
-            orders = orderRepository.findByCreatedAtBetween(startOfDay, endOfDay);
+            orders.addAll(orderRepository.findByCreatedAtBetween(startOfDay, endOfDay));
+            orders.addAll(roomOrderRepository.getAllByBookedDayBetweenAndDeletedIsFalse(startDate, endDate));
         } else {
-            orders = orderRepository.findByAuthorNameAndCreatedAtBetween(username, startOfDay, endOfDay);
+            orders.addAll(orderRepository.findByAuthorNameAndCreatedAtBetween(username, startOfDay, endOfDay));
+            orders.addAll(roomOrderRepository.getAllByBookedDayBetweenAndDeletedIsFalseAndAuthorName(startDate, endDate, username));
         }
 
         ResponseReportByParamsDto responseReportByParamsDto = new ResponseReportByParamsDto(orders.size(), 0L, 0.0);
         orders.forEach(order -> {
-            responseReportByParamsDto.setProfit(responseReportByParamsDto.getProfit() + order.getFullPrice());
-            responseReportByParamsDto.setTotalTime(responseReportByParamsDto.getTotalTime() + order.getFullTime());
+            responseReportByParamsDto.setProfit(responseReportByParamsDto.getProfit() + order.getTotalFullPrice());
+            responseReportByParamsDto.setTotalTime(responseReportByParamsDto.getTotalTime() + order.getTotalFullTime());
         });
 
         return responseReportByParamsDto;
@@ -107,11 +108,14 @@ public class ReportServiceImpl implements ReportService {
 
         LocalDateTime endOfDay = LocalDateTime.of(endDate, LocalTime.MAX);
 
-        var orders = orderRepository.findByCreatedAtBetween(startOfDay, endOfDay);
+        List<OrderWithPriceAndTime> orders = new ArrayList<>();
+
+        orders.addAll(orderRepository.findByCreatedAtBetween(startOfDay, endOfDay));
+        orders.addAll(roomOrderRepository.getAllByBookedDayBetweenAndDeletedIsFalse(startDate, endDate));
 
         ResponseReportProfitDto result = new ResponseReportProfitDto(0.0, 0.0);
 
-        orders.forEach(order -> result.setIncome(result.getIncome() + order.getFullPrice()));
+        orders.forEach(order -> result.setIncome(result.getIncome() + order.getTotalFullPrice()));
 
         var profits = profitRepository.findAllByCreateAtBetween(startOfDay, endOfDay);
 

@@ -92,6 +92,15 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         if (!roomTariff.getEnabled())
             throw new IllegalArgumentException("Room tariff doesn't exist or disabled");
 
+
+        var dayOfWeek = requestCreateRoomOrderDto.getSelectedBookedDay().getDayOfWeek().ordinal();
+
+        var enabledDay = roomTariff.getDays().stream().anyMatch((i) -> i.getInteger() == dayOfWeek - 1);
+
+        if (!enabledDay)
+            throw new IllegalArgumentException("The promotion is not valid on this day of the week");
+
+
         var now = LocalDate.now(ZONE_ID);
 
 
@@ -185,7 +194,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         if (!paid && !entity.isPaid())
             throw new IllegalArgumentException("The order must be paid before completion");
 
-        if(!entity.isPaid())
+        if (!entity.isPaid())
             entity.setPaid(true);
 
         entity.setFinished(true);

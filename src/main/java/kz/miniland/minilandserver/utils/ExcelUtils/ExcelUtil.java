@@ -58,7 +58,7 @@ public class ExcelUtil {
             var row = excelRowMap.computeIfAbsent(order.getAuthorName(), (i) -> new EmployeeExcelRow(order.getAuthorName()));
             row.setMaxWorkTime(Math.max(order.getTotalFullTime(), row.getMaxWorkTime()));
             row.setMinWorkTime(Math.min(order.getTotalFullTime(), row.getMinWorkTime()));
-            row.setTotalWorkTime(order.getTotalFullTime() + row.getMaxWorkTime());
+            row.setTotalWorkTime(order.getTotalFullTime() + row.getTotalWorkTime());
             row.setMaxProfit(Math.max(order.getTotalFullPrice(), row.getMaxProfit()));
             row.setMinProfit(Math.min(order.getTotalFullPrice(), row.getMinProfit()));
             row.setTotalProfit(order.getTotalFullPrice() + row.getTotalProfit());

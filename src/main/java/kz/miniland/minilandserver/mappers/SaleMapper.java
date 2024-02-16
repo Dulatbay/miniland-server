@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public interface SaleMapper extends BaseMapper<Sale, ResponseSaleDto> {
     @Override
     default ResponseSaleDto toDto(Sale entity) {
+        if(entity == null) return new ResponseSaleDto();
         ResponseSaleDto saleDto = new ResponseSaleDto();
         saleDto.setId(entity.getId());
         saleDto.setEnabled(entity.isEnabled());
@@ -25,6 +26,8 @@ public interface SaleMapper extends BaseMapper<Sale, ResponseSaleDto> {
 
     @Override
     default Sale toEntity(ResponseSaleDto responsePriceDto) {
+        if(responsePriceDto == null)
+            return new Sale();
         Sale sale = new Sale();
         sale.setId(responsePriceDto.getId());
         sale.setEnabled(responsePriceDto.getEnabled());

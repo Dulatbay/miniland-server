@@ -115,7 +115,7 @@ public class ReportServiceImpl implements ReportService {
         orders.addAll(orderRepository.findByCreatedAtBetween(startOfDay, endOfDay));
         orders.addAll(roomOrderRepository.getAllByBookedDayBetweenAndDeletedIsFalse(startDate, endDate));
 
-        ResponseReportProfitDto result = new ResponseReportProfitDto(0.0, 0.0);
+        ResponseReportProfitDto result = new ResponseReportProfitDto(0.0, 0.0, "");
 
         orders.forEach(order -> result.setIncome(result.getIncome() + order.getTotalFullPrice()));
 
@@ -127,6 +127,7 @@ public class ReportServiceImpl implements ReportService {
             } else {
                 result.setIncome(result.getIncome() + profit.getProfit());
             }
+            result.setTitle(profit.getReason());
         });
 
         return result;

@@ -11,4 +11,6 @@ public class ResponseReportProfitDto {
     private Double expense;
     @JsonProperty("income")
     private Double income;
+    @JsonProperty("title")
+    private String title;
 }

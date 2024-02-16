@@ -1,0 +1,54 @@
+application:
+  title: MiniLand
+  version: 1.0.0
+  delete-all-files: false
+  keycloak-url: ${KEYCLOAK_URL}
+#  keycloak-url: ${KEYCLOAK_URL:http://192.168.0.101:8484/auth}
+#  keycloak-url: ${KEYCLOAK_URL:http://172.20.10.11:8484/auth}
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_DOMAIN}:${DATABASE_PORT}/${DATABASE_NAME
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: ${DRIVER_CLASS_NAME:org.postgresql.Driver}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+#          issuer-uri: ${OAUTH2_ISSUER:http://172.20.10.11:8484/auth/realms/miniland}
+#          issuer-uri: ${OAUTH2_ISSUER:http://192.168.0.242:8484/auth/realms/miniland}
+          issuer-uri: ${OAUTH2_ISSUER}
+#          issuer-uri: ${OAUTH2_ISSUER:http://192.168.0.101:8484/auth/realms/miniland}
+#          jwk-set-uri: ${OAUTH2_JWK:http://192.168.0.242:8484/auth/realms/miniland/protocol/openid-connect/certs}
+          jwk-set-uri: ${OAUTH2_JWK}
+#          jwk-set-uri: ${OAUTH2_JWK:http://192.168.0.101:8484/auth/realms/miniland/protocol/openid-connect/certs}
+#          jwk-set-uri: ${OAUTH2_JWK:http://172.20.10.11:8484/auth/realms/miniland/protocol/openid-connect/certs}
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+jwt:
+  auth:
+    converter:
+      resource-id: miniland
+      principle-attribute: preferred_username
+
+server:
+  servlet:
+    context-path: '/api/'
+  error:
+    include-message: always
+  port: 8181
+  address: 0.0.0.0
+

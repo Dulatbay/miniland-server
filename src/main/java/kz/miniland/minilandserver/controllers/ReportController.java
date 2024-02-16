@@ -4,6 +4,7 @@ package kz.miniland.minilandserver.controllers;
 import jakarta.validation.Valid;
 import kz.miniland.minilandserver.dtos.request.RequestCreateProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportDetailProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
 import kz.miniland.minilandserver.services.KeycloakService;
@@ -62,6 +63,12 @@ public class ReportController {
     public ResponseEntity<ResponseReportProfitDto> getReportProfit(@RequestParam("start_date") LocalDate startDate,
                                                                    @RequestParam("end_date") LocalDate endDate) {
         return ResponseEntity.ok(reportService.getReportProfitInRange(startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
+    }
+
+    @GetMapping("/profits/details")
+    public ResponseEntity<List<ResponseReportDetailProfitDto>> getReportProfitDetail(@RequestParam("start_date") LocalDate startDate,
+                                                                               @RequestParam("end_date") LocalDate endDate) {
+        return ResponseEntity.ok(reportService.getReportProfitDetailInRange(startDate.atStartOfDay(ZONE_ID).toLocalDate(), endDate.atStartOfDay(ZONE_ID).toLocalDate()));
     }
 
     @PostMapping("/profits")

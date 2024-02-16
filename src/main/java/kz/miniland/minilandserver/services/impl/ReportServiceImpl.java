@@ -2,6 +2,7 @@ package kz.miniland.minilandserver.services.impl;
 
 import kz.miniland.minilandserver.dtos.request.RequestCreateProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
+import kz.miniland.minilandserver.dtos.response.ResponseReportDetailProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
 import kz.miniland.minilandserver.entities.OrderWithPriceAndTime;
@@ -191,6 +192,27 @@ public class ReportServiceImpl implements ReportService {
             log.info("IOException: {}", e.toString());
             return null;
         }
+    }
+
+    @Override
+    public List<ResponseReportDetailProfitDto> getReportProfitDetailInRange(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = LocalDateTime.of(startDate, LocalTime.MIN);
+
+        LocalDateTime endOfDay = LocalDateTime.of(endDate, LocalTime.MAX);
+
+        var profits = profitRepository.findAllByCreateAtBetween(startOfDay, endOfDay);
+
+        List<ResponseReportDetailProfitDto> result = new ArrayList<>();
+
+        profits.forEach(i -> {
+            ResponseReportDetailProfitDto responseReportDetailProfitDto = new ResponseReportDetailProfitDto();
+            responseReportDetailProfitDto.setTitle(i.getReason());
+            responseReportDetailProfitDto.setProfit(i.getProfit());
+            responseReportDetailProfitDto.setIncome(i.getType().ordinal() == 0);
+            result.add(responseReportDetailProfitDto);
+        });
+
+        return result;
     }
 
     private String getDuration(Duration duration) {

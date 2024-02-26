@@ -33,6 +33,9 @@ public class RequestCreateOrderDto {
     @JsonProperty("sale_id")
     private Long saleId;
 
+    @JsonProperty("sale_with_percent_id")
+    private Long saleWithPercentId;
+
     @JsonProperty("extra_time")
     @Min(value = 0, message = "Extra time should not be less than 0")
     @Max(value = 36000, message = "Extra time should not be greater than 10 hours")

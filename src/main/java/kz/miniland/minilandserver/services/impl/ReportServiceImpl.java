@@ -72,7 +72,9 @@ public class ReportServiceImpl implements ReportService {
                 employee.setOrdersCount(employee.getOrdersCount() + 1);
                 employee.setProfit(entity.getFullPrice() + entity.getFullPrice());
                 employee.setServeTime(employee.getServeTime() + entity.getFullTime());
+
             }
+            log.info("price: {}", entity.getFullPrice());
         });
 
         directorMainReport.setEmployees(new ArrayList<>(employeeMap.values()));

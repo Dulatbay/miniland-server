@@ -5,10 +5,12 @@ import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Sale;
+import kz.miniland.minilandserver.entities.SaleWithPercent;
 import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.mappers.SaleMapper;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
+import kz.miniland.minilandserver.repositories.SaleWithPercentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,7 @@ public class OrderCustomMapper {
     private final SaleRepository saleRepository;
     private final PriceRepository priceRepository;
     private final SaleMapper saleMapper;
+    private final SaleWithPercentRepository saleWithPercentRepository;
 
     private Double getFullPrice(LocalDateTime now, Long extraTime) {
         if (extraTime == 0) return 0.0;
@@ -88,10 +91,29 @@ public class OrderCustomMapper {
             order.setSale(null);
         }
 
+        SaleWithPercent saleWithPercent = new SaleWithPercent();
+
+        if  (requestCreateOrderDto.getSaleWithPercentId() != null){
+
+            saleWithPercent = saleWithPercentRepository
+                    .findById(requestCreateOrderDto.getSaleWithPercentId())
+                    .orElseThrow(() -> new IllegalArgumentException("SaleWithPercent doesn't exist"));
+
+            order.setSaleWithPercent(saleWithPercent);
+
+        } else {
+
+            saleWithPercent.setPercent(0);
+            order.setSaleWithPercent(null);
+
+        }
+
+        var priceWithSales = getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice();
+        var finalPrice = priceWithSales - priceWithSales * (double) saleWithPercent.getPercent() / 100;
 
         order.setExtraTime(requestCreateOrderDto.getExtraTime());
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
-        order.setFullPrice(getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice());
+        order.setFullPrice(finalPrice);
         order.setIsPaid(requestCreateOrderDto.getIsPaid());
         order.setCreatedAt(now);
         order.setIsFinished(false);

@@ -29,6 +29,7 @@ public class OrderCustomMapper {
     private final SaleRepository saleRepository;
     private final PriceRepository priceRepository;
     private final SaleMapper saleMapper;
+    private final DateTimeFormatter enteredTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
     private Double getFullPrice(LocalDateTime now, Long extraTime) {
         if (extraTime == 0) return 0.0;
@@ -36,7 +37,7 @@ public class OrderCustomMapper {
         double resultPrice = 0;
 
         DayOfWeek dayOfWeek = now.getDayOfWeek();
-        var prices = priceRepository.findAllByOrderByFullPriceDesc()
+        var prices = priceRepository.findAllByEnabledIsTrueOrderByFullPriceDesc()
                 .stream()
                 .filter(i -> i
                         .getDays()
@@ -48,7 +49,10 @@ public class OrderCustomMapper {
 
         if (prices.isEmpty())
             throw new IllegalArgumentException("Price list today is empty");
-        if (prices.getFirst().getFullPrice() > extraTime)
+
+        log.info("{}, {}", prices.getFirst().getFullTime(), prices.getLast().getFullTime());
+
+        if (prices.getFirst().getFullTime() > extraTime)
             throw new IllegalArgumentException("Extra time is too short");
 
 
@@ -70,6 +74,7 @@ public class OrderCustomMapper {
 
     public Order toEntity(RequestCreateOrderDto requestCreateOrderDto) {
         var now = LocalDateTime.now(ZONE_ID);
+        log.info("Create order at {}", now);
         Order order = new Order();
         order.setAuthorName(requestCreateOrderDto.getAuthorId());
         order.setParentName(requestCreateOrderDto.getParentName());
@@ -87,19 +92,25 @@ public class OrderCustomMapper {
             sale.setFullPrice(0.0);
             order.setSale(null);
         }
+        log.info("Selected sale: {}", sale);
 
 
         order.setExtraTime(requestCreateOrderDto.getExtraTime());
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
         order.setFullPrice(getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice());
+        log.info("requestCreateOrderDto.getExtraTime(): {}\tsale.getFullPrice(): {}", requestCreateOrderDto.getExtraTime(), sale.getFullPrice());
+        // order.setFullPrice(getFullPriceWithPromotionPercent(order.getFullPrice(), promotion))
+
+
         order.setIsPaid(requestCreateOrderDto.getIsPaid());
         order.setCreatedAt(now);
         order.setIsFinished(false);
+
         return order;
     }
 
+    // todo: сколько осталось заплатить
     public List<ResponseCardOrderDto> toCardDto(List<Order> orderEntities) {
-        var enteredTimeFormat = DateTimeFormatter.ofPattern("hh:mm");
         var responseCardOrderDtos = new ArrayList<ResponseCardOrderDto>();
         var now = LocalDateTime.now(ZONE_ID);
         for (var orderEntity : orderEntities) {
@@ -110,10 +121,11 @@ public class OrderCustomMapper {
             responseCardOrderDto.setParentName(orderEntity.getParentName());
             responseCardOrderDto.setEnteredTime(orderEntity.getCreatedAt().format(enteredTimeFormat));
             Duration duration = Duration.between(orderEntity.getCreatedAt(), orderEntity.getFinishedAt() == null ? now : orderEntity.getFinishedAt());
-            responseCardOrderDto.setRemainTime(orderEntity.getFullTime() - duration.getSeconds());
+            var remainTime = orderEntity.getFullTime() - duration.getSeconds();
+            responseCardOrderDto.setRemainTime(remainTime);
             responseCardOrderDto.setFullPrice(orderEntity.getFullPrice());
             responseCardOrderDto.setFullTime(orderEntity.getFullTime());
-            responseCardOrderDto.setIsPaid(orderEntity.getIsPaid());
+            responseCardOrderDto.setIsPaid(remainTime > 0 ? orderEntity.getIsPaid() : false);
             responseCardOrderDto.setIsFinished(orderEntity.getIsFinished());
             responseCardOrderDto.setAuthorName(orderEntity.getAuthorName());
             responseCardOrderDtos.add(responseCardOrderDto);
@@ -122,8 +134,6 @@ public class OrderCustomMapper {
     }
 
     public ResponseDetailOrderDto toDetailDto(Order orderEntity) {
-        var enteredTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
-
         ResponseDetailOrderDto responseDetailOrderDto = new ResponseDetailOrderDto();
         responseDetailOrderDto.setId(orderEntity.getId());
         responseDetailOrderDto.setChildName(orderEntity.getChildName());

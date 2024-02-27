@@ -28,4 +28,7 @@ public class ResponseCardOrderDto {
     @JsonProperty("author_name")
     private String authorName;
 
+    // JsonProperty
+    // left...
+
 }

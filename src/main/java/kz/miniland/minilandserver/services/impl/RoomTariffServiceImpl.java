@@ -8,12 +8,14 @@ import kz.miniland.minilandserver.mappers.custom.RoomTariffCustomMapper;
 import kz.miniland.minilandserver.repositories.RoomTariffRepository;
 import kz.miniland.minilandserver.services.RoomTariffService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RoomTariffServiceImpl implements RoomTariffService {
@@ -35,6 +37,7 @@ public class RoomTariffServiceImpl implements RoomTariffService {
     @Override
     public List<ResponseCardRoomTariffDto> getAllTariffsByEnabled(Boolean enabled) {
         var roomTariff = roomTariffRepository.getAllByEnabled(enabled);
+
         return roomTariff
                 .stream()
                 .map(roomTariffCustomMapper::toCardDto)
@@ -58,7 +61,7 @@ public class RoomTariffServiceImpl implements RoomTariffService {
         if (!roomTariff.getEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist or already deleted");
 
-        roomTariff.setEnabled(true);
+        roomTariff.setEnabled(false);
         roomTariffRepository.save(roomTariff);
     }
 }

@@ -14,8 +14,8 @@ public class RequestCreateSaleWithPercentDto {
 
     @JsonProperty("percent")
     @NotNull(message = "Full time must not be null")
-    @Min(value = 1, message = "The minimum value of percent should be 1")
-    @Max(value = 100, message = "the maximum value of percent should be 100")
+    @Min(value = 1, message = "Percent should be more than 1")
+    @Max(value = 100, message = "Percent should be less than 100")
     private Integer percent;
 
 }

@@ -8,6 +8,7 @@ import kz.miniland.minilandserver.entities.Sale;
 import kz.miniland.minilandserver.entities.SaleWithPercent;
 import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.mappers.SaleMapper;
+import kz.miniland.minilandserver.mappers.SaleWithPercentMapper;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
 import kz.miniland.minilandserver.repositories.SaleWithPercentRepository;
@@ -32,6 +33,7 @@ public class OrderCustomMapper {
     private final PriceRepository priceRepository;
     private final SaleMapper saleMapper;
     private final SaleWithPercentRepository saleWithPercentRepository;
+    private final SaleWithPercentMapper saleWithPercentMapper;
 
     private Double getFullPrice(LocalDateTime now, Long extraTime) {
         if (extraTime == 0) return 0.0;
@@ -51,7 +53,9 @@ public class OrderCustomMapper {
 
         if (prices.isEmpty())
             throw new IllegalArgumentException("Price list today is empty");
-        if (prices.getFirst().getFullPrice() > extraTime)
+
+        //Changed .getFullPrice() tp .getFullTime()
+        if (prices.getFirst().getFullTime() > extraTime)
             throw new IllegalArgumentException("Extra time is too short");
 
 
@@ -90,7 +94,7 @@ public class OrderCustomMapper {
             sale.setFullPrice(0.0);
             order.setSale(null);
         }
-
+        //added
         SaleWithPercent saleWithPercent = new SaleWithPercent();
 
         if  (requestCreateOrderDto.getSaleWithPercentId() != null){
@@ -107,9 +111,12 @@ public class OrderCustomMapper {
             order.setSaleWithPercent(null);
 
         }
-
+        //added 1 type
         var priceWithSales = getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice();
         var finalPrice = priceWithSales - priceWithSales * (double) saleWithPercent.getPercent() / 100;
+        //2 type
+        var priceOfOrder = getFullPrice(now, requestCreateOrderDto.getExtraTime());
+        var totalPrice = priceOfOrder - priceOfOrder * saleWithPercent.getPercent() / 100 + sale.getFullPrice();
 
         order.setExtraTime(requestCreateOrderDto.getExtraTime());
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
@@ -159,6 +166,9 @@ public class OrderCustomMapper {
         responseDetailOrderDto.setRemainTime(remainTime);
 
         responseDetailOrderDto.setSale(saleMapper.toDto(orderEntity.getSale()));
+        //added
+        responseDetailOrderDto.setSaleWithPercent(saleWithPercentMapper.toDto(orderEntity.getSaleWithPercent()));
+
         responseDetailOrderDto.setExtraTime(orderEntity.getExtraTime());
 
         var penaltyPrice = 0;

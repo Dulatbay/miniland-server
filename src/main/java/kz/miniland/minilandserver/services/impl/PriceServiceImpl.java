@@ -10,8 +10,10 @@ import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.services.PriceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.ws.rs.BadRequestException;
 import java.util.List;
@@ -49,8 +51,7 @@ public class PriceServiceImpl implements PriceService {
 
                         log.error("PriceEntity with the same day and price already exists");
 
-                        throw new BadRequestException("PriceEntity with the same day and price already exists");
-
+                        throw new IllegalArgumentException("PriceEntity with the same day and price already exists");
                     }
 
                 });

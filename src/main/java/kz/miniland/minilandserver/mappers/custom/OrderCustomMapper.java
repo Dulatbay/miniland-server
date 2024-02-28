@@ -5,10 +5,13 @@ import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.Sale;
+import kz.miniland.minilandserver.entities.SaleWithPercent;
 import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.mappers.SaleMapper;
+import kz.miniland.minilandserver.mappers.SaleWithPercentMapper;
 import kz.miniland.minilandserver.repositories.PriceRepository;
 import kz.miniland.minilandserver.repositories.SaleRepository;
+import kz.miniland.minilandserver.repositories.SaleWithPercentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,6 +32,8 @@ public class OrderCustomMapper {
     private final SaleRepository saleRepository;
     private final PriceRepository priceRepository;
     private final SaleMapper saleMapper;
+    private final SaleWithPercentRepository saleWithPercentRepository;
+    private final SaleWithPercentMapper saleWithPercentMapper;
     private final DateTimeFormatter enteredTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
     private Double getFullPrice(LocalDateTime now, Long extraTime) {
@@ -92,11 +97,33 @@ public class OrderCustomMapper {
             sale.setFullPrice(0.0);
             order.setSale(null);
         }
+        SaleWithPercent saleWithPercent = new SaleWithPercent();
+
+        if  (requestCreateOrderDto.getSaleWithPercentId() != null){
+
+            saleWithPercent = saleWithPercentRepository
+                    .findById(requestCreateOrderDto.getSaleWithPercentId())
+                    .orElseThrow(() -> new IllegalArgumentException("SaleWithPercent doesn't exist"));
         log.info("Selected sale: {}", sale);
 
+            order.setSaleWithPercent(saleWithPercent);
+
+        } else {
+
+            saleWithPercent.setPercent(0);
+            order.setSaleWithPercent(null);
+
+        }
+        //added 1 type
+        var priceWithSales = getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice();
+        var finalPrice = priceWithSales - priceWithSales * (double) saleWithPercent.getPercent() / 100;
+        //2 type
+        var priceOfOrder = getFullPrice(now, requestCreateOrderDto.getExtraTime());
+        var totalPrice = priceOfOrder - priceOfOrder * saleWithPercent.getPercent() / 100 + sale.getFullPrice();
 
         order.setExtraTime(requestCreateOrderDto.getExtraTime());
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
+        order.setFullPrice(finalPrice);
         order.setFullPrice(getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice());
         log.info("requestCreateOrderDto.getExtraTime(): {}\tsale.getFullPrice(): {}", requestCreateOrderDto.getExtraTime(), sale.getFullPrice());
         // order.setFullPrice(getFullPriceWithPromotionPercent(order.getFullPrice(), promotion))
@@ -147,6 +174,9 @@ public class OrderCustomMapper {
         responseDetailOrderDto.setRemainTime(remainTime);
 
         responseDetailOrderDto.setSale(saleMapper.toDto(orderEntity.getSale()));
+        //added
+        responseDetailOrderDto.setSaleWithPercent(saleWithPercentMapper.toDto(orderEntity.getSaleWithPercent()));
+
         responseDetailOrderDto.setExtraTime(orderEntity.getExtraTime());
 
         var penaltyPrice = 0;

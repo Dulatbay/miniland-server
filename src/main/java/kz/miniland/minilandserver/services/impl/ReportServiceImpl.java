@@ -83,6 +83,7 @@ public class ReportServiceImpl implements ReportService {
                 employee.setProfit(Double.sum(entity.getTotalFullPrice(), employee.getProfit()));
                 employee.setServeTime(employee.getServeTime() + entity.getTotalFullTime());
             }
+            log.info("price: {}", entity.getFullPrice());
         });
     }
 

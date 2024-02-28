@@ -19,6 +19,8 @@ public class ResponseDetailOrderDto {
     private Integer childAge;
     @JsonProperty("sale")
     private ResponseSaleDto sale;
+    @JsonProperty("sale_with_percent")
+    private ResponseSaleWithPercentDto saleWithPercent;
     @JsonProperty("extra_time")
     private Long extraTime;
     @JsonProperty("entered_time")

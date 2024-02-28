@@ -5,6 +5,7 @@ import kz.miniland.minilandserver.dtos.response.ResponseBookedDayDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomOrderDto;
 import kz.miniland.minilandserver.entities.RoomOrder;
+import kz.miniland.minilandserver.entities.WeekDays;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.custom.RoomOrderCustomMapper;
 import kz.miniland.minilandserver.mappers.custom.RoomTariffCustomMapper;
@@ -95,7 +96,9 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
 
         var dayOfWeek = requestCreateRoomOrderDto.getSelectedBookedDay().getDayOfWeek().ordinal();
 
-        var enabledDay = roomTariff.getDays().stream().anyMatch((i) -> i.getInteger() == dayOfWeek - 1);
+
+        var enabledDay = roomTariff.getDays().stream().anyMatch((i) -> i.getInteger() == dayOfWeek + 1);
+
 
         if (!enabledDay)
             throw new IllegalArgumentException("The promotion is not valid on this day of the week");

@@ -5,6 +5,7 @@ import kz.miniland.minilandserver.dtos.response.ResponseReportByParamsDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportDetailProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseReportProfitDto;
 import kz.miniland.minilandserver.dtos.response.ResponseTableReportDto;
+import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.entities.OrderWithPriceAndTime;
 import kz.miniland.minilandserver.entities.Profit;
 import kz.miniland.minilandserver.entities.ProfitTypes;
@@ -51,35 +52,39 @@ public class ReportServiceImpl implements ReportService {
 
         LocalDateTime endOfDay = LocalDateTime.of(today, LocalTime.MAX);
 
-        var entities = orderRepository.findByCreatedAtBetween(startOfDay, endOfDay);
+        var orders = orderRepository.findByCreatedAtBetween(startOfDay, endOfDay);
+        var roomOrders = roomOrderRepository.getAllByBookedDayBetweenAndDeletedAndFinished(startOfDay.toLocalDate(), today.plusDays(1), false, true);
 
         ResponseTableReportDto directorMainReport = new ResponseTableReportDto();
-        directorMainReport.setOrdersCount(entities.size());
 
         Map<String, ResponseTableReportDto.Employee> employeeMap = new HashMap<>();
 
-
-        entities.forEach((entity) -> {
-            var employee = employeeMap.get(entity.getAuthorName());
-            if (employee == null) {
-                employee = new ResponseTableReportDto.Employee();
-                employee.setProfit(entity.getFullPrice());
-                employee.setUsername(entity.getAuthorName());
-                employee.setOrdersCount(1);
-                employee.setServeTime(entity.getFullTime());
-                employeeMap.put(employee.getUsername(), employee);
-            } else {
-                employee.setOrdersCount(employee.getOrdersCount() + 1);
-                employee.setProfit(entity.getFullPrice() + entity.getFullPrice());
-                employee.setServeTime(employee.getServeTime() + entity.getFullTime());
-
-            }
-            log.info("price: {}", entity.getFullPrice());
-        });
+        calculateOrders(orders.stream().map(i -> (OrderWithPriceAndTime) i).toList(), employeeMap);
+        calculateOrders(roomOrders.stream().map(i -> (OrderWithPriceAndTime) i).toList(), employeeMap);
+        directorMainReport.setOrdersCount(orders.size() + roomOrders.size());
 
         directorMainReport.setEmployees(new ArrayList<>(employeeMap.values()));
 
         return directorMainReport;
+    }
+
+    private static void calculateOrders(List<OrderWithPriceAndTime> orders, Map<String, ResponseTableReportDto.Employee> employeeMap) {
+        orders.forEach((entity) -> {
+            var employee = employeeMap.get(entity.getAuthorName());
+            if (employee == null) {
+                employee = new ResponseTableReportDto.Employee();
+                employee.setProfit(entity.getTotalFullPrice());
+                employee.setUsername(entity.getAuthorName());
+                employee.setOrdersCount(1);
+                employee.setServeTime(entity.getTotalFullTime());
+                employeeMap.put(employee.getUsername(), employee);
+            } else {
+                employee.setOrdersCount(employee.getOrdersCount() + 1);
+                employee.setProfit(Double.sum(entity.getTotalFullPrice(), employee.getProfit()));
+                employee.setServeTime(employee.getServeTime() + entity.getTotalFullTime());
+            }
+            log.info("price: {}", entity.getFullPrice());
+        });
     }
 
     @Override
@@ -137,6 +142,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void createProfit(RequestCreateProfitDto requestCreateProfitDto) {
+        log.info("prof: {}", requestCreateProfitDto);
         var profit = new Profit();
         profit.setProfit(requestCreateProfitDto.getProfit());
         profit.setReason(requestCreateProfitDto.getReason());

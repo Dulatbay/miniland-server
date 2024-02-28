@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     public void createOrder(RequestCreateOrderDto requestCreateOrderDto) {
         var orderEntity = orderCustomMapper.toEntity(requestCreateOrderDto);
         var entity = orderRepository.save(orderEntity);
-        log.info("saved entity: {}", entity);
+        log.info("saved order: {}", entity);
     }
 
     @Override
@@ -48,19 +48,24 @@ public class OrderServiceImpl implements OrderService {
         var endOfDay = LocalDateTime.of(now, LocalTime.MAX);
 
         var orderEntities = orderRepository.findByCreatedAtBetween(startOfDay, endOfDay);
+        log.info("startOfDay: {}, endOfDay: {}, order count: {}", startOfDay, endOfDay, orderEntities.size());
+
         return orderCustomMapper.toCardDto(orderEntities);
     }
 
     @Override
     public ResponseDetailOrderDto getDetailOrderById(Long id) {
-        var orderEntity = orderRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+        var orderEntity = orderRepository.findById(id)
+                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
         return orderCustomMapper.toDetailDto(orderEntity);
     }
 
     @Override
     public void finishOrderById(Long id, Boolean isPaid) {
-        var orderEntity = orderRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
-        if (!isPaid) throw new IllegalArgumentException("Order must be paid before finishing!");
+        var orderEntity = orderRepository.findById(id)
+                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+        if (!isPaid)
+            throw new IllegalArgumentException("Order must be paid before finishing!");
         orderEntity.setIsPaid(true);
         orderEntity.setIsFinished(true);
         orderEntity.setFinishedAt(LocalDateTime.now(ZONE_ID));
@@ -73,6 +78,8 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
 
         var orderMasterClassList = orderMasterClassRepository.findAllByOrder(order);
+
+
 
         return orderMasterClassList
                 .stream().filter(i -> i.getMasterClass().getEnabled())

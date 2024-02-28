@@ -24,5 +24,4 @@ public class ResponseTableReportDto {
         @JsonProperty("serve_time")
         private Long serveTime;
     }
-
 }

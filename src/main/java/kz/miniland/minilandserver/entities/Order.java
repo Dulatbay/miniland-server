@@ -60,7 +60,7 @@ public class Order implements OrderWithPriceAndTime {
     private Sale sale;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(columnDefinition = "inteher", name = "sale_with_percent_id")
+    @JoinColumn(columnDefinition = "integer", name = "sale_with_percent_id")
     private SaleWithPercent saleWithPercent;
 
     @Override

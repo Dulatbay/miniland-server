@@ -4,6 +4,7 @@ import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseOrderCountDto;
 
 import java.util.List;
 
@@ -17,4 +18,7 @@ public interface OrderService {
     void finishOrderById(Long id, Boolean isPaid);
 
     List<ResponseCardMasterClassDto> getMasterClassesByOrderId(Long id);
+
+    ResponseOrderCountDto getOrderCountByPhoneNumber(String phoneNumber);
+
 }

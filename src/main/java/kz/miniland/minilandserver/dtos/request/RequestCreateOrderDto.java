@@ -17,6 +17,7 @@ public class RequestCreateOrderDto {
 
 
     @JsonProperty("parent_phone_number")
+    @NotNull(message = "The parent's phone number should not be null")
     private String parentPhoneNumber;
 
     @JsonProperty("child_name")

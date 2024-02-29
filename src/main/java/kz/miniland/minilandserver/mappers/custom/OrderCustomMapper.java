@@ -143,6 +143,7 @@ public class OrderCustomMapper {
             responseCardOrderDto.setChildName(orderEntity.getChildName());
             responseCardOrderDto.setAge(orderEntity.getChildAge());
             responseCardOrderDto.setParentName(orderEntity.getParentName());
+            responseCardOrderDto.setPhoneNumber(orderEntity.getPhoneNumber());
             responseCardOrderDto.setEnteredTime(orderEntity.getCreatedAt().format(enteredTimeFormat));
             Duration duration = Duration.between(orderEntity.getCreatedAt(), orderEntity.getFinishedAt() == null ? now : orderEntity.getFinishedAt());
             var remainTime = orderEntity.getFullTime() - duration.getSeconds();

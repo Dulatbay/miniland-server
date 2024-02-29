@@ -116,12 +116,14 @@ public class OrderCustomMapper {
         }
 
         var priceWithSales = getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice();
-        var finalPrice = priceWithSales - priceWithSales * (double) saleWithPercent.getPercent() / 100;
+        var finalPrice = priceWithSales - priceWithSales * (double) saleWithPercent.getPercent() / 100.0;
+
+        log.info("Discount: {}, price: {}, finalPrice: {}", saleWithPercent.getPercent(), priceWithSales, finalPrice);
 
         order.setExtraTime(requestCreateOrderDto.getExtraTime());
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());
         order.setFullPrice(finalPrice);
-        order.setFullPrice(getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice());
+
         log.info("requestCreateOrderDto.getExtraTime(): {}\tsale.getFullPrice(): {}", requestCreateOrderDto.getExtraTime(), sale.getFullPrice());
         // order.setFullPrice(getFullPriceWithPromotionPercent(order.getFullPrice(), promotion))
 

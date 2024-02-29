@@ -6,7 +6,7 @@ import lombok.*;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "sale_percent")
+@Table(name = "sale_percent", schema = "schema_miniland")
 public class SaleWithPercent {
 
     @Id

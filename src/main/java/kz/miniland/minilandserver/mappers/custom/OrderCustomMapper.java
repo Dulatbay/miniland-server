@@ -114,12 +114,9 @@ public class OrderCustomMapper {
             order.setSaleWithPercent(null);
 
         }
-        //added 1 type
+
         var priceWithSales = getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice();
         var finalPrice = priceWithSales - priceWithSales * (double) saleWithPercent.getPercent() / 100;
-        //2 type
-        var priceOfOrder = getFullPrice(now, requestCreateOrderDto.getExtraTime());
-        var totalPrice = priceOfOrder - priceOfOrder * saleWithPercent.getPercent() / 100 + sale.getFullPrice();
 
         order.setExtraTime(requestCreateOrderDto.getExtraTime());
         order.setFullTime(sale.getFullTime() + requestCreateOrderDto.getExtraTime());

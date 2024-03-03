@@ -2,6 +2,7 @@ package kz.miniland.minilandserver.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "abonement", schema = "schema_miniland")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class BaseAbonement {
 
     @Id
@@ -35,6 +37,6 @@ public class BaseAbonement {
     private LocalDateTime createdAt;
 
     @Column(name = "enabled", nullable = false)
-    private Boolean enabled;
+    private boolean enabled;
 
 }

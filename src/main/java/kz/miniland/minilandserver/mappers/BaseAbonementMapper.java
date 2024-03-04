@@ -17,7 +17,7 @@ public interface BaseAbonementMapper extends BaseMapper<BaseAbonement, ResponseB
                 .fullTime(baseAbonement.getFullTime())
                 .fullPrice(baseAbonement.getFullPrice())
                 .createAt(baseAbonement.getCreatedAt())
-                .enabled(baseAbonement.getEnabled())
+                .enabled(baseAbonement.isEnabled())
                 .build();
 
     }

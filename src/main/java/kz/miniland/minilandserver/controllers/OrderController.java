@@ -6,6 +6,7 @@ import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseOrderCountDto;
 import kz.miniland.minilandserver.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,14 @@ public class OrderController {
                                                 Boolean isPaid) {
         orderService.finishOrderById(id, isPaid);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<ResponseOrderCountDto> getCountOfOrdersByPhoneNumber(@RequestParam("phone_number") String phoneNumber){
+
+        return ResponseEntity
+                .ok(orderService.getOrderCountByPhoneNumber(phoneNumber));
+
     }
 
 

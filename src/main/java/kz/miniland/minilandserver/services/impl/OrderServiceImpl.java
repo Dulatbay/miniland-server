@@ -4,6 +4,7 @@ import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
+import kz.miniland.minilandserver.dtos.response.ResponseOrderCountDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.MasterClassMapper;
 import kz.miniland.minilandserver.mappers.custom.OrderCustomMapper;
@@ -48,7 +49,8 @@ public class OrderServiceImpl implements OrderService {
         var endOfDay = LocalDateTime.of(now, LocalTime.MAX);
 
         var orderEntities = orderRepository.findByCreatedAtBetween(startOfDay, endOfDay);
-        log.info("startOfDay: {}, endOfDay: {}, order count: {}", startOfDay, endOfDay, orderEntities.size());
+
+        log.info("startOfDay: {}, endOfDay: {}, order count today: {}", startOfDay, endOfDay, orderEntities.size());
 
         return orderCustomMapper.toCardDto(orderEntities);
     }
@@ -85,6 +87,27 @@ public class OrderServiceImpl implements OrderService {
                 .stream().filter(i -> i.getMasterClass().getEnabled())
                 .map(i -> masterClassMapper.toDto(i.getMasterClass()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseOrderCountDto getOrderCountByPhoneNumber(String phoneNumber) {
+
+        if(phoneNumber == null || phoneNumber.trim().isEmpty()){
+
+            log.error("Phone number can't be empty");
+
+            throw new IllegalArgumentException("Phone number can't be empty");
+
+        }
+
+        var orderCount = orderRepository.countOrdersByPhoneNumber(phoneNumber);
+
+        log.info("Total order count with phone number {} is: {}", phoneNumber, orderCount);
+
+        return ResponseOrderCountDto.builder()
+                .orderCount(orderCount)
+                .build();
+
     }
 
 

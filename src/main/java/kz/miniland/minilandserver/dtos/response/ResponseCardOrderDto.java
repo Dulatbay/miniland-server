@@ -11,6 +11,8 @@ public class ResponseCardOrderDto {
     private String childName;
     @JsonProperty("parent_name")
     private String parentName;
+    @JsonProperty("parent_phone_number")
+    private String phoneNumber;
     @JsonProperty("entered_time")
     private String enteredTime;
     @JsonProperty("full_time")

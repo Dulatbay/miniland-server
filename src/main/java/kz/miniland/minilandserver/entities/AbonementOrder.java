@@ -1,17 +1,24 @@
 package kz.miniland.minilandserver.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Builder
 @Table(name = "abonement_order", schema = "schema_miniland")
+@NoArgsConstructor
+@AllArgsConstructor
 public class AbonementOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "client_name", nullable = false)
@@ -24,7 +31,7 @@ public class AbonementOrder {
     private String childName;
 
     @Column(name = "child_age", nullable = false)
-    private String childAge;
+    private Integer childAge;
 
     @Column(name = "quantity",nullable = false)
     private int quantity;
@@ -36,5 +43,8 @@ public class AbonementOrder {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(columnDefinition = "integer", name = "abonement_id")
     private BaseAbonement baseAbonement;
+
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
 
 }

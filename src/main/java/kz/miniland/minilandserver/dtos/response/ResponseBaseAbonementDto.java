@@ -23,12 +23,12 @@ public class ResponseBaseAbonementDto {
     private Long fullTime;
 
     @JsonProperty("full_price")
-    private Long fullPrice;
+    private Double fullPrice;
 
     @JsonProperty("created_at")
     private LocalDateTime createAt;
 
     @JsonProperty("enabled")
-    private Boolean enabled;
+    private boolean enabled;
 
 }

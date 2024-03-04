@@ -26,6 +26,6 @@ public class RequestCreateBaseAbonementDto {
     @JsonProperty("full_price")
     @NotNull(message = "Full price must not be null")
     @Positive(message = "Full price must be greater than 0")
-    private Long fullPrice;
+    private Double fullPrice;
 
 }

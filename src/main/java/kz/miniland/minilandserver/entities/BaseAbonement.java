@@ -18,6 +18,7 @@ public class BaseAbonement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "title", nullable = false)
@@ -27,7 +28,7 @@ public class BaseAbonement {
     private String description;
 
     @Column(name = "full_price", nullable = false)
-    private Long fullPrice;
+    private Double fullPrice;
 
     @Column(name = "fill_time", nullable = false)
     private Long fullTime;

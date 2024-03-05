@@ -43,6 +43,7 @@ public class BaseAbonementServiceImpl implements BaseAbonementService {
                 .fullPrice(requestCreateBaseAbonementDto.getFullPrice())
                 .fullTime(requestCreateBaseAbonementDto.getFullTime())
                 .createdAt(LocalDateTime.now(ZONE_ID))
+                .enabled(true)
                 .build();
 
         log.info("Create Base Abonement: {}", baseAbonement);
@@ -57,11 +58,11 @@ public class BaseAbonementServiceImpl implements BaseAbonementService {
         var baseAbonement = baseAbonementRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "BaseAbonement doesn't exist"));
 
-        if(!baseAbonement.isEnabled()){
-
+        if(!baseAbonement.isEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "BaseAbonement doesn't exist or already deleted");
 
-        }
+
+        log.info("Disabled baseAbonement: {}", baseAbonement);
 
         baseAbonement.setEnabled(false);
 

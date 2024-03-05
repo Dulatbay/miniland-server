@@ -12,4 +12,6 @@ public interface AbonementOrderRepository extends JpaRepository<AbonementOrder, 
 
     Optional<AbonementOrder> findAbonementOrderByPhoneNumberAndEnabledIsTrue(String phoneNumber);
 
+    List<AbonementOrder> findAbonementOrdersByPhoneNumberAndEnabledIsTrue(String phoneNumber);
+
 }

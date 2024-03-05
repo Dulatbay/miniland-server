@@ -12,7 +12,7 @@ public interface AbonementOrderService {
 
     void createAbonementOrder(RequestCreateAbonementOrderDto requestCreateAbonementOrderDto);
 
-    ResponseAbonementOrderDto getAbonementOrderByPhoneNumber(String phoneNumber);
+    List<ResponseAbonementOrderDto> getAbonementOrdersByPhoneNumber(String phoneNumber);
 
     void deleteAbonementOrderById(Long id);
 

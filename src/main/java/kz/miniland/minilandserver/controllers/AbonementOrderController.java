@@ -36,12 +36,12 @@ public class AbonementOrderController {
 
     }
 
-    @GetMapping("/order")
-    public ResponseEntity<ResponseAbonementOrderDto> getAbonementOrderByPhoneNumber(
+    @GetMapping("/by-phone-number")
+    public ResponseEntity<List<ResponseAbonementOrderDto>> getAbonementOrdersByPhoneNumber(
             @RequestParam("phone_number") String phoneNumber){
 
         return ResponseEntity
-                .ok(abonementOrderService.getAbonementOrderByPhoneNumber(phoneNumber));
+                .ok(abonementOrderService.getAbonementOrdersByPhoneNumber(phoneNumber));
 
     }
 

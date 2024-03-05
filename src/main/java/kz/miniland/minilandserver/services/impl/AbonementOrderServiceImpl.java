@@ -63,7 +63,7 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
     }
 
     @Override
-    public ResponseAbonementOrderDto getAbonementOrderByPhoneNumber(String phoneNumber) {
+    public List<ResponseAbonementOrderDto> getAbonementOrdersByPhoneNumber(String phoneNumber) {
 
         if(phoneNumber == null || phoneNumber.trim().isEmpty()){
 
@@ -74,11 +74,9 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
         }
 
         var abonementOrder = abonementOrderRepository
-                .findAbonementOrderByPhoneNumberAndEnabledIsTrue(phoneNumber)
-                .orElseThrow(() ->
-                        new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "AbonementOrder with this phone number doesn't exist"));
+                .findAbonementOrdersByPhoneNumberAndEnabledIsTrue(phoneNumber);
 
-        return abonementOrderMapper.toDto(abonementOrder);
+        return abonementOrderMapper.toDTO(abonementOrder);
 
     }
 

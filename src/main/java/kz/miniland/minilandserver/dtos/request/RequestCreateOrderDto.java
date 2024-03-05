@@ -5,10 +5,12 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import net.minidev.json.annotate.JsonIgnore;
 
 @Data
+@Builder
 public class RequestCreateOrderDto {
     @JsonProperty("parent_name")
     @NotNull(message = "The parent's name must not be null")

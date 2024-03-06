@@ -1,13 +1,17 @@
 package kz.miniland.minilandserver.services.impl;
 
+import kz.miniland.minilandserver.dtos.request.RequestCreateAbonementOrderDto;
+import kz.miniland.minilandserver.dtos.request.RequestCreateOrderByAbonementDto;
 import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseOrderCountDto;
+import kz.miniland.minilandserver.entities.Order;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.MasterClassMapper;
 import kz.miniland.minilandserver.mappers.custom.OrderCustomMapper;
+import kz.miniland.minilandserver.repositories.AbonementOrderRepository;
 import kz.miniland.minilandserver.repositories.OrderMasterClassRepository;
 import kz.miniland.minilandserver.repositories.OrderRepository;
 import kz.miniland.minilandserver.services.OrderService;
@@ -33,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderCustomMapper orderCustomMapper;
     private final OrderMasterClassRepository orderMasterClassRepository;
     private final MasterClassMapper masterClassMapper;
+    private final AbonementOrderRepository abonementOrderRepository;
 
     @Override
     public void createOrder(RequestCreateOrderDto requestCreateOrderDto) {
@@ -110,5 +115,62 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    @Override
+    public void createOrderByAbonement(RequestCreateOrderByAbonementDto requestCreateOrderByAbonementDto) {
 
+        var abonementOrder = abonementOrderRepository
+                .findById(requestCreateOrderByAbonementDto.getAbonementOrderId())
+                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "BaseAbonement doesn't exist"));
+
+        if (!abonementOrder.getPhoneNumber().equals(requestCreateOrderByAbonementDto.getPhoneNumber())) {
+
+            log.error("Requested phone number and abonement phone number not the same");
+
+            throw new IllegalArgumentException("Requested phone number and abonement phone number not the same");
+
+        }
+
+        if (!abonementOrder.isEnabled()) {
+
+            log.error("AbonementOrder does not enable");
+
+            throw new IllegalArgumentException("AbonementOrder does not enable");
+
+        }
+
+        if (abonementOrder.getQuantity() < 1) {
+
+            log.error("Requested abonement order has a 0 quantity! It is not enable");
+
+            throw new IllegalArgumentException("Requested abonement order has a 0 quantity! It is not enable");
+
+
+        }
+
+        var order = Order.builder()
+                .authorName(requestCreateOrderByAbonementDto.getAuthorId())
+                .childAge(abonementOrder.getChildAge())
+                .childName(abonementOrder.getChildName())
+                .parentName(abonementOrder.getClientName())
+                .phoneNumber(abonementOrder.getPhoneNumber())
+                .isPaid(true)
+                .createdAt(LocalDateTime.now(ZONE_ID))
+                .fullPrice(abonementOrder.getBaseAbonement().getFullPrice())
+                .fullTime(abonementOrder.getBaseAbonement().getFullTime())
+                .extraTime(0L)
+                .isFinished(false)
+                .build();
+
+        abonementOrder.setQuantity(abonementOrder.getQuantity() - 1);
+
+
+        log.info("Created new order: {}", order);
+
+        abonementOrderRepository.save(abonementOrder);
+        orderRepository.save(order);
+
+    }
 }
+
+
+

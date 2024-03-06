@@ -2,6 +2,7 @@ package kz.miniland.minilandserver.controllers;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
+import kz.miniland.minilandserver.dtos.request.RequestCreateOrderByAbonementDto;
 import kz.miniland.minilandserver.dtos.request.RequestCreateOrderDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardMasterClassDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardOrderDto;
@@ -65,6 +66,20 @@ public class OrderController {
                 .ok(orderService.getOrderCountByPhoneNumber(phoneNumber));
 
     }
+
+    @PostMapping("/by-abonement")
+    public ResponseEntity<Void> createOrderByAbonement(
+            @RequestBody @Valid RequestCreateOrderByAbonementDto requestCreateAbonementOrderDto){
+
+        var token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        requestCreateAbonementOrderDto.setAuthorId(token.getToken().getClaim("preferred_username"));
+
+        orderService.createOrderByAbonement(requestCreateAbonementOrderDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
 
 
 }

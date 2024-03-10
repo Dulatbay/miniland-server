@@ -26,11 +26,7 @@ public class RequestCreateAbonementOrderDto {
     //todo: set min and max age
     private Integer childAge;
 
-    @JsonProperty("quantity")
-    @NotNull(message = "Quantity should not be null")
-    @Min(value = 1, message = "Quantity should be greater or equal to 1")
-    //todo: set max quantity
-    private int quantity;
+
 
     @JsonProperty("base_abonement_id")
     @NotNull(message = "Base Abonement Id should not be null")

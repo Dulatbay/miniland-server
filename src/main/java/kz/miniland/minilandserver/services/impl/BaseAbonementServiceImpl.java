@@ -44,6 +44,7 @@ public class BaseAbonementServiceImpl implements BaseAbonementService {
                 .fullTime(requestCreateBaseAbonementDto.getFullTime())
                 .createdAt(LocalDateTime.now(ZONE_ID))
                 .enabled(true)
+                .quantity(requestCreateBaseAbonementDto.getQuantity())
                 .build();
 
         log.info("Create Base Abonement: {}", baseAbonement);

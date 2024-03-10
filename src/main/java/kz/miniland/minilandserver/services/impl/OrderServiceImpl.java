@@ -138,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
 
         }
 
-        if (abonementOrder.getQuantity() < 1) {
+        if (abonementOrder.getBaseAbonement().getQuantity() < 1) {
 
             log.error("Requested abonement order has a 0 quantity! It is not enable");
 

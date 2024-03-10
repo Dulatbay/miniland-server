@@ -41,18 +41,20 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
 
         //todo: can user create a multiple abonements?
 
+        var baseAbonement = baseAbonementRepository
+                .findById(requestCreateAbonementOrderDto.getBaseAbonementId())
+                .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "BaseAbonement class doesn't exist"));
+
         var abonementOrder = AbonementOrder.builder()
                 .clientName(requestCreateAbonementOrderDto.getClientName())
                 .phoneNumber(requestCreateAbonementOrderDto.getPhoneNumber())
                 .childName(requestCreateAbonementOrderDto.getChildName())
                 .childAge(requestCreateAbonementOrderDto.getChildAge())
-                .quantity(requestCreateAbonementOrderDto.getQuantity())
                 .createdAt(LocalDateTime.now(ZONE_ID))
                 .baseAbonement(
-                        baseAbonementRepository
-                                .findById(requestCreateAbonementOrderDto.getBaseAbonementId())
-                                .orElseThrow(() ->  new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "BaseAbonement class doesn't exist"))
+                        baseAbonement
                 )
+                .quantity(baseAbonement.getQuantity())
                 .enabled(true)
                 .build();
 
@@ -65,7 +67,7 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
     @Override
     public List<ResponseAbonementOrderDto> getAbonementOrdersByPhoneNumber(String phoneNumber) {
 
-        if(phoneNumber == null || phoneNumber.trim().isEmpty()){
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
 
             log.error("Phone number can't be empty");
 

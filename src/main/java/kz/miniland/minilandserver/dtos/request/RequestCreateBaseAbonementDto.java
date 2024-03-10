@@ -28,4 +28,9 @@ public class RequestCreateBaseAbonementDto {
     @Positive(message = "Full price must be greater than 0")
     private Double fullPrice;
 
+    @JsonProperty("quantity")
+    @NotNull(message = "Quantity should not be null")
+    @Min(value = 1, message = "Quantity should be greater or equal to 1")
+    //todo: set max quantity
+    private int quantity;
 }

@@ -40,4 +40,6 @@ public class BaseAbonement {
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
+    @Column(name = "quantity",nullable = false)
+    private int quantity;
 }

@@ -1,8 +1,8 @@
 application:
   title: MiniLand
   version: 1.0.0
-  delete-all-files: false
-  keycloak-url: ${KEYCLOAK_URL:http://192.168.1.175:8484/auth}
+  delete-all-files: true
+  keycloak-url: ${KEYCLOAK_URL:http://localhost:8484/auth}
 #  keycloak-url: ${KEYCLOAK_URL:http://192.168.0.101:8484/auth}
 #  keycloak-url: ${KEYCLOAK_URL:http://172.20.10.11:8484/auth}
 spring:
@@ -13,7 +13,7 @@ spring:
     driver-class-name: ${DRIVER_CLASS_NAME:org.postgresql.Driver}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -28,10 +28,10 @@ spring:
         jwt:
 #          issuer-uri: ${OAUTH2_ISSUER:http://172.20.10.11:8484/auth/realms/miniland}
 #          issuer-uri: ${OAUTH2_ISSUER:http://192.168.0.242:8484/auth/realms/miniland}
-          issuer-uri: ${OAUTH2_ISSUER:http://192.168.1.175:8484/auth/realms/miniland}
+          issuer-uri: ${OAUTH2_ISSUER:http://localhost:8484/auth/realms/miniland}
 #          issuer-uri: ${OAUTH2_ISSUER:http://192.168.0.101:8484/auth/realms/miniland}
 #          jwk-set-uri: ${OAUTH2_JWK:http://192.168.0.242:8484/auth/realms/miniland/protocol/openid-connect/certs}
-          jwk-set-uri: ${OAUTH2_JWK:http://192.168.1.175:8484/auth/realms/miniland/protocol/openid-connect/certs}
+          jwk-set-uri: ${OAUTH2_JWK:http://localhost:8484/auth/realms/miniland/protocol/openid-connect/certs}
 #          jwk-set-uri: ${OAUTH2_JWK:http://192.168.0.101:8484/auth/realms/miniland/protocol/openid-connect/certs}
 #          jwk-set-uri: ${OAUTH2_JWK:http://172.20.10.11:8484/auth/realms/miniland/protocol/openid-connect/certs}
   servlet:

@@ -55,7 +55,6 @@ public class SecurityConfig {
                     auth
                             .anyRequest()
                             .permitAll();
-
                 })
         ;
 

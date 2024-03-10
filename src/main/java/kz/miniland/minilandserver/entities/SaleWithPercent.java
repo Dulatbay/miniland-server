@@ -24,11 +24,4 @@ public class SaleWithPercent {
     private boolean enabled;
 
 
-
-
-
-
-
-
-
 }

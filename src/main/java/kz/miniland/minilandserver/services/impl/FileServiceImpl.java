@@ -92,7 +92,7 @@ public class FileServiceImpl implements FileService {
     public void init() {
         try {
             Files.createDirectories(rootLocation);
-            log.info("Create dir: {}", rootLocation);
+            log.info("Create directory: {}", rootLocation);
         } catch (IOException e) {
             log.error("Could not initialize storage.\nIOException: ", e);
         }

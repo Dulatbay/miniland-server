@@ -22,7 +22,7 @@ public class Beans {
                 .realm("miniland")
                 .clientId("miniland")
                 .grantType(OAuth2Constants.PASSWORD)
-                .username("admin")
+                .username("admin_qit")
                 .password("admin_password")
                 .resteasyClient(new ResteasyClientBuilderImpl()
                         .connectionPoolSize(10).build())

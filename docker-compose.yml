@@ -1,6 +1,16 @@
 version: "3.8"
 
 services:
+  nginx:
+    container_name: miniland-nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - keycloak
+      - springapp
   postgres:
     container_name: miniland-postgres
     image: postgres
@@ -16,35 +26,40 @@ services:
       - "5432:5432"
     restart: unless-stopped
   keycloak:
-#    image: jboss/keycloak
-    image: sleighzy/keycloak
     container_name: miniland-keycloak
+    image: quay.io/keycloak/keycloak:20.0
     environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: postgres
-      DB_DATABASE: miniland
-      DB_USER: k_app
-      DB_PASSWORD: 123
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin_password
+#      KC_HOSTNAME: 34.146.23.123
+#      KC_HOSTNAME_ADMIN: 34.146.23.123
+      #        KC_HOSTNAME_PORT: 8080
+      KC_HTTP_RELATIVE_PATH: /keycloak
+      KEYCLOAK_ADMIN: admin_qit
+      KEYCLOAK_ADMIN_PASSWORD: admin_password
+      KC_DB: postgres
+      KC_DB_PASSWORD: 123
+      KC_DB_USERNAME: k_app
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: miniland
+    command: start-dev
     ports:
       - "8484:8080"
     depends_on:
       - postgres
     links:
       - "postgres:postgres"
-#  miniland-server:
-#    image: miniland-server
-#    container_name: "miniland-server"
-#    environment:
-#      JAR_FILE: build/libs/*.jar
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/miniland
-#      SPRING_DATASOURCE_USERNAME: k_app
-#      SPRING_DATASOURCE_PASSWORD: 123
-#    depends_on:
-#      - postgres
-#    ports:
-#      - "8181:8181"
-#    links:
-#      - "keycloak:keycloak"
-#
+  springapp:
+    container_name: miniland-app
+    #    build: .
+    image: qqanly/miniland
+    environment:
+      DATABASE_DOMAIN: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: miniland
+      DATABASE_USERNAME: k_app
+      DATABASE_PASSWORD: 123
+    ports:
+      - "8181:8181"
+    depends_on:
+      - postgres
+      - keycloak
+  

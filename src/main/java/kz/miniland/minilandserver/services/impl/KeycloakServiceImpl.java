@@ -29,6 +29,8 @@ public class KeycloakServiceImpl implements KeycloakService {
 
     @Override
     public List<String> getUsernames() {
-        return keycloak.realm(KEYCLOAK_REALM).users().list().stream().map(UserRepresentation::getUsername).collect(Collectors.toList());
+        List<String> usernames = keycloak.realm(KEYCLOAK_REALM).users().list().stream().map(UserRepresentation::getUsername).collect(Collectors.toList());
+        log.info("Usernames list size: {}", usernames.size());
+        return usernames;
     }
 }

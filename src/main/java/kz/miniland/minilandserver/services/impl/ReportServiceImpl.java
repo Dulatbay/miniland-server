@@ -142,11 +142,11 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void createProfit(RequestCreateProfitDto requestCreateProfitDto) {
-        log.info("prof: {}", requestCreateProfitDto);
         var profit = new Profit();
         profit.setProfit(requestCreateProfitDto.getProfit());
         profit.setReason(requestCreateProfitDto.getReason());
         profit.setType(requestCreateProfitDto.getIsExpense() ? ProfitTypes.EXPENSE : ProfitTypes.INCOME);
+        log.info("Created new Profit: {}", profit);
         profitRepository.save(profit);
     }
 
@@ -199,6 +199,7 @@ public class ReportServiceImpl implements ReportService {
         } catch (IOException e) {
             log.info("IOException: {}", e.toString());
             return null;
+            //Разве нул нужно ретурнать?
         }
     }
 

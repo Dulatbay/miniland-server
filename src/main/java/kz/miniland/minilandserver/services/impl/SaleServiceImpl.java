@@ -24,7 +24,9 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<ResponseSaleDto> getAll(Boolean enabled) {
         var entities = saleRepository.findSalesByEnabled(enabled);
-        return saleMapper.toDTO(entities);
+        List<ResponseSaleDto> allSales =  saleMapper.toDTO(entities);
+        log.info("All sales size: {}", allSales.size());
+        return allSales;
     }
 
     @Override
@@ -34,6 +36,7 @@ public class SaleServiceImpl implements SaleService {
         sale.setFullPrice(requestCreateSaleDto.getFullPrice());
         sale.setFullTime(requestCreateSaleDto.getFullTime());
         sale.setEnabled(true);
+        log.info("Created new sale: {}", sale);
         saleRepository.save(sale);
     }
 
@@ -44,7 +47,7 @@ public class SaleServiceImpl implements SaleService {
 
         if (!sale.isEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Sale doesn't exist or already deleted");
-
+        log.info("Disabled sale by id: {}", id);
         sale.setEnabled(false);
         saleRepository.save(sale);
     }

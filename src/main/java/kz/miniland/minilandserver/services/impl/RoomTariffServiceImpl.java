@@ -3,6 +3,7 @@ package kz.miniland.minilandserver.services.impl;
 import kz.miniland.minilandserver.dtos.request.RequestCreateTariffDto;
 import kz.miniland.minilandserver.dtos.response.ResponseCardRoomTariffDto;
 import kz.miniland.minilandserver.dtos.response.ResponseDetailRoomTariffDto;
+import kz.miniland.minilandserver.entities.RoomTariff;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.mappers.custom.RoomTariffCustomMapper;
 import kz.miniland.minilandserver.repositories.RoomTariffRepository;
@@ -30,7 +31,7 @@ public class RoomTariffServiceImpl implements RoomTariffService {
         if (!roomOrderEntity.getEnabled())
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist or already deleted");
 
-
+        log.info("Getting room tariff: {}, by id: {}, ", roomOrderEntity, id);
         return roomTariffCustomMapper.toDto(roomOrderEntity);
     }
 
@@ -38,10 +39,12 @@ public class RoomTariffServiceImpl implements RoomTariffService {
     public List<ResponseCardRoomTariffDto> getAllTariffsByEnabled(Boolean enabled) {
         var roomTariff = roomTariffRepository.getAllByEnabled(enabled);
 
-        return roomTariff
+        List<ResponseCardRoomTariffDto> allEnableTariffs = roomTariff
                 .stream()
                 .map(roomTariffCustomMapper::toCardDto)
                 .collect(Collectors.toList());
+        log.info("All enabled tariffs size: {}", allEnableTariffs.size());
+        return allEnableTariffs;
     }
 
     @Override
@@ -50,7 +53,9 @@ public class RoomTariffServiceImpl implements RoomTariffService {
                 || requestCreateTariffDto.getStartedAt().toString().equals(requestCreateTariffDto.getFinishedAt().toString())) {
             throw new IllegalArgumentException("Started at time must be before finished at time.");
         }
-        roomTariffRepository.save(roomTariffCustomMapper.toEntity(requestCreateTariffDto));
+        RoomTariff roomTariff = roomTariffCustomMapper.toEntity(requestCreateTariffDto);
+        log.info("Created new room tariff: {}", roomTariff);
+        roomTariffRepository.save(roomTariff);
     }
 
     @Override
@@ -62,6 +67,7 @@ public class RoomTariffServiceImpl implements RoomTariffService {
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room tariff doesn't exist or already deleted");
 
         roomTariff.setEnabled(false);
+        log.info("Disabled room tariff: {}, by id: {}", roomTariff, id);
         roomTariffRepository.save(roomTariff);
     }
 }

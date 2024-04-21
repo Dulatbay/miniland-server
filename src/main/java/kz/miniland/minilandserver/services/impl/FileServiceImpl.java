@@ -59,7 +59,7 @@ public class FileServiceImpl implements FileService {
             Files.copy(inputStream, destinationFile,
                     StandardCopyOption.REPLACE_EXISTING);
 
-
+            log.info("Save file name, {}", filename);
             return filename;
         } catch (IOException e) {
             log.error("IOException: ", e);
@@ -77,6 +77,7 @@ public class FileServiceImpl implements FileService {
             Path file = load(fileName);
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
+                log.info("Load As Resource: {}", resource);
                 return resource;
             } else {
                 throw new StorageException(HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -100,6 +101,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void deleteAll() {
+        log.info("Deleted all File Service");
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 }

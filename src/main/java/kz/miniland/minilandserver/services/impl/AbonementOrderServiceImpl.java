@@ -67,13 +67,9 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
     @Override
     public List<ResponseAbonementOrderDto> getAbonementOrdersByPhoneNumber(String phoneNumber) {
 
-        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-
-            log.error("Phone number can't be empty");
-
+        if (phoneNumber == null || phoneNumber.trim().isEmpty())
             throw new IllegalArgumentException("Phone number can't be empty");
 
-        }
 
         var abonementOrder = abonementOrderRepository
                 .findAbonementOrdersByPhoneNumberAndEnabledIsTrue(phoneNumber);

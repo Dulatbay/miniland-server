@@ -64,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
     public ResponseDetailOrderDto getDetailOrderById(Long id) {
         var orderEntity = orderRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Order doesn't exist"));
+        log.info("Getting order by id: {}", id);
         return orderCustomMapper.toDetailDto(orderEntity);
     }
 
@@ -76,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setIsPaid(true);
         orderEntity.setIsFinished(true);
         orderEntity.setFinishedAt(LocalDateTime.now(ZONE_ID));
+        log.info("Saving order with id: {}", id);
         orderRepository.save(orderEntity);
     }
 
@@ -88,22 +90,19 @@ public class OrderServiceImpl implements OrderService {
 
 
 
-        return orderMasterClassList
+        List<ResponseCardMasterClassDto> masterClasses=  orderMasterClassList
                 .stream().filter(i -> i.getMasterClass().getEnabled())
                 .map(i -> masterClassMapper.toDto(i.getMasterClass()))
                 .collect(Collectors.toList());
+        log.info("Getting master classes with id: {} and size: {}", id, masterClasses.size());
+        return masterClasses;
     }
 
     @Override
     public ResponseOrderCountDto getOrderCountByPhoneNumber(String phoneNumber) {
 
-        if(phoneNumber == null || phoneNumber.trim().isEmpty()){
-
-            log.error("Phone number can't be empty");
-
+        if(phoneNumber == null || phoneNumber.trim().isEmpty())
             throw new IllegalArgumentException("Phone number can't be empty");
-
-        }
 
         var orderCount = orderRepository.countOrdersByPhoneNumber(phoneNumber);
 
@@ -122,30 +121,17 @@ public class OrderServiceImpl implements OrderService {
                 .findById(requestCreateOrderByAbonementDto.getAbonementOrderId())
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "BaseAbonement doesn't exist"));
 
-        if (!abonementOrder.getPhoneNumber().equals(requestCreateOrderByAbonementDto.getPhoneNumber())) {
-
-            log.error("Requested phone number and abonement phone number not the same");
-
+        if (!abonementOrder.getPhoneNumber().equals(requestCreateOrderByAbonementDto.getPhoneNumber()))
             throw new IllegalArgumentException("Requested phone number and abonement phone number not the same");
 
-        }
 
-        if (!abonementOrder.isEnabled()) {
-
-            log.error("AbonementOrder does not enable");
-
+        if (!abonementOrder.isEnabled())
             throw new IllegalArgumentException("AbonementOrder does not enable");
 
-        }
 
-        if (abonementOrder.getBaseAbonement().getQuantity() < 1) {
-
-            log.error("Requested abonement order has a 0 quantity! It is not enable");
-
+        if (abonementOrder.getBaseAbonement().getQuantity() < 1)
             throw new IllegalArgumentException("Requested abonement order has a 0 quantity! It is not enable");
 
-
-        }
 
         var order = Order.builder()
                 .authorName(requestCreateOrderByAbonementDto.getAuthorId())

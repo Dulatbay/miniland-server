@@ -65,6 +65,7 @@ public class MasterClassServiceImpl implements MasterClassService {
             masterClass.setImageUrl(filename);
         }
 
+        log.info("Created new master class, {}", masterClass);
         masterClassRepository.save(masterClass);
     }
 

@@ -224,7 +224,6 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
             extraTimePrice += penaltyPerHour;
             extraTime -= hour;
         }
-        log.info("extraTimePrice: {}, extraTime: {}", extraTimePrice, extraTime);
 
         if (extraTime > 0) {
             var halfHour = 30 * 60;
@@ -234,7 +233,9 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
             }
         }
 
-        return extraTimePrice * childCount;
+        Double fullPrice =  extraTimePrice * childCount;
+        log.info("extraTimePrice: {}, extraTime: {}, fullPrice: {}", extraTimePrice, extraTime, fullPrice);
+        return fullPrice;
     }
 
     private boolean isSameDate(LocalDate dateTime1, LocalDate dateTime2) {

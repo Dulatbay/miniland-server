@@ -28,9 +28,10 @@ public class SaleWithPercentServiceImpl implements SaleWithPercentService {
         var salesWithPercent = saleWithPercentRepository
                 .getSaleWithPercentByEnabled(enabled);
 
-        return saleWithPercentMapper
+        List<ResponseSaleWithPercentDto> allSalesWithPercent = saleWithPercentMapper
                 .toDTO(salesWithPercent);
-
+        log.info("Size of list all sales with percent : {}", allSalesWithPercent.size());
+        return allSalesWithPercent;
     }
 
     @Override

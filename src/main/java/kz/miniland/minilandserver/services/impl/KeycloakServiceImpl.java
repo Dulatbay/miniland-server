@@ -24,7 +24,9 @@ public class KeycloakServiceImpl implements KeycloakService {
         var listOfUsers = keycloak.realm(KEYCLOAK_REALM).users().search(username);
         if (listOfUsers.isEmpty())
             return Optional.empty();
-        return Optional.of(listOfUsers.getFirst());
+        Optional<UserRepresentation> usersByUsername = Optional.of(listOfUsers.getFirst());
+        log.info("Size of users by phone: {}", usersByUsername.stream().toList().size());
+        return usersByUsername;
     }
 
     @Override

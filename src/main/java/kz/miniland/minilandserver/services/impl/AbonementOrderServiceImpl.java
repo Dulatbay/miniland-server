@@ -32,7 +32,9 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
 
         var abonementOrders = abonementOrderRepository.getAbonementOrdersByEnabledIsTrue();
 
-        return abonementOrderMapper.toDTO(abonementOrders);
+        List<ResponseAbonementOrderDto> allAbonementOrders = abonementOrderMapper.toDTO(abonementOrders);
+        log.info("Size of all abonement orders: {}", allAbonementOrders.size());
+        return allAbonementOrders;
 
     }
 
@@ -74,8 +76,9 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
         var abonementOrder = abonementOrderRepository
                 .findAbonementOrdersByPhoneNumberAndEnabledIsTrue(phoneNumber);
 
-        return abonementOrderMapper.toDTO(abonementOrder);
-
+        List<ResponseAbonementOrderDto> abonemenOrdersByPhoneNumber = abonementOrderMapper.toDTO(abonementOrder);
+        log.info("Size of abonement orders by number: {}", abonemenOrdersByPhoneNumber.size());
+        return abonemenOrdersByPhoneNumber;
     }
 
     @Override

@@ -32,7 +32,9 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
 
         var abonementOrders = abonementOrderRepository.getAbonementOrdersByEnabledIsTrue();
 
-        return abonementOrderMapper.toDTO(abonementOrders);
+        List<ResponseAbonementOrderDto> allAbonementOrders = abonementOrderMapper.toDTO(abonementOrders);
+        log.info("Size of all abonement orders: {}", allAbonementOrders.size());
+        return allAbonementOrders;
 
     }
 
@@ -67,19 +69,16 @@ public class AbonementOrderServiceImpl implements AbonementOrderService {
     @Override
     public List<ResponseAbonementOrderDto> getAbonementOrdersByPhoneNumber(String phoneNumber) {
 
-        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-
-            log.error("Phone number can't be empty");
-
+        if (phoneNumber == null || phoneNumber.trim().isEmpty())
             throw new IllegalArgumentException("Phone number can't be empty");
 
-        }
 
         var abonementOrder = abonementOrderRepository
                 .findAbonementOrdersByPhoneNumberAndEnabledIsTrue(phoneNumber);
 
-        return abonementOrderMapper.toDTO(abonementOrder);
-
+        List<ResponseAbonementOrderDto> abonemenOrdersByPhoneNumber = abonementOrderMapper.toDTO(abonementOrder);
+        log.info("Size of abonement orders by number: {}", abonemenOrdersByPhoneNumber.size());
+        return abonemenOrdersByPhoneNumber;
     }
 
     @Override

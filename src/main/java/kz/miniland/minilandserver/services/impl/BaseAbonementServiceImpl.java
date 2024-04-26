@@ -29,9 +29,10 @@ public class BaseAbonementServiceImpl implements BaseAbonementService {
     @Override
     public List<ResponseBaseAbonementDto> getAllByEnabled(Boolean enabled) {
 
-        return baseAbonementMapper
+        List<ResponseBaseAbonementDto> allByEnabled = baseAbonementMapper
                 .toDTO(baseAbonementRepository.getBaseAbonementsByEnabled(enabled));
-
+        log.info("Size of all base abonement by enable is: {}", allByEnabled.size());
+        return allByEnabled;
     }
 
     @Override

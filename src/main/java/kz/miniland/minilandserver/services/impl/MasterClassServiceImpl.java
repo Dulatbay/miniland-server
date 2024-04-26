@@ -44,7 +44,7 @@ public class MasterClassServiceImpl implements MasterClassService {
         orderMasterClass.setAddedAt(LocalDateTime.now(ZONE_ID));
         orderMasterClass.setOrder(order);
         orderMasterClass.setMasterClass(masterClass);
-
+        log.info("Creating order master class: {}", orderMasterClass);
         order.setFullPrice(order.getFullPrice() + orderMasterClass.getMasterClass().getPrice());
         orderRepository.save(order);
         orderMasterClassRepository.save(orderMasterClass);
@@ -65,6 +65,7 @@ public class MasterClassServiceImpl implements MasterClassService {
             masterClass.setImageUrl(filename);
         }
 
+        log.info("Created new master class, {}", masterClass);
         masterClassRepository.save(masterClass);
     }
 
@@ -77,20 +78,23 @@ public class MasterClassServiceImpl implements MasterClassService {
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Master class doesn't exist or already deleted");
 
         masterClass.setEnabled(false);
+        log.info("Disabling master class: {}, by id: {}",masterClass, id);
         masterClassRepository.save(masterClass);
     }
 
     @Override
     public List<ResponseCardMasterClassDto> getAllMasterClasses(boolean enabled) {
         var masterClasses = masterClassRepository.findAllByEnabled(enabled);
-        return masterClassMapper.toDTO(masterClasses);
+        List<ResponseCardMasterClassDto> allMasterClasses =  masterClassMapper.toDTO(masterClasses);
+        log.info("Size of all master classes is : {}", allMasterClasses.size());
+        return allMasterClasses;
     }
 
     @Override
     public ResponseCardMasterClassDto getMasterClassById(Long id) {
         var masterClass = masterClassRepository.findById(id)
                 .orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Master class doesn't exist"));
-
+        log.info("Getting master class: {}, by id: {}", masterClass,  id);
         return masterClassMapper.toDto(masterClass);
     }
 }

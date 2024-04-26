@@ -64,7 +64,7 @@ public class ReportServiceImpl implements ReportService {
         directorMainReport.setOrdersCount(orders.size() + roomOrders.size());
 
         directorMainReport.setEmployees(new ArrayList<>(employeeMap.values()));
-
+        log.info("Getting table report: {}", directorMainReport);
         return directorMainReport;
     }
 
@@ -108,7 +108,7 @@ public class ReportServiceImpl implements ReportService {
             responseReportByParamsDto.setProfit(responseReportByParamsDto.getProfit() + order.getTotalFullPrice());
             responseReportByParamsDto.setTotalTime(responseReportByParamsDto.getTotalTime() + order.getTotalFullTime());
         });
-
+        log.info("Getting report: {} by params username: {}, start date: {}, end date: {}", responseReportByParamsDto, username, startDate, endDate);
         return responseReportByParamsDto;
     }
 
@@ -136,17 +136,17 @@ public class ReportServiceImpl implements ReportService {
                 result.setIncome(result.getIncome() + profit.getProfit());
             }
         });
-
+        log.info("Getting report profit: {}, start date: {}, end date: {}", result, startDate, endDate);
         return result;
     }
 
     @Override
     public void createProfit(RequestCreateProfitDto requestCreateProfitDto) {
-        log.info("prof: {}", requestCreateProfitDto);
         var profit = new Profit();
         profit.setProfit(requestCreateProfitDto.getProfit());
         profit.setReason(requestCreateProfitDto.getReason());
         profit.setType(requestCreateProfitDto.getIsExpense() ? ProfitTypes.EXPENSE : ProfitTypes.INCOME);
+        log.info("Created new Profit: {}", profit);
         profitRepository.save(profit);
     }
 
@@ -194,11 +194,13 @@ public class ReportServiceImpl implements ReportService {
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             workbook.write(stream);
-
-            return stream.toByteArray();
+            byte[] streamArray = stream.toByteArray();
+            log.info("Size of stream is: {}", streamArray.length);
+            return streamArray;
         } catch (IOException e) {
             log.info("IOException: {}", e.toString());
             return null;
+            //Разве нул нужно ретурнать??
         }
     }
 
@@ -219,7 +221,7 @@ public class ReportServiceImpl implements ReportService {
             responseReportDetailProfitDto.setIncome(i.getType().ordinal() == 0);
             result.add(responseReportDetailProfitDto);
         });
-
+        log.info("Amount of profit in the range: {}, start date: {}, end date: {} ",result, startDate, endDate);
         return result;
     }
 

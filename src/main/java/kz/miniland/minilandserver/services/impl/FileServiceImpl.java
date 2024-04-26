@@ -59,7 +59,7 @@ public class FileServiceImpl implements FileService {
             Files.copy(inputStream, destinationFile,
                     StandardCopyOption.REPLACE_EXISTING);
 
-
+            log.info("Save file name, {}", filename);
             return filename;
         } catch (IOException e) {
             log.error("IOException: ", e);
@@ -100,6 +100,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void deleteAll() {
+        log.info("Deleted all File Service");
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 }

@@ -28,7 +28,9 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public List<ResponsePriceDto> getAllPrices() {
-        return priceMapper.toDTO(priceRepository.findAllByEnabledIsTrueOrderByFullPriceDesc());
+        List<ResponsePriceDto> allPrices = priceMapper.toDTO(priceRepository.findAllByEnabledIsTrueOrderByFullPriceDesc());
+        log.info("All prices size: {}", allPrices.size());
+        return allPrices;
     }
 
     @Override
@@ -47,12 +49,8 @@ public class PriceServiceImpl implements PriceService {
                             .filter(day -> requestCreatePriceDto.getDays().contains(day))
                             .toList();
 
-                    if(!sameDays.isEmpty() && price.getFullPrice().equals(requestCreatePriceDto.getFullPrice())){
-
-                        log.error("PriceEntity with the same day and price already exists");
-
+                    if(!sameDays.isEmpty() && price.getFullPrice().equals(requestCreatePriceDto.getFullPrice()))
                         throw new IllegalArgumentException("PriceEntity with the same day and price already exists");
-                    }
 
                 });
 
@@ -61,6 +59,7 @@ public class PriceServiceImpl implements PriceService {
         price.setFullTime(requestCreatePriceDto.getFullTime());
         price.setDays(requestCreatePriceDto.getDays().stream().map(WeekDays::getByInteger).collect(Collectors.toSet()));
         price.setEnabled(true);
+        log.info("Created new price: {}", price);
         priceRepository.save(price);
     }
 
@@ -73,6 +72,7 @@ public class PriceServiceImpl implements PriceService {
             throw new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Price doesn't exist or already deleted");
 
         price.setEnabled(false);
+        log.info("Deleting price by id: {}", id);
         priceRepository.save(price);
     }
 }

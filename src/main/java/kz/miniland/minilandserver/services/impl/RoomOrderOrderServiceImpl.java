@@ -46,7 +46,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
                 false,
                 false);
 
-        return roomOrders
+        List<ResponseCardRoomOrderDto> currentActiveRooms = roomOrders
                 .stream()
                 .map(i -> {
                     if (!i.isFinished()
@@ -61,6 +61,9 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
                     return roomOrderCustomMapper.toCardDto(i);
                 })
                 .collect(Collectors.toList());
+
+        log.info("Size of all current active rooms: {}", currentActiveRooms.size());
+        return currentActiveRooms;
     }
 
 
@@ -70,11 +73,13 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         var bookedRoomOrders = roomOrderRepository.getAllByBookedDayAfter(now);
 
 
-        return bookedRoomOrders
+        List<ResponseBookedDayDto> bookedDays = bookedRoomOrders
                 .stream()
                 .filter(i -> Objects.equals(i.getRoomTariff().getId(), id))
                 .map(roomOrderCustomMapper::toBookedDayDto)
                 .collect(Collectors.toList());
+        log.info("Size of booked days after today: {}", bookedDays.size());
+        return bookedDays;
     }
 
     @Override
@@ -82,6 +87,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         var orderRoom = roomOrderRepository.findById(id).orElseThrow(() -> new DbObjectNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase(), "Room order doesn't exist"));
         var orderRoomDetail = roomOrderCustomMapper.toDetailDto(orderRoom);
         orderRoomDetail.setTariffDto(roomTariffCustomMapper.toDto(orderRoom.getRoomTariff()));
+        log.info("Get order detail: {}, by id: {}", orderRoomDetail, id);
         return orderRoomDetail;
     }
 
@@ -159,7 +165,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         roomOrder.setFinishedAt(endedAt);
         roomOrder.setPaid(requestCreateRoomOrderDto.isPaid());
         roomOrder.setDeleted(false);
-
+        log.info("Created new room order: {}", roomOrder);
         roomOrderRepository.save(roomOrder);
     }
 
@@ -173,7 +179,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
         if (isStarted)
             throw new IllegalArgumentException("Order already started, you can only finish this order");
 
-
+        log.info("Order disabled by id: {}", id);
         entity.setDeleted(true);
         roomOrderRepository.save(entity);
     }
@@ -201,7 +207,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
             entity.setPaid(true);
 
         entity.setFinished(true);
-
+        log.info("Completing paid order: {}", entity);
         roomOrderRepository.save(entity);
     }
 
@@ -211,6 +217,7 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
 
         if (entity.isDeleted())
             throw new NotFoundException("Order doesn't exist");
+        log.info("Getting room order by id: {}", id);
         return entity;
     }
 
@@ -224,7 +231,6 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
             extraTimePrice += penaltyPerHour;
             extraTime -= hour;
         }
-        log.info("extraTimePrice: {}, extraTime: {}", extraTimePrice, extraTime);
 
         if (extraTime > 0) {
             var halfHour = 30 * 60;
@@ -234,10 +240,13 @@ public class RoomOrderOrderServiceImpl implements RoomOrderService {
             }
         }
 
-        return extraTimePrice * childCount;
+        Double fullPrice =  extraTimePrice * childCount;
+        log.info("extraTimePrice: {}, extraTime: {}, fullPrice: {}", extraTimePrice, extraTime, fullPrice);
+        return fullPrice;
     }
 
     private boolean isSameDate(LocalDate dateTime1, LocalDate dateTime2) {
+        log.info("Checked to same date: date1: {}, date2: {}", dateTime1, dateTime2);
         return dateTime1.getYear() == dateTime2.getYear() &&
                 dateTime1.getMonth() == dateTime2.getMonth() &&
                 dateTime1.getDayOfMonth() == dateTime2.getDayOfMonth();

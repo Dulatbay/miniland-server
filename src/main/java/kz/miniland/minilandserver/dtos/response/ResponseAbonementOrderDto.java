@@ -3,13 +3,17 @@ package kz.miniland.minilandserver.dtos.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import kz.miniland.minilandserver.entities.BaseAbonement;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResponseAbonementOrderDto {
 
     @JsonProperty("id")
@@ -35,6 +39,18 @@ public class ResponseAbonementOrderDto {
 
     @JsonProperty("base_abonement_id")
     private Long baseAbonementId;
+
+    @JsonProperty("base_abonement_name")
+    private String baseAbonementName;
+
+    @JsonProperty("base_abonement_description")
+    private String baseAbonementDescription;
+
+    @JsonProperty("base_abonement_price")
+    private Double baseAbonementPrice;
+
+    @JsonProperty("base_abonement_time")
+    private Long baseAbonementTime;
 
     @JsonProperty("enabled")
     private boolean enabled;

@@ -36,7 +36,7 @@ public class OrderCustomMapper {
     private final SaleWithPercentMapper saleWithPercentMapper;
     private final DateTimeFormatter enteredTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
-    private Double getFullPrice(LocalDateTime now, Long extraTime) {
+    private Double getFullPrice(LocalDateTime now, Long extraTime, boolean isPenalty) {
         if (extraTime == 0) return 0.0;
 
         double resultPrice = 0;
@@ -58,7 +58,8 @@ public class OrderCustomMapper {
         log.info("{}, {}", prices.getFirst().getFullTime(), prices.getLast().getFullTime());
 
         if (prices.getFirst().getFullTime() > extraTime)
-            throw new IllegalArgumentException("Extra time is too short");
+            if (!isPenalty)
+                throw new IllegalArgumentException("Extra time is too short, minimum: " + prices.getFirst().getFullTime());
 
 
         double requestTime = extraTime;
@@ -99,12 +100,12 @@ public class OrderCustomMapper {
         }
         SaleWithPercent saleWithPercent = new SaleWithPercent();
 
-        if  (requestCreateOrderDto.getSaleWithPercentId() != null){
+        if (requestCreateOrderDto.getSaleWithPercentId() != null) {
 
             saleWithPercent = saleWithPercentRepository
                     .findById(requestCreateOrderDto.getSaleWithPercentId())
                     .orElseThrow(() -> new IllegalArgumentException("SaleWithPercent doesn't exist"));
-        log.info("Selected sale: {}", sale);
+            log.info("Selected sale: {}", sale);
 
             order.setSaleWithPercent(saleWithPercent);
 
@@ -115,7 +116,7 @@ public class OrderCustomMapper {
 
         }
 
-        var priceWithSales = getFullPrice(now, requestCreateOrderDto.getExtraTime()) + sale.getFullPrice();
+        var priceWithSales = getFullPrice(now, requestCreateOrderDto.getExtraTime(), false) + sale.getFullPrice();
         var finalPrice = priceWithSales - priceWithSales * (double) saleWithPercent.getPercent() / 100.0;
 
         log.info("Discount: {}, price: {}, finalPrice: {}", saleWithPercent.getPercent(), priceWithSales, finalPrice);
@@ -181,7 +182,8 @@ public class OrderCustomMapper {
 
         var penaltyPrice = 0;
         if (remainTime < 0) {
-            penaltyPrice += getFullPrice(now, remainTime);
+            log.info("remainTime: {}", remainTime);
+            penaltyPrice += getFullPrice(now, -1 * remainTime, true);
         }
 
         responseDetailOrderDto.setFullPrice(orderEntity.getFullPrice() + penaltyPrice);

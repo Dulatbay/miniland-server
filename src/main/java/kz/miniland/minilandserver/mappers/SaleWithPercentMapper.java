@@ -10,7 +10,7 @@ public interface SaleWithPercentMapper extends BaseMapper<SaleWithPercent, Respo
     @Override
     default ResponseSaleWithPercentDto toDto(SaleWithPercent entity) {
         
-        if(entity == null) return new ResponseSaleWithPercentDto();
+        if(entity == null) return null;
         
         ResponseSaleWithPercentDto saleWithPercentDto = new ResponseSaleWithPercentDto();
         
@@ -25,7 +25,7 @@ public interface SaleWithPercentMapper extends BaseMapper<SaleWithPercent, Respo
     @Override
     default SaleWithPercent toEntity(ResponseSaleWithPercentDto saleWithPercentDto) {
         
-        if(saleWithPercentDto == null) return new SaleWithPercent();
+        if(saleWithPercentDto == null) return null;
         
         SaleWithPercent sale = new SaleWithPercent();
         

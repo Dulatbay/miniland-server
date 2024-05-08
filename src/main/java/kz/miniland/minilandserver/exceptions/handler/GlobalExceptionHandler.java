@@ -1,5 +1,6 @@
 package kz.miniland.minilandserver.exceptions.handler;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import kz.miniland.minilandserver.dtos.response.ResponseErrorDto;
 import kz.miniland.minilandserver.exceptions.DbObjectNotFoundException;
 import kz.miniland.minilandserver.exceptions.StorageException;
@@ -17,6 +18,14 @@ import java.io.IOException;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<ResponseErrorDto> handleInvalidFormatException(InvalidFormatException ex) {
+        log.error("InvalidFormatException exception: {}", ex.getMessage());
+        ResponseErrorDto responseErrorDto = new ResponseErrorDto(HttpStatus.BAD_REQUEST.toString(), "Invalid input...", null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseErrorDto);
+    }
+
     @ExceptionHandler(DbObjectNotFoundException.class)
     public ResponseEntity<ResponseErrorDto> handlePositionNotFoundException(DbObjectNotFoundException ex) {
         log.error("DbObjectNotFoundException exception: ", ex);
